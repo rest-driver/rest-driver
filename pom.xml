@@ -6,6 +6,12 @@
 	<artifactId>acceptance-test-helper</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	
+	<parent>
+		<groupId>com.ovi.music.tools</groupId>
+		<artifactId>JavaParent</artifactId>
+		<version>2.5</version>
+	</parent>
+	
 	<name>Acceptance Test Helper</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
