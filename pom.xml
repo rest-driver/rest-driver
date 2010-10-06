@@ -4,7 +4,7 @@
 	
 	<groupId>com.ovi.test</groupId>
 	<artifactId>acceptance-test-helper</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	
 	<name>Acceptance Test Helper</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
