@@ -1,12 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>com.ovi.test</groupId>
 	<artifactId>acceptance-test-helper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	
 	<name>Acceptance Test Helper</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
+	<scm>
+		<connection>scm:hg:ssh://hg@d11server3.brislabs.com//home/hg/repo/acceptance-test-helper</connection>
+		<developerConnection>scm:hg:ssh://hg@d11server3.brislabs.com//home/hg/repo/acceptance-test-helper</developerConnection>
+	</scm>
 
 	<dependencies>
 
