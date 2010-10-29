@@ -52,6 +52,7 @@
 			<artifactId>json-schema-validator</artifactId>
 			<version>0.0.1-nokia</version>
 		</dependency>
+        
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
