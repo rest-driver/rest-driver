@@ -16,8 +16,8 @@
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
 	<scm>
-		<connection>scm:hg:ssh://hg@d11server3.brislabs.com//home/hg/repo/acceptance-test-helper</connection>
-		<developerConnection>scm:hg:ssh://hg@d11server3.brislabs.com//home/hg/repo/acceptance-test-helper</developerConnection>
+		<connection>scm:hg:ssh://hge1.isource-nokia.nokia.com/isource/hgroot/ovimusic-poc</connection>
+		<developerConnection>scm:hg:ssh://hge1.isource-nokia.nokia.com/isource/hgroot/ovimusic-poc</developerConnection>
 	</scm>
 
 	<dependencies>
