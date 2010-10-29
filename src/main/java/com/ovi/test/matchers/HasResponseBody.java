@@ -10,29 +10,29 @@ import org.hamcrest.TypeSafeMatcher;
 
 public class HasResponseBody extends TypeSafeMatcher<HttpMethod> {
 
-	private final Matcher<String> responseMatcher;
+    private final Matcher<String> responseMatcher;
 
-	public HasResponseBody(Matcher<String> responseMatcher) {
-		this.responseMatcher = responseMatcher;
-	}
+    public HasResponseBody(Matcher<String> responseMatcher) {
+        this.responseMatcher = responseMatcher;
+    }
 
-	public void describeTo(Description description) {
-		description.appendText("HttpMethod with response body matching:");
-		responseMatcher.describeTo(description);
-	}
+    public void describeTo(Description description) {
+        description.appendText("HttpMethod with response body matching:");
+        responseMatcher.describeTo(description);
+    }
 
-	@Override
-	public boolean matchesSafely(HttpMethod actualMethod) {
+    @Override
+    public boolean matchesSafely(HttpMethod actualMethod) {
 
-		String actualResponse;
-		try {
-			actualResponse = IOUtils.toString(actualMethod.getResponseBodyAsStream());
+        String actualResponse;
+        try {
+            actualResponse = IOUtils.toString(actualMethod.getResponseBodyAsStream());
 
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to read response body for matching.", e);
-		}
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read response body for matching.", e);
+        }
 
-		return responseMatcher.matches(actualResponse);
-	}
+        return responseMatcher.matches(actualResponse);
+    }
 
 }
