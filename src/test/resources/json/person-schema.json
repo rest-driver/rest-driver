@@ -1,0 +1,21 @@
+{
+    "description":"A representation of a person",
+    "type":"object",
+    "properties":{
+        "name":{"type":"string", "maxLength":5, "optional":false},
+        "born":{"format":"date","type":"string","optional":true},
+        "gender":{"type":"string","optional":true,"enum":["male","female"]},
+        "address":{
+            "type":"object",
+            "properties":{
+                "street":{"type":"string"},
+                "city":{"type":"string"},
+                "state":{"type":"string","maxLength":2,"minLength":2}
+            },
+            "optional":true
+        }
+    }
+}
+        
+            
+            
