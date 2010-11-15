@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -67,6 +68,13 @@ public class AcceptanceTestHelper {
         final PostMethod method = new PostMethod(url);
         method.setRequestEntity(new InputStreamRequestEntity(requestBody, contentType));
 
+        return callHttpMethod(method);
+
+    }
+
+    public static HttpMethod doDeleteOf(String url) {
+
+        final DeleteMethod method = new DeleteMethod(url);
         return callHttpMethod(method);
 
     }
