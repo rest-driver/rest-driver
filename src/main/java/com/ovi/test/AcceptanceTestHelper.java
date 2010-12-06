@@ -41,13 +41,15 @@ public class AcceptanceTestHelper {
     private static final HttpClient client = new HttpClient();
 
     public static HttpMethod doGetOf(final Object urlObject) {
-        String url = urlObject.toString();
+        final String url = urlObject.toString();
+        
         final HttpMethod method = new GetMethod(url);
         return callHttpMethod(method);
     }
 
-    public static HttpMethod doPutOf(final String url, final InputStream requestBody, final String contentType) {
-
+    public static HttpMethod doPutOf(final String urlObject, final InputStream requestBody, final String contentType) {
+        final String url = urlObject.toString();
+        
         final PutMethod method = new PutMethod(url);
         method.setRequestEntity(new InputStreamRequestEntity(requestBody, contentType));
 
@@ -55,15 +57,17 @@ public class AcceptanceTestHelper {
 
     }
 
-    public static HttpMethod doPutOf(final String url) {
-
+    public static HttpMethod doPutOf(final String urlObject) {
+        final String url = urlObject.toString();
+    	
         final PutMethod method = new PutMethod(url);
         return callHttpMethod(method);
 
     }
 
-    public static HttpMethod doPostOf(final String url, final InputStream requestBody, final String contentType) {
-
+    public static HttpMethod doPostOf(final String urlObject, final InputStream requestBody, final String contentType) {
+        final String url = urlObject.toString();
+    	
         final PostMethod method = new PostMethod(url);
         method.setRequestEntity(new InputStreamRequestEntity(requestBody, contentType));
 
