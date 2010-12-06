@@ -46,7 +46,7 @@ public class AcceptanceTestHelper {
         return callHttpMethod(method);
     }
 
-    public static HttpMethod doPutOf(String url, InputStream requestBody, String contentType) {
+    public static HttpMethod doPutOf(final String url, final InputStream requestBody, final String contentType) {
 
         final PutMethod method = new PutMethod(url);
         method.setRequestEntity(new InputStreamRequestEntity(requestBody, contentType));
@@ -55,14 +55,14 @@ public class AcceptanceTestHelper {
 
     }
 
-    public static HttpMethod doPutOf(String url) {
+    public static HttpMethod doPutOf(final String url) {
 
         final PutMethod method = new PutMethod(url);
         return callHttpMethod(method);
 
     }
 
-    public static HttpMethod doPostOf(String url, InputStream requestBody, String contentType) {
+    public static HttpMethod doPostOf(final String url, final InputStream requestBody, final String contentType) {
 
         final PostMethod method = new PostMethod(url);
         method.setRequestEntity(new InputStreamRequestEntity(requestBody, contentType));
@@ -71,7 +71,7 @@ public class AcceptanceTestHelper {
 
     }
 
-    private static HttpMethod callHttpMethod(HttpMethod method) {
+    private static HttpMethod callHttpMethod(final HttpMethod method) {
 
         try {
             client.executeMethod(method);
@@ -84,7 +84,7 @@ public class AcceptanceTestHelper {
         return method;
     }
 
-    public static InputStream getClasspathResourceAsStream(String xmlClasspathResource) {
+    public static InputStream getClasspathResourceAsStream(final String xmlClasspathResource) {
 
         final InputStream xmlContent = AcceptanceTestHelper.class.getResourceAsStream(xmlClasspathResource);
 
@@ -96,7 +96,7 @@ public class AcceptanceTestHelper {
 
     }
 
-    public static String getClasspathResourceAsString(String xmlClasspathResource) throws IOException {
+    public static String getClasspathResourceAsString(final String xmlClasspathResource) throws IOException {
         InputStream is = null;
 
         try {
@@ -128,7 +128,7 @@ public class AcceptanceTestHelper {
 
     }
 
-    public static Node extractXmlNodeFrom(HttpMethod method) {
+    public static Node extractXmlNodeFrom(final HttpMethod method) {
 
         try {
             String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
@@ -161,7 +161,7 @@ public class AcceptanceTestHelper {
 
     }
 
-    public static JsonNode extractJsonNodeFrom(HttpMethod method) {
+    public static JsonNode extractJsonNodeFrom(final HttpMethod method) {
 
         try {
             String responseBody = IOUtils.toString(method.getResponseBodyAsStream());
@@ -175,23 +175,23 @@ public class AcceptanceTestHelper {
 
     // Hamcrest matchers
 
-    public static TypeSafeMatcher<HttpMethod> hasStatusCode(int expectedStatusCode) {
+    public static TypeSafeMatcher<HttpMethod> hasStatusCode(final int expectedStatusCode) {
         return new HasStatusCode(expectedStatusCode);
     }
 
-    public static TypeSafeMatcher<HttpMethod> hasResponseBody(Matcher<String> bodyMatcher) {
+    public static TypeSafeMatcher<HttpMethod> hasResponseBody(final Matcher<String> bodyMatcher) {
         return new HasResponseBody(bodyMatcher);
     }
 
-    public static TypeSafeMatcher<JsonNode> hasJsonValue(String fieldName, Matcher<?> matcher) {
+    public static TypeSafeMatcher<JsonNode> hasJsonValue(final String fieldName, final Matcher<?> matcher) {
         return new HasJsonValue(fieldName, matcher);
     }
 
-    public static TypeSafeMatcher<JsonNode> hasJsonArray(String fieldName, Matcher<?> matcher) {
+    public static TypeSafeMatcher<JsonNode> hasJsonArray(final String fieldName, final Matcher<?> matcher) {
         return new HasJsonArray(fieldName, matcher);
     }
 
-    public static TypeSafeMatcher<JsonNode> containingValue(Matcher<?> matcher) {
+    public static TypeSafeMatcher<JsonNode> containingValue(final Matcher<?> matcher) {
         return new ContainingValue(matcher);
     }
 
@@ -199,15 +199,15 @@ public class AcceptanceTestHelper {
         return new WithValueAt(position, matcher);
     }
 
-    public static TypeSafeMatcher<JsonNode> withSize(Matcher<?> matcher) {
+    public static TypeSafeMatcher<JsonNode> withSize(final Matcher<?> matcher) {
         return new WithSize(matcher);
     }
 
-    public static TypeSafeMatcher<JsonNode> valid(JsonNode schema) {
+    public static TypeSafeMatcher<JsonNode> valid(final JsonNode schema) {
         return new IsValid(schema);
     }
 
-    public static TypeSafeMatcher<JsonNode> valid(URL url) {
+    public static TypeSafeMatcher<JsonNode> valid(final URL url) {
         return new IsValid(url);
     }
 
