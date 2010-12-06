@@ -13,6 +13,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -42,7 +43,7 @@ public class AcceptanceTestHelper {
     private static final HttpClient client = new HttpClient();
 
     /**
-     * Executes a HTTP GET request to the URI specified. 
+     * Executes a HTTP GET request to the URL specified. 
      * 
      * @param urlObject
      * 		The object representing the URL. The toString() method of the object will be used
@@ -63,7 +64,7 @@ public class AcceptanceTestHelper {
     }
 
     /**
-     * Executes a HTTP PUT request to the URI specified. 
+     * Executes a HTTP PUT request to the URL specified. 
      * 
      * @param urlObject
      * 		The object representing the URL. The toString() method of the object will be used
@@ -93,7 +94,7 @@ public class AcceptanceTestHelper {
     }
 
     /**
-     * Executes a HTTP PUT request to the URI specified. 
+     * Executes a HTTP PUT request to the URL specified. 
      * 
      * @param urlObject
      * 		The object representing the URL. The toString() method of the object will be used
@@ -115,7 +116,7 @@ public class AcceptanceTestHelper {
     }
 
     /**
-     * Executes a HTTP POST request to the URI specified. 
+     * Executes a HTTP POST request to the URL specified. 
      * 
      * @param urlObject
      * 		The object representing the URL. The toString() method of the object will be used
@@ -144,6 +145,26 @@ public class AcceptanceTestHelper {
 
     }
 
+    /**
+     * Executes a HTTP DELETE request to the URL specified. 
+     * 
+     * @param urlObject
+     * 		The object representing the URL. The toString() method of the object will be used
+     * 		to get a string representation of the URL.
+     * @param headers
+     * 		A list of headers to add to the HTTP request. Each header should be a string in the
+     * 		same form as one would add to the HTTP request itself: e.g. "someheader: somevalue".
+     * @return
+     * 		A handle to the DELETE {@link HttpMethod} after having been executed.  
+     */
+    public static HttpMethod doDeleteOf(final String url, final String... headers) {
+
+        final DeleteMethod method = new DeleteMethod(url);
+        addHeaders(method, headers);
+        
+        return callHttpMethod(method);
+    }
+    
     private static void addHeaders(final HttpMethod method, final String[] headers) {
     	if (headers == null) {
     		return;
