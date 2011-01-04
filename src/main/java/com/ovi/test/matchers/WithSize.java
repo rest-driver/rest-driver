@@ -11,23 +11,24 @@ public class WithSize extends TypeSafeMatcher<JsonNode> {
 
 	private final Matcher<?> matcher;
 
-	public WithSize(Matcher<?> matcher) {
+	public WithSize(final Matcher<?> matcher) {
 		this.matcher = matcher;
 	}
 
-	public void describeTo(Description description) {
+	@Override
+	public void describeTo(final Description description) {
 		description.appendText("A JSON array with size: ");
 		matcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(JsonNode node) {
+	public boolean matchesSafely(final JsonNode node) {
 
 		if (!node.isArray()) {
 			return false;
 		}
 
-		Iterator<JsonNode> nodeIterator = node.getElements();
+		final Iterator<JsonNode> nodeIterator = node.getElements();
 		int nodeCount = 0;
 
 		while (nodeIterator.hasNext()) {

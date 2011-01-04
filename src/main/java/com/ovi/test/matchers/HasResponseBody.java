@@ -1,38 +1,31 @@
 package com.ovi.test.matchers;
 
-import java.io.IOException;
-
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class HasResponseBody extends TypeSafeMatcher<HttpMethod> {
+import com.ovi.test.http.Response;
 
-    private final Matcher<String> responseMatcher;
+public class HasResponseBody extends TypeSafeMatcher<Response> {
 
-    public HasResponseBody(Matcher<String> responseMatcher) {
-        this.responseMatcher = responseMatcher;
-    }
+	private final Matcher<String> responseMatcher;
 
-    public void describeTo(Description description) {
-        description.appendText("HttpMethod with response body matching:");
-        responseMatcher.describeTo(description);
-    }
+	public HasResponseBody(final Matcher<String> responseMatcher) {
+		this.responseMatcher = responseMatcher;
+	}
 
-    @Override
-    public boolean matchesSafely(HttpMethod actualMethod) {
+	@Override
+	public void describeTo(final Description description) {
+		description.appendText("HttpMethod with response body matching:");
+		responseMatcher.describeTo(description);
+	}
 
-        String actualResponse;
-        try {
-            actualResponse = IOUtils.toString(actualMethod.getResponseBodyAsStream());
+	@Override
+	public boolean matchesSafely(final Response actualResponse) {
 
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read response body for matching.", e);
-        }
+		final String actualContent = actualResponse.getContent();
 
-        return responseMatcher.matches(actualResponse);
-    }
+		return responseMatcher.matches(actualContent);
+	}
 
 }

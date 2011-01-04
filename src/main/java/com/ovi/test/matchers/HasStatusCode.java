@@ -1,24 +1,31 @@
 package com.ovi.test.matchers;
 
-import org.apache.commons.httpclient.HttpMethod;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-public class HasStatusCode extends TypeSafeMatcher<HttpMethod> {
+import com.ovi.test.http.Response;
 
-	private final int expectedStatusCode;
+public class HasStatusCode extends TypeSafeMatcher<Response> {
 
-	public HasStatusCode(int expectedStatusCode) {
-		this.expectedStatusCode = expectedStatusCode;
-	}
+	private final int statusCode;
 
-	public void describeTo(Description description) {
-		description.appendText("HttpMethod with status code of " + expectedStatusCode);
+	public HasStatusCode(final int statusCode) {
+		this.statusCode = statusCode;
 	}
 
 	@Override
-	public boolean matchesSafely(HttpMethod actualMethod) {
-		return actualMethod.getStatusCode() == expectedStatusCode;
+	protected final boolean matchesSafely(final Response item) {
+		return statusCode == item.getStatusCode();
+	}
+
+	@Override
+	public final void describeTo(final Description description) {
+		description.appendText("Response with status code " + statusCode);
+	}
+
+	@Override
+	protected final void describeMismatchSafely(final Response item, final Description mismatchDescription) {
+		mismatchDescription.appendText("Response has status code " + item.getStatusCode() + " and body " + item.getContent());
 	}
 
 }

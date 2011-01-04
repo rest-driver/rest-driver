@@ -12,29 +12,30 @@ public class WithValueAt extends TypeSafeMatcher<JsonNode> {
 	private final int position;
 	private final Matcher<?> matcher;
 
-	public WithValueAt(int position, Matcher<?> matcher) {
+	public WithValueAt(final int position, final Matcher<?> matcher) {
 		this.position = position;
 		this.matcher = matcher;
 	}
 
-	public void describeTo(Description description) {
+	@Override
+	public void describeTo(final Description description) {
 		description.appendText("A JSON array with value at " + position + " which matches: ");
 		matcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(JsonNode node) {
+	public boolean matchesSafely(final JsonNode node) {
 
 		if (!node.isArray()) {
 			return false;
 		}
 
-		Iterator<JsonNode> nodeIterator = node.getElements();
+		final Iterator<JsonNode> nodeIterator = node.getElements();
 		int nodeCount = 0;
 
 		while (nodeIterator.hasNext()) {
 
-			JsonNode currentNode = nodeIterator.next();
+			final JsonNode currentNode = nodeIterator.next();
 
 			if (nodeCount == position) {
 				return matcher.matches(currentNode.getTextValue());
