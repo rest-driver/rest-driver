@@ -10,7 +10,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -32,8 +31,6 @@ import com.ovi.test.xml.XmlAcceptanceTestHelper;
 public final class HttpAcceptanceTestHelper {
 
 	private static final String ENCODING = "UTF-8";
-
-	private static final HttpClient HTTP_CLIENT = new DefaultHttpClient();
 
 	public static Header[] headers(final Header... headers) {
 		return headers;
@@ -152,7 +149,7 @@ public final class HttpAcceptanceTestHelper {
 		final HttpResponse response;
 
 		try {
-			response = HTTP_CLIENT.execute(request);
+			response = new DefaultHttpClient().execute(request);
 		} catch (final ClientProtocolException e) {
 			throw new RuntimeException("Error executing request", e);
 		} catch (final IOException e) {
