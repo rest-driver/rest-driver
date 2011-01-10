@@ -5,7 +5,7 @@
 	
 	<groupId>com.ovi.test</groupId>
 	<artifactId>acceptance-test-helper</artifactId>
-	<version>0.0.18-SNAPSHOT</version>
+	<version>0.0.18</version>
 	
 	<parent>
 		<groupId>com.ovi.music.tools</groupId>
