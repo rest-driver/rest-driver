@@ -11,4 +11,9 @@ public class DeleteResponse extends BaseResponse {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		return "DELETE " + super.toString();
+	}
+
 }

@@ -14,4 +14,9 @@ public class PostResponse extends BaseResponse {
 		return content;
 	}
 
+	@Override
+	public String toString() {
+		return "POST " + super.toString();
+	}
+
 }

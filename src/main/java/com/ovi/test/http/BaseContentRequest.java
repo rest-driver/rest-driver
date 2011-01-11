@@ -10,8 +10,13 @@ public abstract class BaseContentRequest extends BaseRequest implements ContentR
 	}
 
 	@Override
-	public String getContent() {
+	public final String getContent() {
 		return content;
+	}
+
+	@Override
+	public String toString() {
+		return "content=" + content + "," + super.toString();
 	}
 
 }

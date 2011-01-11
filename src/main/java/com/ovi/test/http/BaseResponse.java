@@ -1,5 +1,7 @@
 package com.ovi.test.http;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 public abstract class BaseResponse implements Response {
 
 	private final int statusCode;
@@ -18,6 +20,11 @@ public abstract class BaseResponse implements Response {
 	@Override
 	public final Header[] getHeaders() {
 		return headers;
+	}
+
+	@Override
+	public String toString() {
+		return "status=" + statusCode + ",headers=[" + join(headers, ",") + "]";
 	}
 
 }

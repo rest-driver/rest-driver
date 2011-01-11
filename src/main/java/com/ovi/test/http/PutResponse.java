@@ -14,4 +14,9 @@ public class PutResponse extends BaseResponse {
 		return content;
 	}
 
+	@Override
+	public String toString() {
+		return "PUT " + super.toString();
+	}
+
 }

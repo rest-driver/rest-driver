@@ -14,4 +14,9 @@ public class GetResponse extends BaseResponse {
 		return content;
 	}
 
+	@Override
+	public String toString() {
+		return "GET " + super.toString();
+	}
+
 }

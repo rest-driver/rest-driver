@@ -6,4 +6,9 @@ public class DeleteRequest extends BaseRequest {
 		super(url, new Header[0]);
 	}
 
+	@Override
+	public String toString() {
+		return "DELETE " + super.toString();
+	}
+
 }

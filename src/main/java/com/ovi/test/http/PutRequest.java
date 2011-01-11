@@ -6,4 +6,9 @@ public class PutRequest extends BaseContentRequest {
 		super(url, content, headers);
 	}
 
+	@Override
+	public String toString() {
+		return "PUT " + super.toString();
+	}
+
 }

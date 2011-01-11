@@ -6,4 +6,9 @@ public class PostRequest extends BaseContentRequest {
 		super(url, content, headers);
 	}
 
+	@Override
+	public String toString() {
+		return "POST " + super.toString();
+	}
+
 }

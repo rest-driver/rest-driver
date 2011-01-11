@@ -1,5 +1,7 @@
 package com.ovi.test.http;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 public abstract class BaseRequest implements Request {
 
 	private final String url;
@@ -26,6 +28,11 @@ public abstract class BaseRequest implements Request {
 	@Override
 	public final Header[] getHeaders() {
 		return headers;
+	}
+
+	@Override
+	public String toString() {
+		return "url=" + url + ",headers=[" + join(headers, ",") + "]";
 	}
 
 }

@@ -6,4 +6,9 @@ public class GetRequest extends BaseRequest {
 		super(url, new Header[0]);
 	}
 
+	@Override
+	public String toString() {
+		return "GET " + super.toString();
+	}
+
 }
