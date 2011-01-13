@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -20,6 +21,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.springframework.util.StopWatch;
 import org.w3c.dom.Element;
 
 import com.ovi.test.matchers.HasHeader;
@@ -56,47 +58,68 @@ public final class HttpAcceptanceTestHelper {
 		return new HasHeaderWithValue(name, value);
 	}
 
-	public static GetResponse get(final GetRequest getRequest) {
+	public static Response get(final GetRequest getRequest) {
+		return getting(getRequest);
+	}
+
+	public static Response getting(final GetRequest getRequest) {
 
 		final HttpGet request = new HttpGet(getRequest.getUrl());
+		request.setHeaders(headersFromRequest(getRequest));
 
-		final HttpResponse response = responseFromRequest(request);
-
-		return new GetResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response));
+		return responseFromRequest(request);
 
 	}
 
-	public static PostResponse postOf(final PostRequest postRequest) {
+	public static Response post(final PostRequest postRequest) {
+		return posting(postRequest);
+	}
+
+	public static Response postOf(final PostRequest postRequest) {
+		return posting(postRequest);
+	}
+
+	public static Response posting(final PostRequest postRequest) {
 
 		final HttpPost request = new HttpPost(postRequest.getUrl());
 		request.setHeaders(headersFromRequest(postRequest));
 		request.setEntity(entityFromRequest(postRequest));
 
-		final HttpResponse response = responseFromRequest(request);
-
-		return new PostResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response));
+		return responseFromRequest(request);
 
 	}
 
-	public static PutResponse putOf(final PutRequest putRequest) {
+	public static Response put(final PutRequest putRequest) {
+		return putting(putRequest);
+	}
+
+	public static Response putOf(final PutRequest putRequest) {
+		return putting(putRequest);
+	}
+
+	public static Response putting(final PutRequest putRequest) {
 
 		final HttpPut request = new HttpPut(putRequest.getUrl());
 		request.setHeaders(headersFromRequest(putRequest));
 		request.setEntity(entityFromRequest(putRequest));
 
-		final HttpResponse response = responseFromRequest(request);
-
-		return new PutResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response));
+		return responseFromRequest(request);
 
 	}
 
-	public static DeleteResponse deleteOf(final DeleteRequest deleteRequest) {
+	public static Response delete(final DeleteRequest deleteRequest) {
+		return deleting(deleteRequest);
+	}
+
+	public static Response deleteOf(final DeleteRequest deleteRequest) {
+		return deleting(deleteRequest);
+	}
+
+	public static Response deleting(final DeleteRequest deleteRequest) {
 
 		final HttpDelete request = new HttpDelete(deleteRequest.getUrl());
 
-		final HttpResponse response = responseFromRequest(request);
-
-		return new DeleteResponse(statusCodeFromResponse(response), headersFromResponse(response));
+		return responseFromRequest(request);
 
 	}
 
@@ -145,18 +168,28 @@ public final class HttpAcceptanceTestHelper {
 		}
 	}
 
-	private static HttpResponse responseFromRequest(final HttpUriRequest request) {
+	private static Response responseFromRequest(final HttpUriRequest request) {
+
+		final HttpClient httpClient = new DefaultHttpClient();
+
+		final StopWatch stopWatch = new StopWatch();
+
 		final HttpResponse response;
 
 		try {
-			response = new DefaultHttpClient().execute(request);
+
+			stopWatch.start();
+			response = httpClient.execute(request);
+			stopWatch.stop();
+
+			return new DefaultResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response), stopWatch.getLastTaskTimeMillis());
+
 		} catch (final ClientProtocolException e) {
 			throw new RuntimeException("Error executing request", e);
 		} catch (final IOException e) {
 			throw new RuntimeException("Error executing request", e);
 		}
 
-		return response;
 	}
 
 	private static int statusCodeFromResponse(final HttpResponse response) {

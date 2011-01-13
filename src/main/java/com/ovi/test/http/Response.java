@@ -8,4 +8,6 @@ public interface Response {
 
 	Header[] getHeaders();
 
+	long getResponseTime();
+
 }
