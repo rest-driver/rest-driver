@@ -19,6 +19,8 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.springframework.util.StopWatch;
@@ -171,6 +173,10 @@ public final class HttpAcceptanceTestHelper {
 	private static Response responseFromRequest(final HttpUriRequest request) {
 
 		final HttpClient httpClient = new DefaultHttpClient();
+
+		final HttpParams httpParams = httpClient.getParams();
+		HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+		HttpConnectionParams.setSoTimeout(httpParams, 0);
 
 		final StopWatch stopWatch = new StopWatch();
 

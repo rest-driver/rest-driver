@@ -44,7 +44,7 @@ public class HasHeaderWithValue extends TypeSafeMatcher<Response> {
 		if (headers.length == 0) {
 			mismatchDescription.appendText("Response has no headers");
 		} else {
-			mismatchDescription.appendText("Response has headers " + StringUtils.join(response.getHeaders()));
+			mismatchDescription.appendText("Response has headers [" + StringUtils.join(response.getHeaders(), ",") + "]");
 		}
 	}
 }
