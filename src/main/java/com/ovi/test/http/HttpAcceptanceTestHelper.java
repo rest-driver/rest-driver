@@ -1,5 +1,7 @@
 package com.ovi.test.http;
 
+import static org.hamcrest.Matchers.*;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -45,7 +47,11 @@ public final class HttpAcceptanceTestHelper {
 	}
 
 	public static TypeSafeMatcher<Response> hasStatusCode(final int statusCode) {
-		return new HasStatusCode(statusCode);
+		return new HasStatusCode(is(statusCode));
+	}
+
+	public static TypeSafeMatcher<Response> hasStatusCode(final Matcher<Integer> statusCodeMatcher) {
+		return new HasStatusCode(statusCodeMatcher);
 	}
 
 	public static TypeSafeMatcher<Response> hasResponseBody(final Matcher<String> bodyMatcher) {
@@ -56,8 +62,8 @@ public final class HttpAcceptanceTestHelper {
 		return new HasHeader(name);
 	}
 
-	public static TypeSafeMatcher<Response> hasHeaderWithValue(final String name, final String value) {
-		return new HasHeaderWithValue(name, value);
+	public static TypeSafeMatcher<Response> hasHeaderWithValue(final String name, final Matcher<String> valueMatcher) {
+		return new HasHeaderWithValue(name, valueMatcher);
 	}
 
 	public static Response get(final GetRequest getRequest) {
