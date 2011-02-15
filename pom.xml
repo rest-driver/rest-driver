@@ -2,22 +2,16 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	
-	<groupId>com.ovi.test</groupId>
-	<artifactId>acceptance-test-helper</artifactId>
+	<groupId>com.googlecode.rest-acceptance-tester</groupId>
+	<artifactId>rest-acceptance-helper</artifactId>
 	<version>0.0.23-SNAPSHOT</version>
 	
-	<parent>
-		<groupId>com.ovi.music.tools</groupId>
-		<artifactId>JavaParent</artifactId>
-		<version>2.12</version>
-	</parent>
-	
-	<name>Acceptance Test Helper</name>
+	<name>REST Acceptance Tester</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
 	<scm>
-		<connection>scm:hg:ssh://hge1.isource-nokia.nokia.com/isource/hgroot/ovimusic-poc</connection>
-		<developerConnection>scm:hg:ssh://hge1.isource-nokia.nokia.com/isource/hgroot/ovimusic-poc</developerConnection>
+		<connection>scm:hg:https://rest-acceptance-tester.googlecode.com/hg</connection>
+		<developerConnection>scm:hg:https://rest-acceptance-tester.googlecode.com/hg</developerConnection>
 	</scm>
 
 	<dependencies>
@@ -82,6 +76,7 @@
 			<version>1.2.1</version>
 		</dependency>
 
+<!--  /* to sort out with JLJ */
 		<dependency>
 			<groupId>eu.vahlas.json.schema</groupId>
 			<artifactId>json-schema-validator</artifactId>
@@ -109,6 +104,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+ -->
         
 		<dependency>
 			<groupId>junit</groupId>
