@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>com.googlecode.rest-acceptance-tester</groupId>
-	<artifactId>rest-acceptance-helper</artifactId>
-	<version>0.0.23-SNAPSHOT</version>
+	<artifactId>rest-acceptance-tester</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	
 	<name>REST Acceptance Tester</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
