@@ -17,8 +17,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.nokia.batchprocessor.testbench.BenchRequest;
-import com.nokia.batchprocessor.testbench.RequestMatcherImpl;
 import com.nokia.batchprocessor.testbench.BenchRequest.Method;
+import com.nokia.batchprocessor.testbench.RequestMatcherImpl;
 
 public class RequestMatcherTest {
 
@@ -70,8 +70,11 @@ public class RequestMatcherTest {
     @Test
     public void testMatchWithParams() {
 
-        final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam(
-                "k2", "v2");
+        final BenchRequest bReq = new BenchRequest("aaaaa")
+                                        .withMethod(Method.GET)
+                                        .withParam("kk", "vv")
+                                        .withParam("k2", "v2");
+
         aReq = EasyMock.createMock(HttpServletRequest.class);
 
         EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -157,7 +160,7 @@ public class RequestMatcherTest {
 
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private Map getMapOfSize(final int size) {
         final Map mockMap = new HashMap();
         for (int i = 0; i < size; i++) {

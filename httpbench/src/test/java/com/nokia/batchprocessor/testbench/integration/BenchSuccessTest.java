@@ -11,8 +11,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.nokia.batchprocessor.testbench.BenchRequest;
-import com.nokia.batchprocessor.testbench.BenchResponse;
 import com.nokia.batchprocessor.testbench.BenchRequest.Method;
+import com.nokia.batchprocessor.testbench.BenchResponse;
 import com.nokia.batchprocessor.testbench.example.HttpUnitTest;
 
 public class BenchSuccessTest extends HttpUnitTest {
@@ -22,8 +22,10 @@ public class BenchSuccessTest extends HttpUnitTest {
 
         getBenchServer().addExpectation(
                 new BenchRequest("/blah"),
-                new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
-                        "TestServer"));
+                new BenchResponse("OUCH!!")
+                            .withStatus(200)
+                            .withContentType("text/plain")
+                            .withHeader("Server", "TestServer"));
 
         final HttpClient client = new HttpClient();
 
