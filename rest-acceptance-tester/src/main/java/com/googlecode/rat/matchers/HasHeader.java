@@ -9,6 +9,11 @@ import org.hamcrest.TypeSafeMatcher;
 import com.googlecode.rat.http.Header;
 import com.googlecode.rat.http.response.Response;
 
+/**
+ * TODO: Is this class necessary we can do:
+ * 
+ * assertThat(response.getHeaders(), hasItem(new Header("header", "value")))
+ */
 public class HasHeader extends TypeSafeMatcher<Response> {
 
     private final String name;

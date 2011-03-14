@@ -10,6 +10,7 @@ import com.nokia.batchprocessor.testbench.BenchResponse;
 import com.nokia.batchprocessor.testbench.example.HttpUnitTest;
 
 import static com.googlecode.rat.http.HttpAcceptanceTestHelper.*;
+import static com.googlecode.rat.json.JsonAcceptanceTestHelper.*;
 
 import static org.hamcrest.Matchers.*;
 
@@ -60,6 +61,19 @@ public class GetAcceptanceTest extends HttpUnitTest {
         final Response response = get(new GetRequest(baseUrl, null));
 
         assertThat(response.getResponseTime(), greaterThanOrEqualTo(0L));
+
+    }
+
+    @Test
+    public void getWithJsonParser() {
+
+        super.getBenchServer().addExpectation(
+                new BenchRequest("/"),
+                new BenchResponse("{\"a\":55}").withHeader("Content-Type", "application/json"));
+
+        final Response response = get(new GetRequest(baseUrl, null));
+
+        assertThat(asJson(response), hasJsonValue("a", is(55)));
 
     }
 }
