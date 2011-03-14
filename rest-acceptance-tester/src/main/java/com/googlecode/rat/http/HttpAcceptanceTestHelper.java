@@ -23,7 +23,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.springframework.util.StopWatch;
 import org.w3c.dom.Element;
 
 import com.googlecode.rat.http.request.ContentRequest;
@@ -194,17 +193,15 @@ public final class HttpAcceptanceTestHelper {
         HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
         HttpConnectionParams.setSoTimeout(httpParams, 0);
 
-        final StopWatch stopWatch = new StopWatch();
-
         final HttpResponse response;
 
         try {
 
-            stopWatch.start();
+            final long startTime = System.currentTimeMillis();
             response = httpClient.execute(request);
-            stopWatch.stop();
+            final long endTime = System.currentTimeMillis();
 
-            return new DefaultResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response), stopWatch.getLastTaskTimeMillis());
+            return new DefaultResponse(statusCodeFromResponse(response), contentFromResponse(response), headersFromResponse(response), (endTime - startTime));
 
         } catch (final ClientProtocolException e) {
             throw new RuntimeException("Error executing request", e);
