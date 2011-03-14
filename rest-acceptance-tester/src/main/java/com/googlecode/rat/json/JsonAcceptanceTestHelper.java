@@ -7,7 +7,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.googlecode.rat.http.Response;
+import com.googlecode.rat.http.response.Response;
 import com.googlecode.rat.matchers.ContainingValue;
 import com.googlecode.rat.matchers.HasJsonArray;
 import com.googlecode.rat.matchers.HasJsonValue;

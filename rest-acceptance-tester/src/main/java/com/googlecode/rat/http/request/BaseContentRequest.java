@@ -1,4 +1,6 @@
-package com.googlecode.rat.http;
+package com.googlecode.rat.http.request;
+
+import com.googlecode.rat.http.Header;
 
 public abstract class BaseContentRequest extends BaseRequest implements ContentRequest {
 

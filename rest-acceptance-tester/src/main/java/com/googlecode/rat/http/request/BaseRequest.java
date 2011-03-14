@@ -1,6 +1,8 @@
-package com.googlecode.rat.http;
+package com.googlecode.rat.http.request;
 
 import static org.apache.commons.lang.StringUtils.*;
+
+import com.googlecode.rat.http.Header;
 
 public abstract class BaseRequest implements Request {
 

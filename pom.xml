@@ -11,6 +11,11 @@
 	<name>REST Acceptance Tester - Parent Pom</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
+    <scm>
+        <connection>scm:hg:https://rest-driver.googlecode.com/hg</connection>
+        <developerConnection>scm:hg:https://rest-driver.googlecode.com/hg</developerConnection>
+    </scm>
+
 	<modules>
 		<module>rest-acceptance-tester</module>
 		<module>httpbench</module>
@@ -29,5 +34,15 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.googlecode.rest-acceptance-tester</groupId>
+				<artifactId>http-testbench</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>

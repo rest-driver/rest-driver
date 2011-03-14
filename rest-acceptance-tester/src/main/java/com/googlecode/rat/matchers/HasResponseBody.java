@@ -4,7 +4,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.googlecode.rat.http.Response;
+import com.googlecode.rat.http.response.Response;
 
 public class HasResponseBody extends TypeSafeMatcher<Response> {
 

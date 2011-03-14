@@ -1,4 +1,4 @@
-package com.googlecode.rat.http;
+package com.googlecode.rat.http.request;
 
 public interface ContentRequest extends Request {
 

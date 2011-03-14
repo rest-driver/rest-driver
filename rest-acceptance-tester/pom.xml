@@ -1,11 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
-	
-	<groupId>com.googlecode.rest-acceptance-tester</groupId>
+
 	<artifactId>rest-acceptance-tester</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	
+
 	<name>REST Acceptance Tester</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
@@ -15,19 +14,19 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<scm>
-		<connection>scm:hg:https://rest-acceptance-tester.googlecode.com/hg</connection>
-		<developerConnection>scm:hg:https://rest-acceptance-tester.googlecode.com/hg</developerConnection>
-	</scm>
-
 	<dependencies>
+
+		<dependency>
+			<groupId>com.googlecode.rest-acceptance-tester</groupId>
+			<artifactId>http-testbench</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
 			<version>4.1</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
@@ -82,50 +81,27 @@
 			<version>1.2.1</version>
 		</dependency>
 
-<!--  /* to sort out with JLJ */
-		<dependency>
-			<groupId>eu.vahlas.json.schema</groupId>
-			<artifactId>json-schema-validator</artifactId>
-			<version>0.0.1-nokia</version>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hamcrest</groupId>
-					<artifactId>hamcrest-all</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
- -->
-        
+		<!-- /* to sort out with JLJ */ <dependency> <groupId>eu.vahlas.json.schema</groupId> <artifactId>json-schema-validator</artifactId> 
+			<version>0.0.1-nokia</version> <exclusions> <exclusion> <groupId>junit</groupId> <artifactId>junit</artifactId> </exclusion> 
+			<exclusion> <groupId>org.hamcrest</groupId> <artifactId>hamcrest-all</artifactId> </exclusion> <exclusion> <groupId>org.slf4j</groupId> 
+			<artifactId>slf4j-api</artifactId> </exclusion> <exclusion> <groupId>ch.qos.logback</groupId> <artifactId>logback-classic</artifactId> 
+			</exclusion> <exclusion> <groupId>ch.qos.logback</groupId> <artifactId>logback-core</artifactId> </exclusion> </exclusions> 
+			</dependency> -->
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit-dep</artifactId>
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
 			<version>1.6.1</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 	</dependencies>
 
 </project>
