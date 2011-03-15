@@ -8,26 +8,26 @@ import static org.hamcrest.Matchers.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.BenchRequest;
-import com.googlecode.rd.clientdriver.BenchResponse;
-import com.googlecode.rd.clientdriver.example.HttpUnitTest;
+import com.googlecode.rd.clientdriver.example.ClientDriverUnitTest;
 import com.googlecode.rd.serverdriver.http.request.GetRequest;
 import com.googlecode.rd.serverdriver.http.response.Response;
+import com.googlecode.rd.types.ClientDriverRequest;
+import com.googlecode.rd.types.ClientDriverResponse;
 import com.googlecode.rd.types.Header;
 
-public class GetAcceptanceTest extends HttpUnitTest {
+public class GetAcceptanceTest extends ClientDriverUnitTest {
 
 	private String baseUrl;
 
 	@Before
 	public void getServerDetails() {
-		baseUrl = super.getBenchServer().getBaseUrl();
+		baseUrl = super.getClientDriver().getBaseUrl();
 	}
 
 	@Test
 	public void simpleGetRetrievesStatusAndContent() {
 
-		super.getBenchServer().addExpectation(new BenchRequest("/"), new BenchResponse("Content"));
+		super.getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
 
 		final Response response = get(new GetRequest(baseUrl, null));
 
@@ -39,9 +39,9 @@ public class GetAcceptanceTest extends HttpUnitTest {
 	@Test
 	public void getRetrievesHeaders() {
 
-		super.getBenchServer().addExpectation(
-				new BenchRequest("/"),
-				new BenchResponse("").withStatus(409).withHeader("X-foo", "barrr"));
+		super.getClientDriver().addExpectation(
+				new ClientDriverRequest("/"),
+				new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
 
 		final Response response = get(new GetRequest(baseUrl, null));
 
@@ -53,9 +53,9 @@ public class GetAcceptanceTest extends HttpUnitTest {
 	@Test
 	public void getIncludesResponseTime() {
 
-		super.getBenchServer().addExpectation(
-				new BenchRequest("/"),
-				new BenchResponse("Hello"));
+		super.getClientDriver().addExpectation(
+				new ClientDriverRequest("/"),
+				new ClientDriverResponse("Hello"));
 
 		final Response response = get(new GetRequest(baseUrl, null));
 
@@ -66,9 +66,9 @@ public class GetAcceptanceTest extends HttpUnitTest {
 	@Test
 	public void getWithJsonParser() {
 
-		super.getBenchServer().addExpectation(
-				new BenchRequest("/"),
-				new BenchResponse("{\"a\":55}").withHeader("Content-Type", "application/json"));
+		super.getClientDriver().addExpectation(
+				new ClientDriverRequest("/"),
+				new ClientDriverResponse("{\"a\":55}").withHeader("Content-Type", "application/json"));
 
 		final Response response = get(new GetRequest(baseUrl, null));
 

@@ -17,11 +17,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.googlecode.rd.clientdriver.BenchHandlerImpl;
-import com.googlecode.rd.clientdriver.BenchRequest;
-import com.googlecode.rd.clientdriver.BenchResponse;
-import com.googlecode.rd.clientdriver.BenchRuntimeException;
-import com.googlecode.rd.clientdriver.BenchServerRuntimeException;
 import com.googlecode.rd.clientdriver.RequestMatcher;
+import com.googlecode.rd.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.googlecode.rd.clientdriver.exception.ClientDriverInternalException;
+import com.googlecode.rd.types.ClientDriverRequest;
+import com.googlecode.rd.types.ClientDriverResponse;
 
 public class BenchHandlerTest {
 
@@ -58,7 +58,7 @@ public class BenchHandlerTest {
 	@Test
 	public void testUnmetExpectation() {
 
-		sut.addExpectation(new BenchRequest("hmm"), new BenchResponse("mmm"));
+		sut.addExpectation(new ClientDriverRequest("hmm"), new ClientDriverResponse("mmm"));
 
 		EasyMock.replay(mockRequestMatcher);
 
@@ -67,7 +67,7 @@ public class BenchHandlerTest {
 		try {
 			sut.checkForUnmatchedExpectations();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("1 unmatched expectation(s), first is: BenchRequest: GET hmm; ", bre.getMessage());
 		}
 
@@ -93,7 +93,7 @@ public class BenchHandlerTest {
 		try {
 			sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
 			Assert.fail();
-		} catch (final BenchServerRuntimeException bre) {
+		} catch (final ClientDriverInternalException bre) {
 			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
 		}
 
@@ -103,7 +103,7 @@ public class BenchHandlerTest {
 		try {
 			sut.checkForUnexpectedRequests();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
 		}
 
@@ -119,8 +119,8 @@ public class BenchHandlerTest {
 		final HttpServletRequest mockHttpRequest = new Request();
 		final HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
 
-		final BenchRequest realRequest = new BenchRequest("yarr").withParam("gooo", "gredge");
-		final BenchResponse realResponse = new BenchResponse("lovely").withStatus(404).withContentType("fhieow")
+		final ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
+		final ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
 				.withHeader("hhh", "JJJ");
 
 		EasyMock.expect(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).andReturn(true);

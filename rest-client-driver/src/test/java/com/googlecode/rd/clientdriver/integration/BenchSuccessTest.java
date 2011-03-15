@@ -13,26 +13,26 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.BenchRequest;
-import com.googlecode.rd.clientdriver.BenchRequest.Method;
-import com.googlecode.rd.clientdriver.BenchResponse;
-import com.googlecode.rd.clientdriver.example.HttpUnitTest;
+import com.googlecode.rd.clientdriver.example.ClientDriverUnitTest;
+import com.googlecode.rd.types.ClientDriverRequest;
+import com.googlecode.rd.types.ClientDriverResponse;
+import com.googlecode.rd.types.ClientDriverRequest.Method;
 
-public class BenchSuccessTest extends HttpUnitTest {
+public class BenchSuccessTest extends ClientDriverUnitTest {
 
 	@Test
 	public void testJettyWorking200() throws Exception {
 
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah"),
-				new BenchResponse("OUCH!!")
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah"),
+				new ClientDriverResponse("OUCH!!")
 							.withStatus(200)
 							.withContentType("text/plain")
 							.withHeader("Server", "TestServer"));
 
 		final HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = getBenchServer().getBaseUrl();
+		final String baseUrl = getClientDriver().getBaseUrl();
 		final HttpGet getter = new HttpGet(baseUrl + "/blah");
 
 		final HttpResponse response = client.execute(getter);
@@ -46,8 +46,8 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorking404() throws Exception {
 
-		final String baseUrl = getBenchServer().getBaseUrl();
-		getBenchServer().addExpectation(new BenchRequest("/blah2"), new BenchResponse("o.O").withStatus(404));
+		final String baseUrl = getClientDriver().getBaseUrl();
+		getClientDriver().addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("o.O").withStatus(404));
 
 		final HttpClient client = new DefaultHttpClient();
 		final HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -61,8 +61,8 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorking500() throws Exception {
 
-		final String baseUrl = getBenchServer().getBaseUrl();
-		getBenchServer().addExpectation(new BenchRequest("/blah2"), new BenchResponse("___").withStatus(500));
+		final String baseUrl = getClientDriver().getBaseUrl();
+		getClientDriver().addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("___").withStatus(500));
 
 		final HttpClient client = new DefaultHttpClient();
 		final HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -76,9 +76,9 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingTwoRequests() throws Exception {
 
-		final String baseUrl = getBenchServer().getBaseUrl();
-		getBenchServer().addExpectation(new BenchRequest("/blah123"), new BenchResponse("__2_").withStatus(200));
-		getBenchServer().addExpectation(new BenchRequest("/blah456"), new BenchResponse("__7_").withStatus(300));
+		final String baseUrl = getClientDriver().getBaseUrl();
+		getClientDriver().addExpectation(new ClientDriverRequest("/blah123"), new ClientDriverResponse("__2_").withStatus(200));
+		getClientDriver().addExpectation(new ClientDriverRequest("/blah456"), new ClientDriverResponse("__7_").withStatus(300));
 
 		final HttpClient client = new DefaultHttpClient();
 
@@ -96,14 +96,14 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingWithMethodAndParams() throws Exception {
 
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah").withMethod(Method.DELETE).withParam("gang", "green"),
-				new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah").withMethod(Method.DELETE).withParam("gang", "green"),
+				new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
 						"TestServer"));
 
 		final HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = getBenchServer().getBaseUrl();
+		final String baseUrl = getClientDriver().getBaseUrl();
 		final HttpDelete deleter = new HttpDelete(baseUrl + "/blah?gang=green");
 
 		final HttpResponse response = client.execute(deleter);
@@ -117,15 +117,15 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingWithMethodAndParamsPattern() throws Exception {
 
-		getBenchServer().addExpectation(
-				new BenchRequest(Pattern.compile("/[a-z]l[a-z]{2}")).withMethod(Method.DELETE).withParam("gang",
+		getClientDriver().addExpectation(
+				new ClientDriverRequest(Pattern.compile("/[a-z]l[a-z]{2}")).withMethod(Method.DELETE).withParam("gang",
 						Pattern.compile("gre[a-z]+")),
-				new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
+				new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
 						"TestServer"));
 
 		final HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = getBenchServer().getBaseUrl();
+		final String baseUrl = getClientDriver().getBaseUrl();
 		final HttpDelete deleter = new HttpDelete(baseUrl + "/blah?gang=green");
 
 		final HttpResponse response = client.execute(deleter);
@@ -139,17 +139,17 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingTwoSameRequests() throws Exception {
 
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah"),
-				new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah"),
+				new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
 
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah"),
-				new BenchResponse("OUCH!!404").withStatus(404).withContentType("text/plain404").withHeader("Server", "TestServer404"));
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah"),
+				new ClientDriverResponse("OUCH!!404").withStatus(404).withContentType("text/plain404").withHeader("Server", "TestServer404"));
 
 		final HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = getBenchServer().getBaseUrl();
+		final String baseUrl = getClientDriver().getBaseUrl();
 
 		final HttpGet getter = new HttpGet(baseUrl + "/blah");
 		final HttpResponse response = client.execute(getter);
@@ -170,10 +170,10 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingWithPostBody() throws Exception {
 
-		final String baseUrl = getBenchServer().getBaseUrl();
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah2").withMethod(Method.PUT).withBody("Jack your body!", "text/plain"),
-				new BenchResponse("___").withStatus(501));
+		final String baseUrl = getClientDriver().getBaseUrl();
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah2").withMethod(Method.PUT).withBody("Jack your body!", "text/plain"),
+				new ClientDriverResponse("___").withStatus(501));
 
 		final HttpClient client = new DefaultHttpClient();
 		final HttpPut putter = new HttpPut(baseUrl + "/blah2");
@@ -188,10 +188,10 @@ public class BenchSuccessTest extends HttpUnitTest {
 	@Test
 	public void testJettyWorkingWithPostBodyPattern() throws Exception {
 
-		final String baseUrl = getBenchServer().getBaseUrl();
-		getBenchServer().addExpectation(
-				new BenchRequest("/blah2").withMethod(Method.PUT).withBody(Pattern.compile("Jack [\\w\\s]+!"),
-						"text/plain"), new BenchResponse("___").withStatus(501));
+		final String baseUrl = getClientDriver().getBaseUrl();
+		getClientDriver().addExpectation(
+				new ClientDriverRequest("/blah2").withMethod(Method.PUT).withBody(Pattern.compile("Jack [\\w\\s]+!"),
+						"text/plain"), new ClientDriverResponse("___").withStatus(501));
 
 		final HttpClient client = new DefaultHttpClient();
 		final HttpPut putter = new HttpPut(baseUrl + "/blah2");
