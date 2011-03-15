@@ -15,7 +15,7 @@ import com.googlecode.rd.types.ClientDriverRequest;
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
  * path &amp; query string, and any body of the request.
  */
-public class RequestMatcherImpl implements RequestMatcher {
+public class DefaultRequestMatcher implements RequestMatcher {
 
     /**
      * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}. This

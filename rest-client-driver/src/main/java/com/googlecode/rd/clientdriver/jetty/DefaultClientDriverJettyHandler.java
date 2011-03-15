@@ -1,4 +1,4 @@
-package com.googlecode.rd.clientdriver;
+package com.googlecode.rd.clientdriver.jetty;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +13,8 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.googlecode.rd.clientdriver.ClientDriverRequestResponsePair;
+import com.googlecode.rd.clientdriver.RequestMatcher;
 import com.googlecode.rd.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.googlecode.rd.clientdriver.exception.ClientDriverInternalException;
 import com.googlecode.rd.types.ClientDriverRequest;
@@ -22,7 +24,7 @@ import com.googlecode.rd.types.ClientDriverResponse;
  * Class which acts as a Jetty Handler to see if the actual incoming HTTP request matches any expectation and to act
  * accordingly. In case of any kind of error, {@link ClientDriverInternalException} is usually thrown.
  */
-public class BenchHandlerImpl extends AbstractHandler implements BenchHandler {
+public class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
 
     private final List<ClientDriverRequestResponsePair> expectedResponses;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
@@ -35,7 +37,7 @@ public class BenchHandlerImpl extends AbstractHandler implements BenchHandler {
      * @param matcher
      *            The {@link RequestMatcher} to use.
      */
-    public BenchHandlerImpl(final RequestMatcher matcher) {
+    public DefaultClientDriverJettyHandler(final RequestMatcher matcher) {
 
         expectedResponses = new ArrayList<ClientDriverRequestResponsePair>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
@@ -141,7 +143,7 @@ public class BenchHandlerImpl extends AbstractHandler implements BenchHandler {
     }
 
     /**
-     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link BenchHandler} only.
+     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
      * 
      * @return "this"
      */

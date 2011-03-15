@@ -16,18 +16,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.RequestMatcherImpl;
+import com.googlecode.rd.clientdriver.DefaultRequestMatcher;
 import com.googlecode.rd.types.ClientDriverRequest;
 import com.googlecode.rd.types.ClientDriverRequest.Method;
 
 public class RequestMatcherTest {
 
-	private RequestMatcherImpl sut;
+	private DefaultRequestMatcher sut;
 	private HttpServletRequest aReq;
 
 	@Before
 	public void before() {
-		sut = new RequestMatcherImpl();
+		sut = new DefaultRequestMatcher();
 	}
 
 	@After

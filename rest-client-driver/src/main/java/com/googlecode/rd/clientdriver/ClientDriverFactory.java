@@ -1,5 +1,7 @@
 package com.googlecode.rd.clientdriver;
 
+import com.googlecode.rd.clientdriver.jetty.DefaultClientDriverJettyHandler;
+
 /**
  * Main entry point to the Http Test Bench. Just call
  * <code>new {@link ClientDriverFactory}().{@link #createClientDriver()}</code> to get a {@link ClientDriver} running on a
@@ -14,7 +16,7 @@ public class ClientDriverFactory {
      */
     public ClientDriver createClientDriver() {
 
-        return new ClientDriver(new BenchHandlerImpl(new RequestMatcherImpl()));
+        return new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()));
 
     }
 

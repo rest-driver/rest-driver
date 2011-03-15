@@ -16,22 +16,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.BenchHandlerImpl;
 import com.googlecode.rd.clientdriver.RequestMatcher;
 import com.googlecode.rd.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.googlecode.rd.clientdriver.exception.ClientDriverInternalException;
+import com.googlecode.rd.clientdriver.jetty.DefaultClientDriverJettyHandler;
 import com.googlecode.rd.types.ClientDriverRequest;
 import com.googlecode.rd.types.ClientDriverResponse;
 
 public class BenchHandlerTest {
 
-	private BenchHandlerImpl sut;
+	private DefaultClientDriverJettyHandler sut;
 	private RequestMatcher mockRequestMatcher;
 
 	@Before
 	public void before() {
 		mockRequestMatcher = EasyMock.createMock(RequestMatcher.class);
-		sut = new BenchHandlerImpl(mockRequestMatcher);
+		sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
 	}
 
 	@After

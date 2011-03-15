@@ -1,4 +1,4 @@
-package com.googlecode.rd.clientdriver;
+package com.googlecode.rd.clientdriver.jetty;
 
 import org.eclipse.jetty.server.Handler;
 
@@ -8,7 +8,7 @@ import com.googlecode.rd.types.ClientDriverResponse;
 /**
  * Interface for classes which handle incoming http requests in the Client Driver
  */
-public interface BenchHandler {
+public interface ClientDriverJettyHandler {
 
     /**
      * Add in a {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
@@ -32,7 +32,7 @@ public interface BenchHandler {
     void checkForUnmatchedExpectations();
 
     /**
-     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link BenchHandler} only.
+     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
      * 
      * @return "this", usually.
      */

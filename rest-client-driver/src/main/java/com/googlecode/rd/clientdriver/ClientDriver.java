@@ -7,6 +7,7 @@ import org.eclipse.jetty.server.Server;
 
 import com.googlecode.rd.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.googlecode.rd.clientdriver.exception.ClientDriverSetupException;
+import com.googlecode.rd.clientdriver.jetty.ClientDriverJettyHandler;
 import com.googlecode.rd.types.ClientDriverRequest;
 import com.googlecode.rd.types.ClientDriverResponse;
 
@@ -18,15 +19,15 @@ public class ClientDriver {
     private final Server jettyServer;
     private final int portNum;
 
-    private final BenchHandler handler;
+    private final ClientDriverJettyHandler handler;
 
     /**
      * Constructor. This will find a free port, bind to it and start the server up before it returns.
      * 
      * @param handler
-     *            The {@link BenchHandler} to use.
+     *            The {@link ClientDriverJettyHandler} to use.
      */
-    public ClientDriver(final BenchHandler handler) {
+    public ClientDriver(final ClientDriverJettyHandler handler) {
 
         this.handler = handler;
 
