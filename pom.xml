@@ -3,12 +3,12 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.googlecode.rest-acceptance-tester</groupId>
-	<artifactId>rest-acceptance-parent</artifactId>
+	<groupId>com.googlecode.rest-driver</groupId>
+	<artifactId>rest-driver-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>REST Acceptance Tester - Parent Pom</name>
+	<name>REST Driver - Parent</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
     <scm>
@@ -20,6 +20,10 @@
 		<module>rest-acceptance-tester</module>
 		<module>httpbench</module>
 	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<build>
 		<plugins>
@@ -38,9 +42,55 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.googlecode.rest-acceptance-tester</groupId>
+				<groupId>com.googlecode.rest-driver</groupId>
 				<artifactId>http-testbench</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit-dep</artifactId>
+				<version>4.8.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>3.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-server</artifactId>
+				<version>7.3.1.v20110307</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+				<version>4.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.1</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.6.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+				<version>1.6.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

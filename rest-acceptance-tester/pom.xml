@@ -1,48 +1,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>rest-acceptance-tester</artifactId>
-
-	<name>REST Acceptance Tester</name>
+	<artifactId>rest-driver</artifactId>
+	<name>REST Driver</name>
 	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
 
 	<parent>
-		<groupId>com.googlecode.rest-acceptance-tester</groupId>
-		<artifactId>rest-acceptance-parent</artifactId>
+		<groupId>com.googlecode.rest-driver</groupId>
+		<artifactId>rest-driver-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 
 		<dependency>
-			<groupId>com.googlecode.rest-acceptance-tester</groupId>
+			<groupId>com.googlecode.rest-driver</groupId>
 			<artifactId>http-testbench</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpcore</artifactId>
-			<version>4.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>commons-logging</artifactId>
-					<groupId>commons-logging</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.0.1</version>
 		</dependency>
 
 		<dependency>
@@ -92,13 +81,11 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>1.6.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-nop</artifactId>
-			<version>1.6.1</version>
 			<optional>true</optional>
 		</dependency>
 
