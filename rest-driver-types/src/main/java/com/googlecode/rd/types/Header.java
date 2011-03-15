@@ -49,5 +49,5 @@ public class Header {
 		return StringUtils.equals(name, other.name) && StringUtils.equals(value, other.value);
 
 	}
-
+	
 }
