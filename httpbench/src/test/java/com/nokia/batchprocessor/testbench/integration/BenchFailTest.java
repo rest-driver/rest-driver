@@ -2,18 +2,19 @@ package com.nokia.batchprocessor.testbench.integration;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 
 import com.nokia.batchprocessor.testbench.BenchRequest;
+import com.nokia.batchprocessor.testbench.BenchRequest.Method;
 import com.nokia.batchprocessor.testbench.BenchResponse;
 import com.nokia.batchprocessor.testbench.BenchRuntimeException;
 import com.nokia.batchprocessor.testbench.BenchServer;
 import com.nokia.batchprocessor.testbench.TestBenchFactory;
-import com.nokia.batchprocessor.testbench.BenchRequest.Method;
 
 public class BenchFailTest {
 
@@ -25,10 +26,10 @@ public class BenchFailTest {
 
         // No expectations defined
 
-        final HttpClient client = new HttpClient();
-        final GetMethod getter = new GetMethod(bServer.getBaseUrl() + "/blah?foo=bar");
-        client.executeMethod(getter);
-        getter.releaseConnection();
+        final HttpClient client = new DefaultHttpClient();
+        final HttpGet getter = new HttpGet(bServer.getBaseUrl() + "/blah?foo=bar");
+
+        client.execute(getter);
 
         try {
             bServer.shutdown();
@@ -65,13 +66,12 @@ public class BenchFailTest {
                 new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
                         "TestServer"));
 
-        final HttpClient client = new HttpClient();
+        final HttpClient client = new DefaultHttpClient();
 
         final String baseUrl = bServer.getBaseUrl();
-        final PostMethod poster = new PostMethod(baseUrl + "/blah?gang=groon");
+        final HttpPost poster = new HttpPost(baseUrl + "/blah?gang=groon");
 
-        client.executeMethod(poster);
-        poster.releaseConnection();
+        client.execute(poster);
 
         try {
             bServer.shutdown();
@@ -90,13 +90,12 @@ public class BenchFailTest {
                 "gang", Pattern.compile("r")), new BenchResponse("OUCH!!").withStatus(200)
                 .withContentType("text/plain").withHeader("Server", "TestServer"));
 
-        final HttpClient client = new HttpClient();
+        final HttpClient client = new DefaultHttpClient();
 
         final String baseUrl = bServer.getBaseUrl();
-        final PostMethod poster = new PostMethod(baseUrl + "/blah?gang=goon");
+        final HttpPost poster = new HttpPost(baseUrl + "/blah?gang=goon");
 
-        client.executeMethod(poster);
-        poster.releaseConnection();
+        client.execute(poster);
 
         try {
             bServer.shutdown();
