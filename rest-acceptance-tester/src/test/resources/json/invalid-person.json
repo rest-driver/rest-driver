@@ -1,9 +1,0 @@
-{
-  "born" : "1890-03-23T06:26:07Z",
-  "gender" : "mal",
-  "address" : {
-    "street":"123 S Main St",
-    "city":33,
-    "state":"CA"
-  }
-}

@@ -4,12 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.googlecode.rest-driver</groupId>
-	<artifactId>rest-driver-parent</artifactId>
+	<artifactId>rest-driver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>REST Driver - Parent</name>
-	<description>Various utilities for simplifying the testing of HTTP/RESTful services.</description>
+	<name>REST Driver Parent</name>
 
     <scm>
         <connection>scm:hg:https://rest-driver.googlecode.com/hg</connection>
@@ -17,8 +16,8 @@
     </scm>
 
 	<modules>
-		<module>rest-acceptance-tester</module>
-		<module>httpbench</module>
+		<module>rest-server-driver</module>
+		<module>rest-client-driver</module>
 	</modules>
 	
 	<properties>
@@ -43,7 +42,7 @@
 		<dependencies>
 			<dependency>
 				<groupId>com.googlecode.rest-driver</groupId>
-				<artifactId>http-testbench</artifactId>
+				<artifactId>rest-client-driver</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
