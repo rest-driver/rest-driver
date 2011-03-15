@@ -1,6 +1,6 @@
 package com.googlecode.rd.serverdriver.http.request;
 
-import com.googlecode.rd.serverdriver.http.Header;
+import com.googlecode.rd.types.Header;
 
 public class PostRequest extends BaseContentRequest {
 

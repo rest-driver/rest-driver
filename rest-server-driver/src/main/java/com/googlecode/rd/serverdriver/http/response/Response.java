@@ -2,7 +2,7 @@ package com.googlecode.rd.serverdriver.http.response;
 
 import java.util.List;
 
-import com.googlecode.rd.serverdriver.http.Header;
+import com.googlecode.rd.types.Header;
 
 /**
  * Encapsulates a response from an HTTP server

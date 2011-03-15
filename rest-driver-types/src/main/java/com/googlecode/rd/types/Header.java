@@ -1,4 +1,4 @@
-package com.googlecode.rd.serverdriver.http;
+package com.googlecode.rd.types;
 
 import org.apache.commons.lang.StringUtils;
 

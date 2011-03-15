@@ -40,6 +40,7 @@ import com.googlecode.rd.serverdriver.matchers.HasHeaderWithValue;
 import com.googlecode.rd.serverdriver.matchers.HasResponseBody;
 import com.googlecode.rd.serverdriver.matchers.HasStatusCode;
 import com.googlecode.rd.serverdriver.xml.XmlAcceptanceTestHelper;
+import com.googlecode.rd.types.Header;
 
 public final class HttpAcceptanceTestHelper {
 

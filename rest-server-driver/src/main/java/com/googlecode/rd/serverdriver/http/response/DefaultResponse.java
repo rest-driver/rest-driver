@@ -4,7 +4,7 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import java.util.List;
 
-import com.googlecode.rd.serverdriver.http.Header;
+import com.googlecode.rd.types.Header;
 
 public class DefaultResponse implements Response {
 

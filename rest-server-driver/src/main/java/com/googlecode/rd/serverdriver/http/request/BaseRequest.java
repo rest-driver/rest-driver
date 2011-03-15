@@ -2,7 +2,7 @@ package com.googlecode.rd.serverdriver.http.request;
 
 import static org.apache.commons.lang.StringUtils.*;
 
-import com.googlecode.rd.serverdriver.http.Header;
+import com.googlecode.rd.types.Header;
 
 public abstract class BaseRequest implements Request {
 

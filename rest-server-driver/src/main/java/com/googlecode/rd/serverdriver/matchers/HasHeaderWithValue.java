@@ -7,8 +7,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.googlecode.rd.serverdriver.http.Header;
 import com.googlecode.rd.serverdriver.http.response.Response;
+import com.googlecode.rd.types.Header;
 
 /**
  * TODO: Is this class necessary we can do:

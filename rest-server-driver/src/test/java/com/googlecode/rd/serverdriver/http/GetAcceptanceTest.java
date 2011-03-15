@@ -13,6 +13,7 @@ import com.googlecode.rd.clientdriver.BenchResponse;
 import com.googlecode.rd.clientdriver.example.HttpUnitTest;
 import com.googlecode.rd.serverdriver.http.request.GetRequest;
 import com.googlecode.rd.serverdriver.http.response.Response;
+import com.googlecode.rd.types.Header;
 
 public class GetAcceptanceTest extends HttpUnitTest {
 
