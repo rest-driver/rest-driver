@@ -15,6 +15,11 @@
 
 		<dependency>
 			<groupId>com.googlecode.rest-driver</groupId>
+			<artifactId>rest-driver-types</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.rest-driver</groupId>
 			<artifactId>rest-client-driver</artifactId>
 		</dependency>
 

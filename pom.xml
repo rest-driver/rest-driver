@@ -16,6 +16,7 @@
     </scm>
 
 	<modules>
+		<module>rest-driver-types</module>
 		<module>rest-server-driver</module>
 		<module>rest-client-driver</module>
 	</modules>
@@ -25,7 +26,9 @@
 	</properties>
 
 	<build>
+	
 		<plugins>
+		
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -35,41 +38,57 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			
 		</plugins>
+		
 	</build>
 
 	<dependencyManagement>
+	
 		<dependencies>
+
+			<dependency>
+				<groupId>com.googlecode.rest-driver</groupId>
+				<artifactId>rest-driver-types</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+		
 			<dependency>
 				<groupId>com.googlecode.rest-driver</groupId>
 				<artifactId>rest-client-driver</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>2.0.1</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit-dep</artifactId>
 				<version>4.8.2</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
 				<version>3.0</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-server</artifactId>
 				<version>7.3.1.v20110307</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpcore</artifactId>
 				<version>4.1</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -81,17 +100,21 @@
 					</exclusion>
 				</exclusions>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
 				<version>1.6.1</version>
 			</dependency>
+			
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-nop</artifactId>
 				<version>1.6.1</version>
 			</dependency>
+			
 		</dependencies>
+		
 	</dependencyManagement>
 
 </project>
