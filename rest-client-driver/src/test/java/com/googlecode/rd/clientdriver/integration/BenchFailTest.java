@@ -9,20 +9,20 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.BenchRequest;
-import com.googlecode.rd.clientdriver.BenchRequest.Method;
-import com.googlecode.rd.clientdriver.BenchResponse;
-import com.googlecode.rd.clientdriver.BenchRuntimeException;
-import com.googlecode.rd.clientdriver.BenchServer;
-import com.googlecode.rd.clientdriver.TestBenchFactory;
+import com.googlecode.rd.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.googlecode.rd.clientdriver.ClientDriver;
+import com.googlecode.rd.clientdriver.ClientDriverFactory;
+import com.googlecode.rd.types.ClientDriverRequest;
+import com.googlecode.rd.types.ClientDriverResponse;
+import com.googlecode.rd.types.ClientDriverRequest.Method;
 
 public class BenchFailTest {
 
-	private BenchServer bServer;
+	private ClientDriver bServer;
 
 	@Test
 	public void testUnexpectedCall() throws Exception {
-		bServer = new TestBenchFactory().createBenchServer();
+		bServer = new ClientDriverFactory().createClientDriver();
 
 		// No expectations defined
 
@@ -34,7 +34,7 @@ public class BenchFailTest {
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?foo=bar", bre.getMessage());
 		}
 
@@ -42,17 +42,17 @@ public class BenchFailTest {
 
 	@Test
 	public void testUnmatchedExpectation() throws Exception {
-		bServer = new TestBenchFactory().createBenchServer();
+		bServer = new ClientDriverFactory().createClientDriver();
 
-		bServer.addExpectation(new BenchRequest("/blah"), new BenchResponse("OUCH!!").withStatus(200));
-		bServer.addExpectation(new BenchRequest("/blah"), new BenchResponse("OUCH!!").withStatus(404));
+		bServer.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
+		bServer.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
 
 		// no requests made
 
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("2 unmatched expectation(s), first is: BenchRequest: GET /blah; ", bre.getMessage());
 		}
 
@@ -60,10 +60,10 @@ public class BenchFailTest {
 
 	@Test
 	public void testJettyWorkingWithMethodButIncorrectParams() throws Exception {
-		bServer = new TestBenchFactory().createBenchServer();
+		bServer = new ClientDriverFactory().createClientDriver();
 
-		bServer.addExpectation(new BenchRequest("/blah").withMethod(Method.POST).withParam("gang", "green"),
-				new BenchResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
+		bServer.addExpectation(new ClientDriverRequest("/blah").withMethod(Method.POST).withParam("gang", "green"),
+				new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
 						"TestServer"));
 
 		final HttpClient client = new DefaultHttpClient();
@@ -76,7 +76,7 @@ public class BenchFailTest {
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?gang=groon", bre.getMessage());
 		}
 
@@ -84,10 +84,10 @@ public class BenchFailTest {
 
 	@Test
 	public void testJettyWorkingWithMethodButIncorrectParamsPattern() throws Exception {
-		bServer = new TestBenchFactory().createBenchServer();
+		bServer = new ClientDriverFactory().createClientDriver();
 
-		bServer.addExpectation(new BenchRequest(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
-				"gang", Pattern.compile("r")), new BenchResponse("OUCH!!").withStatus(200)
+		bServer.addExpectation(new ClientDriverRequest(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
+				"gang", Pattern.compile("r")), new ClientDriverResponse("OUCH!!").withStatus(200)
 				.withContentType("text/plain").withHeader("Server", "TestServer"));
 
 		final HttpClient client = new DefaultHttpClient();
@@ -100,7 +100,7 @@ public class BenchFailTest {
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final BenchRuntimeException bre) {
+		} catch (final ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?gang=goon", bre.getMessage());
 		}
 

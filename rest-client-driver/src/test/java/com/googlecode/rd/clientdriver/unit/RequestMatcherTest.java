@@ -16,18 +16,18 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.googlecode.rd.clientdriver.BenchRequest;
-import com.googlecode.rd.clientdriver.BenchRequest.Method;
-import com.googlecode.rd.clientdriver.RequestMatcherImpl;
+import com.googlecode.rd.clientdriver.DefaultRequestMatcher;
+import com.googlecode.rd.types.ClientDriverRequest;
+import com.googlecode.rd.types.ClientDriverRequest.Method;
 
 public class RequestMatcherTest {
 
-	private RequestMatcherImpl sut;
+	private DefaultRequestMatcher sut;
 	private HttpServletRequest aReq;
 
 	@Before
 	public void before() {
-		sut = new RequestMatcherImpl();
+		sut = new DefaultRequestMatcher();
 	}
 
 	@After
@@ -38,7 +38,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchNoParams() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET);
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -54,7 +54,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchNoParamsPattern() {
 
-		final BenchRequest bReq = new BenchRequest(Pattern.compile("[a]{5}")).withMethod(Method.GET);
+		final ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[a]{5}")).withMethod(Method.GET);
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -70,7 +70,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithParams() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa")
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa")
 										.withMethod(Method.GET)
 										.withParam("kk", "vv")
 										.withParam("k2", "v2");
@@ -92,7 +92,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithParamsPattern() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk",
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk",
 				Pattern.compile("[v]{2}")).withParam("k2", Pattern.compile("v[0-9]"));
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
@@ -111,7 +111,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithWrongParam() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -128,7 +128,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithWrongParamPattern() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk",
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk",
 				Pattern.compile("[v]{2}"));
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
@@ -146,7 +146,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithNullParam() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -172,7 +172,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithParamsTooMany() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam(
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam(
 				"k2", "v2");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
@@ -189,7 +189,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithParamsTooFew() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -205,7 +205,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWrongMethod() {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.DELETE);
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.DELETE);
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getMethod()).andReturn("GET");
@@ -219,7 +219,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWrongPath() {
 
-		final BenchRequest bReq = new BenchRequest("bbbbb").withMethod(Method.GET);
+		final ClientDriverRequest bReq = new ClientDriverRequest("bbbbb").withMethod(Method.GET);
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -234,7 +234,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWrongPathPattern() {
 
-		final BenchRequest bReq = new BenchRequest(Pattern.compile("[b]{5}")).withMethod(Method.GET);
+		final ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[b]{5}")).withMethod(Method.GET);
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -249,7 +249,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBody() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -270,7 +270,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBodyPattern() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
 				Pattern.compile("text/j[a-z]{3}"));
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
@@ -292,7 +292,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBodyWrongType() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -310,7 +310,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBodyWrongTypePattern() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody("ooooh",
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh",
 				Pattern.compile("text/[a-z]{4}"));
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
@@ -329,7 +329,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBodyWrongContent() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
 		EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
@@ -350,7 +350,7 @@ public class RequestMatcherTest {
 	@Test
 	public void testMatchWithRequestBodyWrongContentPattern() throws IOException {
 
-		final BenchRequest bReq = new BenchRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
+		final ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
 				"text/junk");
 		aReq = EasyMock.createMock(HttpServletRequest.class);
 
