@@ -24,12 +24,22 @@ public final class RestServerDriver {
 
     private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
 
-    /*
-     * Helpful to make this available here
-     */
+    /******************************************************************************
+     *                      Helper methods to make value objects                  *
+     ******************************************************************************/
 
-    public static Header header(final String name, final String value) {
+    public static Header header(String name, String value) {
         return new Header(name, value);
+    }
+
+    /**
+     * Make a RequestBody for PUT or POST
+     *
+     * @param content Request body content as String
+     * @param contentType content-type eg text/plain
+     */
+    public static RequestBody body(String content, String contentType){
+        return new RequestBody(content, contentType);
     }
 
 
@@ -74,27 +84,55 @@ public final class RestServerDriver {
      *                              HTTP POST methods                             *
      ******************************************************************************/
 
-//    public static Response post(Object url, String){
-//
-//    }
+    /**
+     * Perform an HTTP POST to the given URL.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param content The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
+     */
+    public static Response post(Object url, String content, Header... headers){
+        HttpPost request = new HttpPost(url.toString());
+        request.setHeaders( headersFromHeaderList( headers ) );
 
-    public static Response post(PostRequest postRequest) {
-        return posting(postRequest);
+        if (content != null){
+            request.setEntity(entityFromString(content));
+        }
+        
+        return makeHttpRequest(request);
     }
 
-    public static Response postOf(PostRequest postRequest) {
-        return posting(postRequest);
-    }
+    public static Response post(Object url, RequestBody content, Header... headers){
+        HttpPost request = new HttpPost(url.toString());
+        request.setHeaders( headersFromHeaderList( headers ) );
 
-    public static Response posting(PostRequest postRequest) {
-
-        HttpPost request = new HttpPost(postRequest.getUrl());
-        request.setHeaders(headersFromRequest(postRequest));
-        request.setEntity(entityFromRequest(postRequest));
+        if (content != null){
+            request.setEntity(entityFromRequestBody(content));
+            request.addHeader( new BasicHeader("Content-type", content.getContentType()) );
+        }
 
         return makeHttpRequest(request);
-
     }
+
+
+    /**
+     * Synonym for {@link #post(Object, String, Header...)}
+     */
+    public static Response postOf(Object url, Header... headers)   { return get(url, headers); }
+
+    /**
+     * Synonym for {@link #post(Object, String, Header...)}
+     */
+    public static Response doPostOf(Object url, Header... headers) { return get(url, headers); }
+
+    /**
+     * Synonym for {@link #post(Object, String, Header...)}
+     */
+    public static Response posting(Object url, Header... headers) { return get(url, headers); }
+
+
 
 
     /*
@@ -146,6 +184,10 @@ public final class RestServerDriver {
      * Internal methods for creating requests and responses
      */
 
+
+
+    @Deprecated
+    // Remove this once things are tidy further up
     private static org.apache.http.Header[] headersFromRequest(Request request) {
         List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
 
@@ -158,6 +200,11 @@ public final class RestServerDriver {
         return headers.toArray(new org.apache.http.Header[headers.size()]);
     }
 
+    /**
+     * turns an array of restdriver headers into an array of apache http headers
+     * @param headerList
+     * @return
+     */
     private static org.apache.http.Header[] headersFromHeaderList(Header[] headerList) {
         List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
 
@@ -171,9 +218,27 @@ public final class RestServerDriver {
     }
 
 
+    @Deprecated
+    // Remove this once things are tidy further up
     private static HttpEntity entityFromRequest(ContentRequest request) {
         try {
             return new StringEntity(request.getContent(), DEFAULT_CONTENT_ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error setting entity of request", e);
+        }
+    }
+
+    private static HttpEntity entityFromString(String content) {
+        try {
+            return new StringEntity(content, DEFAULT_CONTENT_ENCODING);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error setting entity of request", e);
+        }
+    }
+
+    private static HttpEntity entityFromRequestBody(RequestBody body) {
+        try {
+            return new StringEntity(body.getContent(), DEFAULT_CONTENT_ENCODING);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Error setting entity of request", e);
         }

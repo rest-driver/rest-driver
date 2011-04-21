@@ -24,9 +24,9 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void simpleGetRetrievesStatusAndContent() {
-        super.getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
+        getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
 
-        final Response response = get(baseUrl);
+        Response response = get(baseUrl);
 
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
@@ -34,9 +34,9 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getRetrievesHeaders() {
-        super.getClientDriver().addExpectation(
-                new ClientDriverRequest("/"),
-                new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
+        getClientDriver().addExpectation(
+            new ClientDriverRequest("/"),
+            new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
 
         Response response = get(baseUrl);
 
@@ -47,7 +47,7 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getIncludesResponseTime() {
-        super.getClientDriver().addExpectation(
+        getClientDriver().addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("Hello"));
 
@@ -58,7 +58,7 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getSendsHeaders() {
-        super.getClientDriver().addExpectation(
+        getClientDriver().addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("Hello"));
 

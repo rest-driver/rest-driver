@@ -31,11 +31,12 @@ public class DefaultRequestMatcher implements RequestMatcher {
     @Override
     public boolean isMatch(final HttpServletRequest actualRequest, final ClientDriverRequest expectedRequest) {
 
+        // TODO: Better diagnostics from this method.  See https://github.com/rest-driver/rest-driver/issues/7
+
         // same method?
         if (!actualRequest.getMethod().equals(expectedRequest.getMethod().toString())) {
             return false;
         }
-
         // same base path?
         if (!isStringOrPattternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
             return false;
