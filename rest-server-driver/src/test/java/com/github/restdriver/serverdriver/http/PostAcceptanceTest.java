@@ -33,7 +33,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST),
                 new ClientDriverResponse("Content"));
 
-        final Response response = post(baseUrl, "");
+        final Response response = post(baseUrl, null);
 
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
@@ -45,7 +45,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST).withBody("Your body", "text/plain"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        final Response response = post(baseUrl, "Your body");
+        final Response response = post(baseUrl, body("Your body", "text/plain"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));

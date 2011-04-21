@@ -88,74 +88,81 @@ public final class RestServerDriver {
      * Perform an HTTP POST to the given URL.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param content The body of the post, as text/plain.
+     * @param body The body of the post, as text/plain.
      * @param headers Any HTTP headers.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response post(Object url, String content, Header... headers){
+    public static Response post(Object url, RequestBody body, Header... headers){
         HttpPost request = new HttpPost(url.toString());
         request.setHeaders( headersFromHeaderList( headers ) );
 
-        if (content != null){
-            request.setEntity(entityFromString(content));
-        }
-        
-        return makeHttpRequest(request);
-    }
-
-    public static Response post(Object url, RequestBody content, Header... headers){
-        HttpPost request = new HttpPost(url.toString());
-        request.setHeaders( headersFromHeaderList( headers ) );
-
-        if (content != null){
-            request.setEntity(entityFromRequestBody(content));
-            request.addHeader( new BasicHeader("Content-type", content.getContentType()) );
+        if (body != null){
+            request.setEntity(entityFromRequestBody(body));
+            request.addHeader( new BasicHeader("Content-type", body.getContentType()) );
         }
 
         return makeHttpRequest(request);
     }
 
+    /**
+     * Synonym for {@link #post(Object, RequestBody, Header...)}
+     */
+    public static Response postOf(Object url, RequestBody body, Header... headers)   { return post(url, body, headers); }
 
     /**
-     * Synonym for {@link #post(Object, String, Header...)}
+     * Synonym for {@link #post(Object, RequestBody, Header...)}
      */
-    public static Response postOf(Object url, Header... headers)   { return get(url, headers); }
+    public static Response doPostOf(Object url, RequestBody body, Header... headers) { return post(url, body, headers); }
 
     /**
-     * Synonym for {@link #post(Object, String, Header...)}
+     * Synonym for {@link #post(Object, RequestBody, Header...)}
      */
-    public static Response doPostOf(Object url, Header... headers) { return get(url, headers); }
+    public static Response posting(Object url, RequestBody body, Header... headers) { return post(url, body, headers); }
+
+
+
+
+    /******************************************************************************
+     *                              HTTP POST methods                             *
+     ******************************************************************************/
 
     /**
-     * Synonym for {@link #post(Object, String, Header...)}
+     * Perform an HTTP PUT to the given URL.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
-    public static Response posting(Object url, Header... headers) { return get(url, headers); }
+     public static Response put(Object url, RequestBody body, Header... headers){
+        HttpPut request = new HttpPut(url.toString());
+        request.setHeaders( headersFromHeaderList( headers ) );
 
-
-
-
-    /*
-     *   HTTP PUT methods
-     */
-
-    public static Response put(PutRequest putRequest) {
-        return putting(putRequest);
-    }
-
-    public static Response putOf(PutRequest putRequest) {
-        return putting(putRequest);
-    }
-
-    public static Response putting(PutRequest putRequest) {
-
-        HttpPut request = new HttpPut(putRequest.getUrl());
-        request.setHeaders(headersFromRequest(putRequest));
-        request.setEntity(entityFromRequest(putRequest));
+        if (body != null){
+            request.setEntity(entityFromRequestBody(body));
+            request.addHeader( new BasicHeader("Content-type", body.getContentType()) );
+        }
 
         return makeHttpRequest(request);
-
     }
+
+    /**
+     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     */
+    public static Response putOf(Object url, RequestBody body, Header... headers)   { return put(url, body, headers); }
+
+    /**
+     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     */
+    public static Response doPutOf(Object url, RequestBody body, Header... headers) { return put(url, body, headers); }
+
+    /**
+     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     */
+    public static Response putting(Object url, RequestBody body, Header... headers) { return put(url, body, headers); }
+
 
 
     /*
