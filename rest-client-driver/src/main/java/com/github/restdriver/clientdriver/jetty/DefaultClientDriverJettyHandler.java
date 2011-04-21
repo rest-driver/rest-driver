@@ -24,7 +24,7 @@ import com.github.restdriver.types.ClientDriverResponse;
  * Class which acts as a Jetty Handler to see if the actual incoming HTTP request matches any expectation and to act
  * accordingly. In case of any kind of error, {@link ClientDriverInternalException} is usually thrown.
  */
-public class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
+public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
 
     private final List<ClientDriverRequestResponsePair> expectedResponses;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
@@ -37,7 +37,7 @@ public class DefaultClientDriverJettyHandler extends AbstractHandler implements 
      * @param matcher
      *            The {@link RequestMatcher} to use.
      */
-    public DefaultClientDriverJettyHandler(final RequestMatcher matcher) {
+    public DefaultClientDriverJettyHandler(RequestMatcher matcher) {
 
         expectedResponses = new ArrayList<ClientDriverRequestResponsePair>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
@@ -53,18 +53,18 @@ public class DefaultClientDriverJettyHandler extends AbstractHandler implements 
      * an unexpected request comes in, a {@link com.github.restdriver.clientdriver.exception.ClientDriverInternalException} is thrown
      */
     @Override
-    public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        final ClientDriverRequestResponsePair matchingPair = getMatchingRequestPair(request);
+        ClientDriverRequestResponsePair matchingPair = getMatchingRequestPair(request);
         matchedResponses.add(matchingPair);
 
-        final ClientDriverResponse matchedResponse = matchingPair.getResponse();
+        ClientDriverResponse matchedResponse = matchingPair.getResponse();
 
         response.setContentType(matchedResponse.getContentType());
         response.setStatus(matchedResponse.getStatus());
         response.getWriter().print(matchedResponse.getContent());
 
-        for (final Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
+        for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
         }
 
@@ -72,13 +72,13 @@ public class DefaultClientDriverJettyHandler extends AbstractHandler implements 
 
     }
 
-    private ClientDriverRequestResponsePair getMatchingRequestPair(final HttpServletRequest request) {
+    private ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
 
         int index = 0;
 
         ClientDriverRequestResponsePair matchedPair = null;
         for (index = 0; index < expectedResponses.size(); index++) {
-            final ClientDriverRequestResponsePair thisPair = expectedResponses.get(index);
+            ClientDriverRequestResponsePair thisPair = expectedResponses.get(index);
             if (matcher.isMatch(request, thisPair.getRequest())) {
                 if (matchedPair == null) {
                     matchedPair = thisPair;
@@ -90,7 +90,7 @@ public class DefaultClientDriverJettyHandler extends AbstractHandler implements 
         if (matchedPair == null) {
             unexpectedRequest = request.getPathInfo();
 
-            final String reqQuery = request.getQueryString();
+            String reqQuery = request.getQueryString();
 
             if (reqQuery != null) {
                 unexpectedRequest += "?" + reqQuery;

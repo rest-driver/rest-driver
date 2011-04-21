@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Class for encapsulating an HTTP response
  */
-public class ClientDriverResponse {
+public final class ClientDriverResponse {
 
     private static final int DEFAULT_STATUS_CODE = 200;
 
@@ -27,7 +27,7 @@ public class ClientDriverResponse {
      * @param content
      *            The mandatory argument.
      */
-    public ClientDriverResponse(final String content) {
+    public ClientDriverResponse(String content) {
         this.content = content;
         status = DEFAULT_STATUS_CODE;
         contentType = "text/plain";
@@ -46,7 +46,7 @@ public class ClientDriverResponse {
      *            the status to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverResponse withStatus(final int status) {
+    public ClientDriverResponse withStatus(int status) {
         this.status = status;
         return this;
     }
@@ -70,7 +70,7 @@ public class ClientDriverResponse {
      *            the contentType to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverResponse withContentType(final String contentType) {
+    public ClientDriverResponse withContentType(String contentType) {
         this.contentType = contentType;
         return this;
     }
@@ -84,7 +84,7 @@ public class ClientDriverResponse {
      *            The header value
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverResponse withHeader(final String name, final String value) {
+    public ClientDriverResponse withHeader(String name, String value) {
         headers.put(name, value);
         return this;
     }

@@ -2,31 +2,31 @@ package com.github.restdriver.types;
 
 import org.apache.commons.lang.StringUtils;
 
-public class Header {
+public final class Header {
 
 	private final String name;
 	private final String value;
 
-	public Header(final String name, final String value) {
+	public Header(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
 
-	public final String getName() {
+	public String getName() {
 		return name;
 	}
 
-	public final String getValue() {
+	public String getValue() {
 		return value;
 	}
 
 	@Override
-	public final String toString() {
+	public String toString() {
 		return String.format("%s:%s", name, value);
 	}
 
 	@Override
-	public final int hashCode() {
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -35,7 +35,7 @@ public class Header {
 	}
 
 	@Override
-	public final boolean equals(final Object object) {
+	public boolean equals(Object object) {
 		if (this == object) {
 			return true;
 		}

@@ -19,7 +19,7 @@ public abstract class ClientDriverUnitTest {
      * @Before -annotated methods.
      */
     @Before
-    public void startClientDriver() {
+    public final void startClientDriver() {
         benchServer = new ClientDriverFactory().createClientDriver();
     }
 
@@ -28,7 +28,7 @@ public abstract class ClientDriverUnitTest {
      * the @After-annotated methods in your subclass.
      */
     @After
-    public void shutdownClientDriver() {
+    public final void shutdownClientDriver() {
         benchServer.shutdown();
     }
 
@@ -38,7 +38,7 @@ public abstract class ClientDriverUnitTest {
      * 
      * @return The {@link ClientDriver}
      */
-    public ClientDriver getClientDriver() {
+    public final ClientDriver getClientDriver() {
         return benchServer;
     }
 

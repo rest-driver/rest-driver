@@ -14,7 +14,7 @@ import com.github.restdriver.types.ClientDriverResponse;
 /**
  * The main class which acts as a facade for the Client Driver
  */
-public class ClientDriver {
+public final class ClientDriver {
 
     private final Server jettyServer;
     private final int portNum;
@@ -27,25 +27,23 @@ public class ClientDriver {
      * @param handler
      *            The {@link ClientDriverJettyHandler} to use.
      */
-    public ClientDriver(final ClientDriverJettyHandler handler) {
+    public ClientDriver(ClientDriverJettyHandler handler) {
 
         this.handler = handler;
 
         try {
             portNum = getFreePort();
-        } catch (final IOException ioe) {
+        } catch (IOException ioe) {
             throw new ClientDriverSetupException("Error finding free port for webserver", ioe);
         }
 
         jettyServer = new Server(portNum);
 
         try {
-
             jettyServer.setHandler(handler.getJettyHandler());
             jettyServer.start();
 
-        } catch (final Exception e) {
-
+        } catch (Exception e) {
             throw new ClientDriverSetupException("Error starting jetty", e);
 
         }
@@ -79,11 +77,9 @@ public class ClientDriver {
     public void shutdown() {
 
         try {
-
             jettyServer.stop();
 
-        } catch (final Exception e) {
-
+        } catch (Exception e) {
             throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
 
         }
@@ -101,12 +97,11 @@ public class ClientDriver {
      *            The response to serve to that request
      * 
      */
-    public void addExpectation(final ClientDriverRequest request, final ClientDriverResponse response) {
+    public void addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         handler.addExpectation(request, response);
     }
 
     private void verify() {
-
         handler.checkForUnexpectedRequests();
         handler.checkForUnmatchedExpectations();
 

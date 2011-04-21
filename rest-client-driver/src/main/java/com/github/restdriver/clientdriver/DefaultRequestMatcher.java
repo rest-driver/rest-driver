@@ -10,12 +10,13 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
 import org.apache.commons.io.IOUtils;
 
 import com.github.restdriver.types.ClientDriverRequest;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
  * path &amp; query string, and any body of the request.
  */
-public class DefaultRequestMatcher implements RequestMatcher {
+public final class DefaultRequestMatcher implements RequestMatcher {
 
     /**
      * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}. This
@@ -29,7 +30,7 @@ public class DefaultRequestMatcher implements RequestMatcher {
      * @return True if there is a match, falsetto otherwise.
      */
     @Override
-    public boolean isMatch(final HttpServletRequest actualRequest, final ClientDriverRequest expectedRequest) {
+    public boolean isMatch(HttpServletRequest actualRequest, ClientDriverRequest expectedRequest) {
 
         // TODO: Better diagnostics from this method.  See https://github.com/rest-driver/rest-driver/issues/7
 
@@ -49,7 +50,7 @@ public class DefaultRequestMatcher implements RequestMatcher {
 
         // same keys/values in query-string parameter map?
         final Map<String, Object> expectedParams = expectedRequest.getParams();
-        for (final String expectedKey : expectedParams.keySet()) {
+        for (String expectedKey : expectedParams.keySet()) {
 
             final String actualParamValue = actualRequest.getParameter(expectedKey);
 
@@ -86,7 +87,7 @@ public class DefaultRequestMatcher implements RequestMatcher {
                         .getBodyContent())) {
                     return false;
                 }
-            } catch (final IOException ioException) {
+            } catch (IOException ioException) {
                 throw new ClientDriverInternalException("Internal error, IOException while reading from body content",
                         ioException);
             }
@@ -97,14 +98,14 @@ public class DefaultRequestMatcher implements RequestMatcher {
 
     }
 
-    private boolean isStringOrPattternMatch(final String actual, final Object expected) {
+    private boolean isStringOrPattternMatch(String actual, Object expected) {
         if (expected instanceof String) {
 
-            return actual.equals(expected);
+            return StringUtils.equals(actual, (String) expected);
 
         } else if (expected instanceof Pattern) {
 
-            final Pattern pattern = (Pattern) expected;
+            Pattern pattern = (Pattern) expected;
             return pattern.matcher(actual).matches();
 
         } else {

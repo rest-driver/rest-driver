@@ -13,8 +13,8 @@ import com.github.restdriver.types.ClientDriverRequest;
 public interface RequestMatcher {
 
 	/**
-	 * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}. Implementations can be as precise or as
-	 * loose as they like when matching.
+	 * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}.
+     * Implementations can be as precise or as loose as they like when matching.
 	 * 
 	 * @param actualRequest
 	 *            The actual request

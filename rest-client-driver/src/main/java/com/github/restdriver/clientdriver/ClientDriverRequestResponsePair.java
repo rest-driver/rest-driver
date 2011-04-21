@@ -6,7 +6,7 @@ import com.github.restdriver.types.ClientDriverResponse;
 /**
  * Pairs an expected request with its response.
  */
-public class ClientDriverRequestResponsePair {
+public final class ClientDriverRequestResponsePair {
 
     private final ClientDriverRequest request;
     private final ClientDriverResponse response;
@@ -19,7 +19,7 @@ public class ClientDriverRequestResponsePair {
      * @param response
      *            The {@link ClientDriverResponse}
      */
-    public ClientDriverRequestResponsePair(final ClientDriverRequest request, final ClientDriverResponse response) {
+    public ClientDriverRequestResponsePair(ClientDriverRequest request, ClientDriverResponse response) {
         this.request = request;
         this.response = response;
     }

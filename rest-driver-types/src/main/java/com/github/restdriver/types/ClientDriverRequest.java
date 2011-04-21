@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 /**
  * Class for encapsulating an HTTP request
  */
-public class ClientDriverRequest {
+public final class ClientDriverRequest {
 
     /**
      * HTTP method enum for specifying which method you expect to be called with.
@@ -20,8 +20,9 @@ public class ClientDriverRequest {
     }
 
     private final Object path;
-    private Method method;
     private final Map<String, Object> params;
+    
+    private Method method;
     private Object bodyContent;
     private Object bodyContentType;
 
@@ -31,7 +32,7 @@ public class ClientDriverRequest {
      * @param path
      *            The mandatory argument is the path which will be listened on
      */
-    public ClientDriverRequest(final String path) {
+    public ClientDriverRequest(String path) {
         this.path = path;
         method = Method.GET;
         params = new HashMap<String, Object>();
@@ -43,7 +44,7 @@ public class ClientDriverRequest {
      * @param path
      *            The mandatory argument is the path which will be listened on
      */
-    public ClientDriverRequest(final Pattern path) {
+    public ClientDriverRequest(Pattern path) {
         this.path = path;
         method = Method.GET;
         params = new HashMap<String, Object>();
@@ -63,7 +64,7 @@ public class ClientDriverRequest {
      *            the method to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withMethod(final Method method) {
+    public ClientDriverRequest withMethod(Method method) {
         this.method = method;
         return this;
     }
@@ -84,7 +85,7 @@ public class ClientDriverRequest {
      *            The value from ?key=value in the form of a String
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withParam(final String key, final String value) {
+    public ClientDriverRequest withParam(String key, String value) {
         params.put(key, value);
         return this;
     }
@@ -98,7 +99,7 @@ public class ClientDriverRequest {
      *            The value from ?key=value in the form of a Pattern
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withParam(final String key, final Pattern value) {
+    public ClientDriverRequest withParam(String key, Pattern value) {
         params.put(key, value);
         return this;
     }
@@ -144,7 +145,7 @@ public class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(final String bodyContent, final String contentType) {
+    public ClientDriverRequest withBody(String bodyContent, String contentType) {
         this.bodyContent = bodyContent;
         bodyContentType = contentType;
         return this;
@@ -160,7 +161,7 @@ public class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(final String bodyContent, final Pattern contentType) {
+    public ClientDriverRequest withBody(String bodyContent, Pattern contentType) {
         this.bodyContent = bodyContent;
         bodyContentType = contentType;
         return this;
@@ -176,7 +177,7 @@ public class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(final Pattern bodyContent, final String contentType) {
+    public ClientDriverRequest withBody(Pattern bodyContent, String contentType) {
         this.bodyContent = bodyContent;
         bodyContentType = contentType;
         return this;
@@ -192,7 +193,7 @@ public class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(final Pattern bodyContent, final Pattern contentType) {
+    public ClientDriverRequest withBody(Pattern bodyContent, Pattern contentType) {
         this.bodyContent = bodyContent;
         bodyContentType = contentType;
         return this;

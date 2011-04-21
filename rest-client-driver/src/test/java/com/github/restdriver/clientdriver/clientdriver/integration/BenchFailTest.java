@@ -26,15 +26,15 @@ public class BenchFailTest {
 
 		// No expectations defined
 
-		final HttpClient client = new DefaultHttpClient();
-		final HttpGet getter = new HttpGet(bServer.getBaseUrl() + "/blah?foo=bar");
+		 HttpClient client = new DefaultHttpClient();
+		 HttpGet getter = new HttpGet(bServer.getBaseUrl() + "/blah?foo=bar");
 
 		client.execute(getter);
 
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch ( ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?foo=bar", bre.getMessage());
 		}
 
@@ -52,7 +52,7 @@ public class BenchFailTest {
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch ( ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("2 unmatched expectation(s), first is: BenchRequest: GET /blah; ", bre.getMessage());
 		}
 
@@ -66,17 +66,17 @@ public class BenchFailTest {
 				new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
 						"TestServer"));
 
-		final HttpClient client = new DefaultHttpClient();
+		 HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = bServer.getBaseUrl();
-		final HttpPost poster = new HttpPost(baseUrl + "/blah?gang=groon");
+		 String baseUrl = bServer.getBaseUrl();
+		 HttpPost poster = new HttpPost(baseUrl + "/blah?gang=groon");
 
 		client.execute(poster);
 
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch ( ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?gang=groon", bre.getMessage());
 		}
 
@@ -90,17 +90,17 @@ public class BenchFailTest {
 				"gang", Pattern.compile("r")), new ClientDriverResponse("OUCH!!").withStatus(200)
 				.withContentType("text/plain").withHeader("Server", "TestServer"));
 
-		final HttpClient client = new DefaultHttpClient();
+		 HttpClient client = new DefaultHttpClient();
 
-		final String baseUrl = bServer.getBaseUrl();
-		final HttpPost poster = new HttpPost(baseUrl + "/blah?gang=goon");
+		 String baseUrl = bServer.getBaseUrl();
+		 HttpPost poster = new HttpPost(baseUrl + "/blah?gang=goon");
 
 		client.execute(poster);
 
 		try {
 			bServer.shutdown();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch ( ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: /blah?gang=goon", bre.getMessage());
 		}
 

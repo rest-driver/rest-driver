@@ -16,7 +16,7 @@ public class ClientDriverSetupException extends RuntimeException {
      * @param cause
      *            The throwable which we caught before throwing this one. Could be null.
      */
-    public ClientDriverSetupException(final String message, final Throwable cause) {
+    public ClientDriverSetupException(String message, Throwable cause) {
         super(message, cause);
     }
 
