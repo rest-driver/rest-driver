@@ -50,12 +50,4 @@ public final class JsonAcceptanceTestHelper {
 		return new WithSize(matcher);
 	}
 
-	// public static TypeSafeMatcher<JsonNode> valid(final JsonNode schema) {
-	// return new IsValid(schema);
-	// }
-	//
-	// public static TypeSafeMatcher<JsonNode> valid(final URL url) {
-	// return new IsValid(url);
-	// }
-
 }

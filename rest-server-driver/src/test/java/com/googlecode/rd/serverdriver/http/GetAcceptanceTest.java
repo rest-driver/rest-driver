@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.googlecode.rd.serverdriver.http.RestServerDriver.*;
+import static com.googlecode.rd.serverdriver.matchers.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

@@ -4,15 +4,15 @@ import com.googlecode.rd.types.Header;
 
 public abstract class BaseContentRequest extends BaseRequest implements ContentRequest {
 
-	private final String content;
+	private  String content;
 
-	public BaseContentRequest(final String url, final String content, final Header[] headers) {
+	public BaseContentRequest( String url,  String content,  Header[] headers) {
 		super(url, headers);
 		this.content = content;
 	}
 
 	@Override
-	public final String getContent() {
+	public  String getContent() {
 		return content;
 	}
 
