@@ -1,14 +1,16 @@
 package com.github.restdriver.serverdriver.http;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
+import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 import com.github.restdriver.serverdriver.http.request.*;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.types.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.*;
+import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -17,6 +19,7 @@ import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -256,8 +259,12 @@ public final class RestServerDriver {
 
             return new DefaultResponse( response, (endTime - startTime) );
 
-        } catch (ClientProtocolException e) {
-            throw new RuntimeException("Error executing request", e);
+        } catch (UnknownHostException uhe){
+            throw new RuntimeUnknownHostException( uhe );
+
+        } catch (HttpHostConnectException hhce){
+            throw new RuntimeHttpHostConnectException( hhce );
+
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);
         }

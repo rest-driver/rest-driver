@@ -1,5 +1,7 @@
 package com.github.restdriver.serverdriver.file;
 
+import java.io.FileNotFoundException;
+
 /**
  * User: mjg
  * Date: 21/04/11
@@ -7,8 +9,8 @@ package com.github.restdriver.serverdriver.file;
  */
 public class RuntimeFileNotFoundException extends RuntimeException {
 
-    public RuntimeFileNotFoundException(String message){
-        super(message);
+    public RuntimeFileNotFoundException(FileNotFoundException fnfe) {
+        super(fnfe);
     }
 
 }

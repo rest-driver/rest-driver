@@ -2,6 +2,7 @@ package com.github.restdriver.serverdriver.file;
 
 import org.apache.commons.io.IOUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -27,7 +28,7 @@ public class FileHelper {
         InputStream stream = FileHelper.class.getClassLoader().getResourceAsStream(fileName);
 
         if (stream == null) {
-            throw new RuntimeFileNotFoundException("Couldn't find file " + fileName);
+            throw new RuntimeFileNotFoundException(new FileNotFoundException( fileName ));
             
         }
 
