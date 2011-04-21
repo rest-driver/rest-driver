@@ -165,27 +165,32 @@ public final class RestServerDriver {
 
 
 
-    /*
-     *   HTTP DELETE methods
-     */
+    /******************************************************************************
+     *                              HTTP POST methods                             *
+     ******************************************************************************/
 
-    public static Response delete(DeleteRequest deleteRequest) {
-        return deleting(deleteRequest);
-    }
-
-    public static Response deleteOf(DeleteRequest deleteRequest) {
-        return deleting(deleteRequest);
-    }
-
-    public static Response deleting(DeleteRequest deleteRequest) {
-
-        HttpDelete request = new HttpDelete(deleteRequest.getUrl());
-
+    public static Response delete(Object url, Header... headers) {
+        HttpDelete request = new HttpDelete(url.toString());
+        request.setHeaders( headersFromHeaderList( headers ) );
         return makeHttpRequest(request);
-
     }
 
+    /**
+     * Synonym for {@link #delete(Object, Header...)}
+     */
+    public static Response deleteOf(Object url, Header... headers)   { return delete(url, headers); }
 
+    /**
+     * Synonym for {@link #delete(Object, Header...)}
+     */
+    public static Response doDeleteOf(Object url, Header... headers) { return delete(url, headers); }
+
+    /**
+     * Synonym for {@link #delete(Object, Header...)}
+     */
+    public static Response deleting(Object url, Header... headers) { return delete(url, headers); }
+
+    
 
     /*
      * Internal methods for creating requests and responses
