@@ -16,37 +16,37 @@ import com.github.restdriver.serverdriver.matchers.WithValueAt;
 
 public final class JsonAcceptanceTestHelper {
 
-	private static final ObjectMapper MAPPER = new ObjectMapper();
+	private static ObjectMapper MAPPER = new ObjectMapper();
 
-	public static JsonNode asJson(final Response response) {
+	public static JsonNode asJson(Response response) {
 		return asJson(response.getContent());
 	}
 
-	public static JsonNode asJson(final String json) {
+	public static JsonNode asJson(String json) {
 		try {
 			return MAPPER.readTree(json);
-		} catch (final IOException e) {
+		} catch (IOException e) {
 			throw new RuntimeException("Failed to create JSON node", e);
 		}
 	}
 
-	public static TypeSafeMatcher<JsonNode> hasJsonValue(final String fieldName, final Matcher<?> matcher) {
+	public static TypeSafeMatcher<JsonNode> hasJsonValue(String fieldName, Matcher<?> matcher) {
 		return new HasJsonValue(fieldName, matcher);
 	}
 
-	public static TypeSafeMatcher<JsonNode> hasJsonArray(final String fieldName, final Matcher<?> matcher) {
+	public static TypeSafeMatcher<JsonNode> hasJsonArray(String fieldName, Matcher<?> matcher) {
 		return new HasJsonArray(fieldName, matcher);
 	}
 
-	public static TypeSafeMatcher<JsonNode> containingValue(final Matcher<?> matcher) {
+	public static TypeSafeMatcher<JsonNode> containingValue(Matcher<?> matcher) {
 		return new ContainingValue(matcher);
 	}
 
-	public static TypeSafeMatcher<JsonNode> withValueAt(final int position, final Matcher<?> matcher) {
+	public static TypeSafeMatcher<JsonNode> withValueAt(int position, Matcher<?> matcher) {
 		return new WithValueAt(position, matcher);
 	}
 
-	public static TypeSafeMatcher<JsonNode> withSize(final Matcher<?> matcher) {
+	public static TypeSafeMatcher<JsonNode> withSize(Matcher<?> matcher) {
 		return new WithSize(matcher);
 	}
 

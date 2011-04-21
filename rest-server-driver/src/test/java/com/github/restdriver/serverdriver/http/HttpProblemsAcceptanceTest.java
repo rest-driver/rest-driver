@@ -31,17 +31,17 @@ public class HttpProblemsAcceptanceTest extends ClientDriverUnitTest {
 
     @Test(expected = RuntimeUnknownHostException.class)
     public void getWithNoSuchHostThrowsException() {
-        final Response response = get("http://no-such-host");
+        Response response = get("http://no-such-host");
     }
 
     @Test(expected = IllegalStateException.class)
     public void getWithInvalidProtocolThrowsException() {
-        final Response response = get("xyzzz://no-such-host");
+        Response response = get("xyzzz://no-such-host");
     }
 
     @Test(expected = RuntimeHttpHostConnectException.class)
     public void noServerListeningThrowsException() {
-        final Response response = get("http://localhost:" + getFreePort());
+        Response response = get("http://localhost:" + getFreePort());
     }
 
     
@@ -50,8 +50,8 @@ public class HttpProblemsAcceptanceTest extends ClientDriverUnitTest {
      */
     private int getFreePort() {
         try{
-            final ServerSocket server = new ServerSocket(0);
-            final int port = server.getLocalPort();
+            ServerSocket server = new ServerSocket(0);
+            int port = server.getLocalPort();
             server.close();
             return port;
 

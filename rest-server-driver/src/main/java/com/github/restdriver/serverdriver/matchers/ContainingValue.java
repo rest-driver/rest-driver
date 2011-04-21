@@ -28,7 +28,7 @@ public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
 			return false;
 		}
 
-		final Iterator<JsonNode> nodeIterator = node.getElements();
+		Iterator<JsonNode> nodeIterator = node.getElements();
 
 		while (nodeIterator.hasNext()) {
 

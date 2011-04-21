@@ -67,7 +67,7 @@ public class BenchHandlerTest {
 		try {
 			sut.checkForUnmatchedExpectations();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch (ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("1 unmatched expectation(s), first is: BenchRequest: GET hmm; ", bre.getMessage());
 		}
 
@@ -79,9 +79,9 @@ public class BenchHandlerTest {
 	@Test
 	public void testUnexpectedRequest() throws IOException, ServletException {
 
-		final Request mockRequest = EasyMock.createMock(Request.class);
-		final HttpServletRequest mockHttpRequest = EasyMock.createMock(HttpServletRequest.class);
-		final HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+		Request mockRequest = EasyMock.createMock(Request.class);
+		HttpServletRequest mockHttpRequest = EasyMock.createMock(HttpServletRequest.class);
+		HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
 
 		EasyMock.expect(mockHttpRequest.getPathInfo()).andReturn("yarr");
 		EasyMock.expect(mockHttpRequest.getQueryString()).andReturn("gooo=gredge");
@@ -93,7 +93,7 @@ public class BenchHandlerTest {
 		try {
 			sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
 			Assert.fail();
-		} catch (final ClientDriverInternalException bre) {
+		} catch (ClientDriverInternalException bre) {
 			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
 		}
 
@@ -103,7 +103,7 @@ public class BenchHandlerTest {
 		try {
 			sut.checkForUnexpectedRequests();
 			Assert.fail();
-		} catch (final ClientDriverFailedExpectationException bre) {
+		} catch (ClientDriverFailedExpectationException bre) {
 			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
 		}
 
@@ -115,21 +115,23 @@ public class BenchHandlerTest {
 	@Test
 	public void testExpectedRequest() throws IOException, ServletException {
 
-		final Request mockRequest = EasyMock.createMock(Request.class);
-		final HttpServletRequest mockHttpRequest = new Request();
-		final HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+		Request mockRequest = EasyMock.createMock(Request.class);
+		HttpServletRequest mockHttpRequest = new Request();
+		HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
 
-		final ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
-		final ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
+		ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
+		ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
 				.withHeader("hhh", "JJJ");
 
 		EasyMock.expect(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).andReturn(true);
 
 		mockHttpResponse.setContentType("fhieow");
 		mockHttpResponse.setStatus(404);
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final PrintWriter printWriter = new PrintWriter(baos);
-		EasyMock.expect(mockHttpResponse.getWriter()).andReturn(printWriter);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		PrintWriter printWriter = new PrintWriter(baos);
+
+        EasyMock.expect(mockHttpResponse.getWriter()).andReturn(printWriter);
 		mockHttpResponse.setHeader("hhh", "JJJ");
 
 		EasyMock.replay(mockHttpResponse);

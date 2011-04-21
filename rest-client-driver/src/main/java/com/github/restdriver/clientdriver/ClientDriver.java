@@ -60,8 +60,8 @@ public final class ClientDriver {
      * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
      */
     private int getFreePort() throws IOException {
-        final ServerSocket server = new ServerSocket(0);
-        final int port = server.getLocalPort();
+        ServerSocket server = new ServerSocket(0);
+        int port = server.getLocalPort();
         server.close();
         return port;
     }

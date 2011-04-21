@@ -138,7 +138,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      * 
      */
     @Override
-    public void addExpectation(final ClientDriverRequest request, final ClientDriverResponse response) {
+    public void addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         expectedResponses.add(new ClientDriverRequestResponsePair(request, response));
     }
 

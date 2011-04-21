@@ -46,16 +46,16 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         }
 
         // same keys/values in query-string parameter map?
-        final Map<String, Object> expectedParams = expectedRequest.getParams();
+        Map<String, Object> expectedParams = expectedRequest.getParams();
         for (String expectedKey : expectedParams.keySet()) {
 
-            final String actualParamValue = actualRequest.getParameter(expectedKey);
+            String actualParamValue = actualRequest.getParameter(expectedKey);
 
             if (actualParamValue == null) {
                 return false;
             }
 
-            final Object expectedParamValue = expectedParams.get(expectedKey);
+            Object expectedParamValue = expectedParams.get(expectedKey);
 
             if (!isStringOrPattternMatch(actualParamValue, expectedParamValue)) {
                 return false;

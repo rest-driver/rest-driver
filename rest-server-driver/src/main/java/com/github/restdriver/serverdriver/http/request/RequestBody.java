@@ -10,8 +10,8 @@ package com.github.restdriver.serverdriver.http.request;
  */
 public final class RequestBody {
 
-    final String content;
-    final String contentType;
+    private final String content;
+    private final String contentType;
 
     public RequestBody(String content, String contentType) {
         this.content = content;

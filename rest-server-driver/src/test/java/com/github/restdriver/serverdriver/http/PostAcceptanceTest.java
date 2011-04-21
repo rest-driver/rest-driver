@@ -33,7 +33,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST),
                 new ClientDriverResponse("Content"));
 
-        final Response response = post(baseUrl, null);
+        Response response = post(baseUrl, null);
 
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
@@ -45,7 +45,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST).withBody("Your body", "text/plain"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        final Response response = post(baseUrl, body("Your body", "text/plain"));
+        Response response = post(baseUrl, body("Your body", "text/plain"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
@@ -59,7 +59,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        final Response response = post(baseUrl, body("<yo/>", "application/xml"));
+        Response response = post(baseUrl, body("<yo/>", "application/xml"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
@@ -77,7 +77,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
         // TODO: see https://github.com/rest-driver/rest-driver/issues/1
         // we don't know if this test actually sets the headers...
 
-        final Response response = post(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
+        Response response = post(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));

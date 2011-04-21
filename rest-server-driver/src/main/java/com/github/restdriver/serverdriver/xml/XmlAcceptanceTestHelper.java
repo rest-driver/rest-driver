@@ -16,36 +16,42 @@ import org.xml.sax.SAXException;
 
 public final class XmlAcceptanceTestHelper {
 
-	public static Element asXml(final String xml) {
+	public static Element asXml(String xml) {
 
 		try {
-			final Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
+			Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
 			return document;
-		} catch (final IOException e) {
+
+		} catch (IOException e) {
 			throw new RuntimeException("Failed to create XML document", e);
-		} catch (final SAXException e) {
+
+		} catch (SAXException e) {
 			throw new RuntimeException("Failed to create XML document", e);
-		} catch (final ParserConfigurationException e) {
+
+		} catch (ParserConfigurationException e) {
 			throw new RuntimeException("Failed to create XML document", e);
 		}
 
 	}
 
-	public static String extractXPathValue(final String expression, final Element element) {
+	public static String extractXPathValue(String expression, Element element) {
 
-		final XPath xPath = XPathFactory.newInstance().newXPath();
+		XPath xPath = XPathFactory.newInstance().newXPath();
 
-		final XPathExpression compiledXPath;
+		XPathExpression compiledXPath;
 
 		try {
 			compiledXPath = xPath.compile(expression);
-		} catch (final XPathExpressionException e) {
+
+		} catch (XPathExpressionException e) {
 			throw new RuntimeException("Failed to compile XPath '" + expression + "'", e);
+
 		}
 
 		try {
 			return compiledXPath.evaluate(element, XPathConstants.STRING).toString();
-		} catch (final XPathExpressionException e) {
+            
+		} catch (XPathExpressionException e) {
 			throw new RuntimeException("Failed to evaluate XPath '" + expression + "'", e);
 		}
 

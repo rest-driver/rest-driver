@@ -25,7 +25,7 @@ public final class HasHeader extends TypeSafeMatcher<Response> {
 	@Override
 	protected boolean matchesSafely(Response response) {
 
-		for (final Header header : response.getHeaders()) {
+		for (Header header : response.getHeaders()) {
 			if (StringUtils.equals(header.getName(), name)) {
 				return true;
 			}
