@@ -10,17 +10,23 @@ import com.github.restdriver.types.Header;
 public interface Response {
 
 	/**
-	 * Get the HTTP status code of the response
+	 * What was the response code?
+     *
+     * @return the HTTP status code of the response
 	 */
 	int getStatusCode();
 
 	/**
-	 * Get the response body of the response as a String
+	 * What was the content of the response?
+     *
+     * @return The response body content as a string
 	 */
 	String getContent();
 
 	/**
-	 * Get a list of the HTTP headers which came with the response
+	 * What headers did the server send?
+     *
+     * @return A list of headers
 	 */
 	List<Header> getHeaders();
 
