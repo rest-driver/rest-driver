@@ -6,7 +6,7 @@
 	<name>REST Server Driver</name>
 
 	<parent>
-		<groupId>com.googlecode.rest-driver</groupId>
+		<groupId>com.github.rest-driver</groupId>
 		<artifactId>rest-driver</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -14,12 +14,12 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.googlecode.rest-driver</groupId>
+			<groupId>com.github.rest-driver</groupId>
 			<artifactId>rest-driver-types</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.googlecode.rest-driver</groupId>
+			<groupId>com.github.rest-driver</groupId>
 			<artifactId>rest-client-driver</artifactId>
 		</dependency>
 

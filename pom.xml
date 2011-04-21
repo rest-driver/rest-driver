@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.googlecode.rest-driver</groupId>
+	<groupId>com.github.rest-driver</groupId>
 	<artifactId>rest-driver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -11,8 +11,8 @@
 	<name>REST Driver Parent</name>
 
     <scm>
-        <connection>scm:hg:https://rest-driver.googlecode.com/hg</connection>
-        <developerConnection>scm:hg:https://rest-driver.googlecode.com/hg</developerConnection>
+        <connection>scm:hg:https://github.com/rest-driver</connection>
+        <developerConnection>scm:hg:https://github.com/rest-driver</developerConnection>
     </scm>
 
 	<modules>
@@ -48,13 +48,13 @@
 		<dependencies>
 
 			<dependency>
-				<groupId>com.googlecode.rest-driver</groupId>
+				<groupId>com.github.rest-driver</groupId>
 				<artifactId>rest-driver-types</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		
 			<dependency>
-				<groupId>com.googlecode.rest-driver</groupId>
+				<groupId>com.github.rest-driver</groupId>
 				<artifactId>rest-client-driver</artifactId>
 				<version>${project.version}</version>
 			</dependency>
