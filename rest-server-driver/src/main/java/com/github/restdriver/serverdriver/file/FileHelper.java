@@ -27,7 +27,6 @@ public class FileHelper {
         InputStream stream = FileHelper.class.getClassLoader().getResourceAsStream(fileName);
 
         if (stream == null) {
-            System.out.println("WE'RE OUT!");
             throw new RuntimeFileNotFoundException("Couldn't find file " + fileName);
             
         }
