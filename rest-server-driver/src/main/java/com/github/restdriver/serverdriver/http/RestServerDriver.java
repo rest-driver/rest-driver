@@ -166,9 +166,16 @@ public final class RestServerDriver {
 
 
     /******************************************************************************
-     *                              HTTP POST methods                             *
+     *                            HTTP DELETE methods                             *
      ******************************************************************************/
 
+    /**
+     * Send an HTTP delete
+     *
+     * @param url The resource to delete
+     * @param headers Any http headers
+     * @return Response encapsulating the server's reply
+     */
     public static Response delete(Object url, Header... headers) {
         HttpDelete request = new HttpDelete(url.toString());
         request.setHeaders( headersFromHeaderList( headers ) );
@@ -198,24 +205,8 @@ public final class RestServerDriver {
 
 
 
-    @Deprecated
-    // Remove this once things are tidy further up
-    private static org.apache.http.Header[] headersFromRequest(Request request) {
-        List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
-
-        if (request.getHeaders() != null) {
-            for (Header header : request.getHeaders()) {
-                headers.add(new BasicHeader(header.getName(), header.getValue()));
-            }
-        }
-
-        return headers.toArray(new org.apache.http.Header[headers.size()]);
-    }
-
     /**
-     * turns an array of restdriver headers into an array of apache http headers
-     * @param headerList
-     * @return
+     * turns an array of rest-driver headers into an array of apache http headers
      */
     private static org.apache.http.Header[] headersFromHeaderList(Header[] headerList) {
         List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
@@ -229,25 +220,9 @@ public final class RestServerDriver {
         return headers.toArray(new org.apache.http.Header[headers.size()]);
     }
 
-
-    @Deprecated
-    // Remove this once things are tidy further up
-    private static HttpEntity entityFromRequest(ContentRequest request) {
-        try {
-            return new StringEntity(request.getContent(), DEFAULT_CONTENT_ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error setting entity of request", e);
-        }
-    }
-
-    private static HttpEntity entityFromString(String content) {
-        try {
-            return new StringEntity(content, DEFAULT_CONTENT_ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error setting entity of request", e);
-        }
-    }
-
+    /**
+     * turns a rest-driver RequestBody into an apache HttpEntity
+     */
     private static HttpEntity entityFromRequestBody(RequestBody body) {
         try {
             return new StringEntity(body.getContent(), DEFAULT_CONTENT_ENCODING);
