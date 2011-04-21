@@ -7,28 +7,28 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class WithSize extends TypeSafeMatcher<JsonNode> {
+public final class WithSize extends TypeSafeMatcher<JsonNode> {
 
 	private final Matcher<?> matcher;
 
-	public WithSize(final Matcher<?> matcher) {
+	public WithSize(Matcher<?> matcher) {
 		this.matcher = matcher;
 	}
 
 	@Override
-	public void describeTo(final Description description) {
+	public void describeTo(Description description) {
 		description.appendText("A JSON array with size: ");
 		matcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(final JsonNode node) {
+	public boolean matchesSafely(JsonNode node) {
 
 		if (!node.isArray()) {
 			return false;
 		}
 
-		final Iterator<JsonNode> nodeIterator = node.getElements();
+		Iterator<JsonNode> nodeIterator = node.getElements();
 		int nodeCount = 0;
 
 		while (nodeIterator.hasNext()) {

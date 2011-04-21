@@ -5,24 +5,24 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class HasResponseBody extends TypeSafeMatcher<Response> {
+public final class HasResponseBody extends TypeSafeMatcher<Response> {
 
 	private final Matcher<String> responseMatcher;
 
-	public HasResponseBody(final Matcher<String> responseMatcher) {
+	public HasResponseBody(Matcher<String> responseMatcher) {
 		this.responseMatcher = responseMatcher;
 	}
 
 	@Override
-	public void describeTo(final Description description) {
+	public void describeTo(Description description) {
 		description.appendText("HttpMethod with response body matching:");
 		responseMatcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(final Response actualResponse) {
+	public boolean matchesSafely(Response actualResponse) {
 
-		final String actualContent = actualResponse.getContent();
+		String actualContent = actualResponse.getContent();
 
 		return responseMatcher.matches(actualContent);
 	}

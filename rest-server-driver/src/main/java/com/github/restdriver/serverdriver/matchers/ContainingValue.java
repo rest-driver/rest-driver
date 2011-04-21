@@ -7,22 +7,22 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class ContainingValue extends TypeSafeMatcher<JsonNode> {
+public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
 
 	private final Matcher<?> matcher;
 
-	public ContainingValue(final Matcher<?> matcher) {
+	public ContainingValue(Matcher<?> matcher) {
 		this.matcher = matcher;
 	}
 
 	@Override
-	public void describeTo(final Description description) {
+	public void describeTo(Description description) {
 		description.appendText("A JSON array containing: ");
 		matcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(final JsonNode node) {
+	public boolean matchesSafely(JsonNode node) {
 
 		if (!node.isArray()) {
 			return false;
@@ -32,7 +32,7 @@ public class ContainingValue extends TypeSafeMatcher<JsonNode> {
 
 		while (nodeIterator.hasNext()) {
 
-			final String value = nodeIterator.next().getTextValue();
+			String value = nodeIterator.next().getTextValue();
 
 			if (matcher.matches(value)) {
 				return true;

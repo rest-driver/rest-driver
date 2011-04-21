@@ -14,16 +14,16 @@ import com.github.restdriver.types.Header;
  * 
  * assertThat(response.getHeaders(), hasItem(new Header("header", "value")))
  */
-public class HasHeader extends TypeSafeMatcher<Response> {
+public final class HasHeader extends TypeSafeMatcher<Response> {
 
 	private final String name;
 
-	public HasHeader(final String name) {
+	public HasHeader(String name) {
 		this.name = name;
 	}
 
 	@Override
-	protected final boolean matchesSafely(final Response response) {
+	protected boolean matchesSafely(Response response) {
 
 		for (final Header header : response.getHeaders()) {
 			if (StringUtils.equals(header.getName(), name)) {
@@ -36,13 +36,13 @@ public class HasHeader extends TypeSafeMatcher<Response> {
 	}
 
 	@Override
-	public final void describeTo(final Description description) {
+	public void describeTo(Description description) {
 		description.appendText("Response with header named '" + name + "'");
 	}
 
 	@Override
-	protected final void describeMismatchSafely(final Response response, final Description mismatchDescription) {
-		final List<Header> headers = response.getHeaders();
+	protected void describeMismatchSafely(Response response, Description mismatchDescription) {
+		List<Header> headers = response.getHeaders();
 
 		if (headers.isEmpty()) {
 			mismatchDescription.appendText("Response has no headers");

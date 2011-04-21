@@ -5,26 +5,26 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-public class HasJsonValue extends TypeSafeMatcher<JsonNode> {
+public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
 
 	private final String jsonFieldName;
 	private final Matcher<?> responseMatcher;
 
-	public HasJsonValue(final String jsonNode, final Matcher<?> responseMatcher) {
+	public HasJsonValue(String jsonNode, Matcher<?> responseMatcher) {
 		this.jsonFieldName = jsonNode;
 		this.responseMatcher = responseMatcher;
 	}
 
 	@Override
-	public void describeTo(final Description description) {
+	public void describeTo(Description description) {
 		description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
 		responseMatcher.describeTo(description);
 	}
 
 	@Override
-	public boolean matchesSafely(final JsonNode jsonNode) {
+	public boolean matchesSafely(JsonNode jsonNode) {
 
-		final JsonNode node = jsonNode.get(jsonFieldName);
+		JsonNode node = jsonNode.get(jsonFieldName);
 
 		if (node == null) {
 			return false;
