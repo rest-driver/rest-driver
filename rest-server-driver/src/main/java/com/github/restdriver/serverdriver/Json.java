@@ -1,4 +1,4 @@
-package com.github.restdriver.serverdriver.json;
+package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
 
@@ -14,9 +14,9 @@ import org.hamcrest.TypeSafeMatcher;
 import com.github.restdriver.serverdriver.matchers.WithSize;
 import com.github.restdriver.serverdriver.matchers.WithValueAt;
 
-public final class JsonAcceptanceTestHelper {
+public final class Json {
 
-	private static ObjectMapper MAPPER = new ObjectMapper();
+	private static final ObjectMapper MAPPER = new ObjectMapper();
 
 	public static JsonNode asJson(Response response) {
 		return asJson(response.getContent());

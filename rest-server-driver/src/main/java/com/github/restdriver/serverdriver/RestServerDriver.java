@@ -1,5 +1,6 @@
-package com.github.restdriver.serverdriver.http;
+package com.github.restdriver.serverdriver;
 
+import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 import com.github.restdriver.serverdriver.http.request.*;

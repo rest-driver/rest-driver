@@ -7,8 +7,8 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.http.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.matchers.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.serverdriver.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

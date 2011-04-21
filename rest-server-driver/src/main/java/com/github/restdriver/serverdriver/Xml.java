@@ -1,4 +1,4 @@
-package com.github.restdriver.serverdriver.xml;
+package com.github.restdriver.serverdriver;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,7 +14,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-public final class XmlAcceptanceTestHelper {
+public final class Xml {
 
 	public static Element asXml(String xml) {
 

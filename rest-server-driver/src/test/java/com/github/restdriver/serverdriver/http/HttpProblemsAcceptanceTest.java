@@ -10,8 +10,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import static com.github.restdriver.serverdriver.http.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.matchers.Matchers.hasStatusCode;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

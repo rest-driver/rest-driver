@@ -7,9 +7,9 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.http.RestServerDriver.delete;
-import static com.github.restdriver.serverdriver.http.RestServerDriver.header;
-import static com.github.restdriver.serverdriver.matchers.Matchers.hasStatusCode;
+import static com.github.restdriver.serverdriver.RestServerDriver.delete;
+import static com.github.restdriver.serverdriver.RestServerDriver.header;
+import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

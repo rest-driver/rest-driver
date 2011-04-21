@@ -1,6 +1,10 @@
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.serverdriver;
 
 import com.github.restdriver.serverdriver.http.response.Response;
+import com.github.restdriver.serverdriver.matchers.HasHeader;
+import com.github.restdriver.serverdriver.matchers.HasHeaderWithValue;
+import com.github.restdriver.serverdriver.matchers.HasResponseBody;
+import com.github.restdriver.serverdriver.matchers.HasStatusCode;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
