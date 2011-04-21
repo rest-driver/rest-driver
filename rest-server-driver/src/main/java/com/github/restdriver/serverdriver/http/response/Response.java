@@ -2,7 +2,7 @@ package com.github.restdriver.serverdriver.http.response;
 
 import java.util.List;
 
-import com.github.restdriver.types.Header;
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
  * Encapsulates a response from an HTTP server

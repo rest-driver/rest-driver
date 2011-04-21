@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.github.restdriver.types.Header;
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
  * TODO: Is this class necessary we can do:

@@ -16,7 +16,6 @@
     </scm>
 
 	<modules>
-		<module>rest-driver-types</module>
 		<module>rest-server-driver</module>
 		<module>rest-client-driver</module>
 	</modules>
@@ -47,12 +46,6 @@
 	
 		<dependencies>
 
-			<dependency>
-				<groupId>com.github.rest-driver</groupId>
-				<artifactId>rest-driver-types</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-		
 			<dependency>
 				<groupId>com.github.rest-driver</groupId>
 				<artifactId>rest-client-driver</artifactId>

@@ -1,7 +1,7 @@
 package com.github.restdriver.serverdriver.matchers;
 
+import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.types.Header;
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

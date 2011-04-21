@@ -1,6 +1,6 @@
 package com.github.restdriver.serverdriver.http.response;
 
-import com.github.restdriver.types.Header;
+import com.github.restdriver.serverdriver.http.Header;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

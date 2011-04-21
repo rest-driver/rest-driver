@@ -1,10 +1,9 @@
 package com.github.restdriver.serverdriver.http;
 
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
-import com.github.restdriver.types.Header;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
 import org.junit.Before;
 import org.junit.Test;
 

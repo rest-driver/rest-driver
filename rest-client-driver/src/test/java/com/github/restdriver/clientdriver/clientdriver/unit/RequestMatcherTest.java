@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
 import junit.framework.Assert;
 
@@ -17,8 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 
 public class RequestMatcherTest {
 

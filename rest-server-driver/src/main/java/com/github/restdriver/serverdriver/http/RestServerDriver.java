@@ -5,7 +5,6 @@ import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostExcep
 import com.github.restdriver.serverdriver.http.request.*;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
-import com.github.restdriver.types.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

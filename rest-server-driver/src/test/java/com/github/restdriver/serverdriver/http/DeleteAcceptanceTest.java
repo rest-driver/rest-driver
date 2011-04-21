@@ -1,15 +1,13 @@
 package com.github.restdriver.serverdriver.http;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
-import com.github.restdriver.types.Header;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 import org.junit.Before;
 import org.junit.Test;
 
 import static com.github.restdriver.serverdriver.http.RestServerDriver.delete;
-import static com.github.restdriver.serverdriver.http.RestServerDriver.get;
 import static com.github.restdriver.serverdriver.http.RestServerDriver.header;
 import static com.github.restdriver.serverdriver.matchers.Matchers.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;

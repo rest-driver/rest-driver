@@ -1,8 +1,5 @@
 package com.github.restdriver.clientdriver;
 
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
-
 /**
  * Pairs an expected request with its response.
  */

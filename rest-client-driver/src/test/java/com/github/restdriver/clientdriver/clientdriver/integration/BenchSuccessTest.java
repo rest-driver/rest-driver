@@ -1,9 +1,9 @@
 package com.github.restdriver.clientdriver.clientdriver.integration;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverRequest.Method;
-import com.github.restdriver.types.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;

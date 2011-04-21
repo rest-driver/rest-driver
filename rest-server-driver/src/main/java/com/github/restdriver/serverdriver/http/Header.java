@@ -1,4 +1,4 @@
-package com.github.restdriver.types;
+package com.github.restdriver.serverdriver.http;
 
 import org.apache.commons.lang.StringUtils;
 

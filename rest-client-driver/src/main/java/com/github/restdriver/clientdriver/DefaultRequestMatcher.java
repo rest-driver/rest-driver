@@ -9,9 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import org.apache.commons.io.IOUtils;
 
-import com.github.restdriver.types.ClientDriverRequest;
-import org.apache.commons.lang.StringUtils;
-
 /**
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
  * path &amp; query string, and any body of the request.
@@ -91,7 +88,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 throw new ClientDriverInternalException("Internal error, IOException while reading from body content",
                         ioException);
             }
-
         }
 
         return true;
@@ -101,7 +97,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     private boolean isStringOrPattternMatch(String actual, Object expected) {
         if (expected instanceof String) {
 
-            return StringUtils.equals(actual, (String) expected);
+            return actual.equals(expected);
 
         } else if (expected instanceof Pattern) {
 

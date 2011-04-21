@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -12,9 +14,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
-import com.github.restdriver.types.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 
 public class BenchFailTest {
 

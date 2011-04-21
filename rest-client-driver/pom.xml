@@ -13,11 +13,6 @@
 	<dependencies>
 
 		<dependency>
-			<groupId>com.github.rest-driver</groupId>
-			<artifactId>rest-driver-types</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit-dep</artifactId>
 			<optional>true</optional>

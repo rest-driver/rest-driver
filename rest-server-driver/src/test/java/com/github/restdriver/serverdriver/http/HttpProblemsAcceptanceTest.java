@@ -4,8 +4,6 @@ import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,8 +44,7 @@ public class HttpProblemsAcceptanceTest extends ClientDriverUnitTest {
         final Response response = get("http://localhost:" + getFreePort());
     }
 
-
-
+    
     /**
      * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
      */

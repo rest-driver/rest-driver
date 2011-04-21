@@ -8,9 +8,6 @@ import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
 import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 import org.eclipse.jetty.server.Server;
 
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
-
 /**
  * The main class which acts as a facade for the Client Driver
  */

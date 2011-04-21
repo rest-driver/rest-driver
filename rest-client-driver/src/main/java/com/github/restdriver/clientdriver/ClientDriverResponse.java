@@ -1,4 +1,4 @@
-package com.github.restdriver.types;
+package com.github.restdriver.clientdriver;
 
 import java.util.HashMap;
 import java.util.Map;

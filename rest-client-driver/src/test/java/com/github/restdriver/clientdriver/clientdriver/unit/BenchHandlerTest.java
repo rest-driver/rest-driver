@@ -8,6 +8,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
@@ -20,8 +22,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-import com.github.restdriver.types.ClientDriverRequest;
-import com.github.restdriver.types.ClientDriverResponse;
 
 public class BenchHandlerTest {
 
