@@ -4,7 +4,7 @@ import com.googlecode.rd.types.Header;
 
 public class GetRequest extends BaseRequest {
 
-	public GetRequest(final String url, final Header[] headers) {
+	public GetRequest(String url, Header[] headers) {
 		super(url, headers);
 	}
 

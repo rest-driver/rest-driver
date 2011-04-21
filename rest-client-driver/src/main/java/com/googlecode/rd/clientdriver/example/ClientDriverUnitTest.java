@@ -17,9 +17,7 @@ public abstract class ClientDriverUnitTest {
     /**
      * Starts the bench server. This will be called before your subclass'
      * 
-     * @Before-annotated methods.
-     * 
-     * @see
+     * @Before -annotated methods.
      */
     @Before
     public void startClientDriver() {
