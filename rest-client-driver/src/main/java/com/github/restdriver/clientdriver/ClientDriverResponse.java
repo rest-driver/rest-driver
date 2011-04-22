@@ -38,7 +38,11 @@ public final class ClientDriverResponse {
      * @return The content, or an empty string if the content is null.
      */
     public String getContent() {
-        return (content == null ? "" : content);
+        if (content == null) {
+            return "";
+        } else {
+            return content;
+        }
     }
 
     /**

@@ -13,7 +13,7 @@
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
     <module name="JavadocMethod">
-      <property name="excludeScope" value="private"/>
+      <property name="scope" value="public"/>
       <property name="logLoadErrors" value="true"/>
       <property name="suppressLoadErrors" value="true"/>
     </module>
