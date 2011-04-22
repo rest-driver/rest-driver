@@ -1,24 +1,27 @@
 package com.github.restdriver.serverdriver;
 
+import static org.hamcrest.Matchers.*;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.matchers.HasHeader;
 import com.github.restdriver.serverdriver.matchers.HasHeaderWithValue;
 import com.github.restdriver.serverdriver.matchers.HasResponseBody;
 import com.github.restdriver.serverdriver.matchers.HasStatusCode;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-
-import static org.hamcrest.Matchers.is;
 
 /**
+ * Class to help easy & fluent use of our matchers.
+ *
  * User: mjg
  * Date: 21/04/11
  * Time: 11:46
- *
- * Class to help easy & fluent use of our matchers
  */
-
 public final class Matchers {
+
+    private Matchers() {
+    }
 
     public static TypeSafeMatcher<Response> hasStatusCode(int statusCode) {
         return new HasStatusCode(is(statusCode));

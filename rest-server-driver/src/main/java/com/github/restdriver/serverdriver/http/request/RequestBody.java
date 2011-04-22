@@ -1,12 +1,11 @@
 package com.github.restdriver.serverdriver.http.request;
 
 /**
+ * Encapsulates a Request body for a PUT or a POST.
+ * 
  * User: mjg
  * Date: 21/04/11
  * Time: 14:32
- *
- * Encapsulates a Request body for a PUT or a POST
- * 
  */
 public final class RequestBody {
 

@@ -1,19 +1,20 @@
 package com.github.restdriver.serverdriver.http.response;
 
-import com.github.restdriver.serverdriver.http.Header;
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.join;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
- * Our class which describes an HTTP response
+ * Our class which describes an HTTP response.
  */
 public final class DefaultResponse implements Response {
 
@@ -23,7 +24,7 @@ public final class DefaultResponse implements Response {
     private final long responseTime;
 
     /**
-     * Constructor from apache HttpResponse
+     * Constructor from apache HttpResponse.
      * @param response the HttpResponse
      * @param responseTime time taken for the request in milliseconds
      */
@@ -33,7 +34,6 @@ public final class DefaultResponse implements Response {
         this.headers = headersFromResponse(response);
         this.responseTime = responseTime;
     }
-
 
     @Override
     public int getStatusCode() {

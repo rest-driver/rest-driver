@@ -7,39 +7,42 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Matcher which checks that a JSON array contains the specified value.
+ */
 public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
 
-	private final Matcher<?> matcher;
+    private final Matcher<?> matcher;
 
-	public ContainingValue(Matcher<?> matcher) {
-		this.matcher = matcher;
-	}
+    public ContainingValue(Matcher<?> matcher) {
+        this.matcher = matcher;
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("A JSON array containing: ");
-		matcher.describeTo(description);
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("A JSON array containing: ");
+        matcher.describeTo(description);
+    }
 
-	@Override
-	public boolean matchesSafely(JsonNode node) {
+    @Override
+    public boolean matchesSafely(JsonNode node) {
 
-		if (!node.isArray()) {
-			return false;
-		}
+        if (!node.isArray()) {
+            return false;
+        }
 
-		Iterator<JsonNode> nodeIterator = node.getElements();
+        Iterator<JsonNode> nodeIterator = node.getElements();
 
-		while (nodeIterator.hasNext()) {
+        while (nodeIterator.hasNext()) {
 
-			String value = nodeIterator.next().getTextValue();
+            String value = nodeIterator.next().getTextValue();
 
-			if (matcher.matches(value)) {
-				return true;
-			}
-		}
+            if (matcher.matches(value)) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 }

@@ -5,40 +5,43 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Matcher to verify that a JsonNode has an array with the specified field name.
+ */
 public final class HasJsonArray extends TypeSafeMatcher<JsonNode> {
 
-	private final String jsonFieldName;
-	private final Matcher<?> responseMatcher;
+    private final String jsonFieldName;
+    private final Matcher<?> responseMatcher;
 
-	public HasJsonArray(String jsonNode, Matcher<?> responseMatcher) {
-		this.jsonFieldName = jsonNode;
-		this.responseMatcher = responseMatcher;
-	}
+    public HasJsonArray(String jsonNode, Matcher<?> responseMatcher) {
+        this.jsonFieldName = jsonNode;
+        this.responseMatcher = responseMatcher;
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
-		responseMatcher.describeTo(description);
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
+        responseMatcher.describeTo(description);
+    }
 
-	@Override
-	public boolean matchesSafely(JsonNode jsonNode) {
+    @Override
+    public boolean matchesSafely(JsonNode jsonNode) {
 
-		 JsonNode node = jsonNode.get(jsonFieldName);
+        JsonNode node = jsonNode.get(jsonFieldName);
 
-		if (node == null) {
-			return false;
-		}
+        if (node == null) {
+            return false;
+        }
 
-		if (node.isArray()) {
+        if (node.isArray()) {
 
-			return responseMatcher.matches(node);
+            return responseMatcher.matches(node);
 
-		} else {
-			return false;
+        } else {
+            return false;
 
-		}
+        }
 
-	}
+    }
 
 }

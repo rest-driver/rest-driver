@@ -1,15 +1,18 @@
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.http.Header;
-import com.github.restdriver.serverdriver.http.response.Response;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import java.util.List;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
+ * Matcher to enable assertion on HTTP header values.
+ * 
  * TODO: Is this class necessary we can do:
  * <p/>
  * assertThat(response.getHeaders(), hasItem(new Header("header", "value")))

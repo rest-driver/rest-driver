@@ -3,6 +3,8 @@ package com.github.restdriver.serverdriver.file;
 import java.io.FileNotFoundException;
 
 /**
+ * Runtime wrapper for {@link FileNotFoundException}.
+ * 
  * User: mjg
  * Date: 21/04/11
  * Time: 12:08

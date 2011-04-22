@@ -14,47 +14,55 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
+/**
+ * Provides static helper methods for XML representations.
+ * 
+ * @author mjg
+ */
 public final class Xml {
 
-	public static Element asXml(String xml) {
+    private Xml() {
+    }
 
-		try {
-			Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
-			return document;
+    public static Element asXml(String xml) {
 
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to create XML document", e);
+        try {
+            Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
+            return document;
 
-		} catch (SAXException e) {
-			throw new RuntimeException("Failed to create XML document", e);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to create XML document", e);
 
-		} catch (ParserConfigurationException e) {
-			throw new RuntimeException("Failed to create XML document", e);
-		}
+        } catch (SAXException e) {
+            throw new RuntimeException("Failed to create XML document", e);
 
-	}
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("Failed to create XML document", e);
+        }
 
-	public static String extractXPathValue(String expression, Element element) {
+    }
 
-		XPath xPath = XPathFactory.newInstance().newXPath();
+    public static String extractXPathValue(String expression, Element element) {
 
-		XPathExpression compiledXPath;
+        XPath xPath = XPathFactory.newInstance().newXPath();
 
-		try {
-			compiledXPath = xPath.compile(expression);
+        XPathExpression compiledXPath;
 
-		} catch (XPathExpressionException e) {
-			throw new RuntimeException("Failed to compile XPath '" + expression + "'", e);
+        try {
+            compiledXPath = xPath.compile(expression);
 
-		}
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Failed to compile XPath '" + expression + "'", e);
 
-		try {
-			return compiledXPath.evaluate(element, XPathConstants.STRING).toString();
-            
-		} catch (XPathExpressionException e) {
-			throw new RuntimeException("Failed to evaluate XPath '" + expression + "'", e);
-		}
+        }
 
-	}
+        try {
+            return compiledXPath.evaluate(element, XPathConstants.STRING).toString();
+
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Failed to evaluate XPath '" + expression + "'", e);
+        }
+
+    }
 
 }

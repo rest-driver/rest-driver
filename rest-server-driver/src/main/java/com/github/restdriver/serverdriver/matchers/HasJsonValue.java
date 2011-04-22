@@ -5,6 +5,9 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+/**
+ * Matcher to check that a given key has a particular value in a JsonNode.
+ */
 public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
 
     private final String jsonFieldName;

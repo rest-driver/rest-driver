@@ -1,10 +1,14 @@
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.http.response.Response;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.github.restdriver.serverdriver.http.response.Response;
+
+/**
+ * Matcher to check whether an HTTP response has a particular status code. 
+ */
 public final class HasStatusCode extends TypeSafeMatcher<Response> {
 
     private final Matcher<Integer> statusCodeMatcher;

@@ -1,15 +1,19 @@
 package com.github.restdriver.serverdriver;
 
-import com.github.restdriver.serverdriver.http.Header;
-import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
-import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
-import com.github.restdriver.serverdriver.http.request.*;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.http.response.DefaultResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -17,17 +21,27 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
+import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
+import com.github.restdriver.serverdriver.http.request.RequestBody;
+import com.github.restdriver.serverdriver.http.response.DefaultResponse;
+import com.github.restdriver.serverdriver.http.response.Response;
 
+/**
+ * Provides static methods for performing HTTP requests against a resource.
+ * 
+ * @author mjg
+ */
 public final class RestServerDriver {
 
-    private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
+    private RestServerDriver() {
+    }
 
-    /******************************************************************************
+    private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
+    private static final int DEFAULT_HTTP_TIMEOUT_MS = 10000;
+
+    /* ****************************************************************************
      *                      Helper methods to make value objects                  *
      ******************************************************************************/
 
@@ -36,18 +50,16 @@ public final class RestServerDriver {
     }
 
     /**
-     * Make a RequestBody for PUT or POST
+     * Make a RequestBody for PUT or POST.
      *
      * @param content Request body content as String
      * @param contentType content-type eg text/plain
      */
-    public static RequestBody body(String content, String contentType){
+    public static RequestBody body(String content, String contentType) {
         return new RequestBody(content, contentType);
     }
 
-
-
-    /******************************************************************************
+    /* ****************************************************************************
      *                               HTTP GET methods                             *
      ******************************************************************************/
 
@@ -61,27 +73,30 @@ public final class RestServerDriver {
      */
     public static Response get(Object url, Header... headers) {
         HttpGet request = new HttpGet(url.toString());
-        request.setHeaders( headersFromHeaderList( headers ) );
+        request.setHeaders(headersFromHeaderList(headers));
         return makeHttpRequest(request);
     }
 
+    /**
+     * Synonym for {@link #get(Object, Header...)}.
+     */
+    public static Response getOf(Object url, Header... headers) {
+        return get(url, headers);
+    }
 
     /**
-     * Synonym for {@link #get(Object, Header...)}
+     * Synonym for {@link #get(Object, Header...)}.
      */
-    public static Response getOf(Object url, Header... headers)   { return get(url, headers); }
+    public static Response doGetOf(Object url, Header... headers) {
+        return get(url, headers);
+    }
 
     /**
-     * Synonym for {@link #get(Object, Header...)}
+     * Synonym for {@link #get(Object, Header...)}.
      */
-    public static Response doGetOf(Object url, Header... headers) { return get(url, headers); }
-
-    /**
-     * Synonym for {@link #get(Object, Header...)}
-     */
-    public static Response getting(Object url, Header... headers) { return get(url, headers); }
-
-
+    public static Response getting(Object url, Header... headers) {
+        return get(url, headers);
+    }
 
     /******************************************************************************
      *                              HTTP POST methods                             *
@@ -96,35 +111,38 @@ public final class RestServerDriver {
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response post(Object url, RequestBody body, Header... headers){
+    public static Response post(Object url, RequestBody body, Header... headers) {
         HttpPost request = new HttpPost(url.toString());
-        request.setHeaders( headersFromHeaderList( headers ) );
+        request.setHeaders(headersFromHeaderList(headers));
 
-        if (body != null){
+        if (body != null) {
             request.setEntity(entityFromRequestBody(body));
-            request.addHeader( new BasicHeader("Content-type", body.getContentType()) );
+            request.addHeader(new BasicHeader("Content-type", body.getContentType()));
         }
 
         return makeHttpRequest(request);
     }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}
+     * Synonym for {@link #post(Object, RequestBody, Header...)}.
      */
-    public static Response postOf(Object url, RequestBody body, Header... headers)   { return post(url, body, headers); }
+    public static Response postOf(Object url, RequestBody body, Header... headers) {
+        return post(url, body, headers);
+    }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}
+     * Synonym for {@link #post(Object, RequestBody, Header...)}.
      */
-    public static Response doPostOf(Object url, RequestBody body, Header... headers) { return post(url, body, headers); }
+    public static Response doPostOf(Object url, RequestBody body, Header... headers) {
+        return post(url, body, headers);
+    }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}
+     * Synonym for {@link #post(Object, RequestBody, Header...)}.
      */
-    public static Response posting(Object url, RequestBody body, Header... headers) { return post(url, body, headers); }
-
-
-
+    public static Response posting(Object url, RequestBody body, Header... headers) {
+        return post(url, body, headers);
+    }
 
     /******************************************************************************
      *                              HTTP POST methods                             *
@@ -139,41 +157,45 @@ public final class RestServerDriver {
      *
      * @return Response encapsulating the server's reply
      */
-     public static Response put(Object url, RequestBody body, Header... headers){
+    public static Response put(Object url, RequestBody body, Header... headers) {
         HttpPut request = new HttpPut(url.toString());
-        request.setHeaders( headersFromHeaderList( headers ) );
+        request.setHeaders(headersFromHeaderList(headers));
 
-        if (body != null){
+        if (body != null) {
             request.setEntity(entityFromRequestBody(body));
-            request.addHeader( new BasicHeader("Content-type", body.getContentType()) );
+            request.addHeader(new BasicHeader("Content-type", body.getContentType()));
         }
 
         return makeHttpRequest(request);
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     * Synonym for {@link #put(Object, RequestBody, Header...)}.
      */
-    public static Response putOf(Object url, RequestBody body, Header... headers)   { return put(url, body, headers); }
+    public static Response putOf(Object url, RequestBody body, Header... headers) {
+        return put(url, body, headers);
+    }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     * Synonym for {@link #put(Object, RequestBody, Header...)}.
      */
-    public static Response doPutOf(Object url, RequestBody body, Header... headers) { return put(url, body, headers); }
+    public static Response doPutOf(Object url, RequestBody body, Header... headers) {
+        return put(url, body, headers);
+    }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}
+     * Synonym for {@link #put(Object, RequestBody, Header...)}.
      */
-    public static Response putting(Object url, RequestBody body, Header... headers) { return put(url, body, headers); }
-
-
+    public static Response putting(Object url, RequestBody body, Header... headers) {
+        return put(url, body, headers);
+    }
 
     /******************************************************************************
      *                            HTTP DELETE methods                             *
      ******************************************************************************/
 
     /**
-     * Send an HTTP delete
+     * Send an HTTP delete.
      *
      * @param url The resource to delete
      * @param headers Any http headers
@@ -181,35 +203,37 @@ public final class RestServerDriver {
      */
     public static Response delete(Object url, Header... headers) {
         HttpDelete request = new HttpDelete(url.toString());
-        request.setHeaders( headersFromHeaderList( headers ) );
+        request.setHeaders(headersFromHeaderList(headers));
         return makeHttpRequest(request);
     }
 
     /**
-     * Synonym for {@link #delete(Object, Header...)}
+     * Synonym for {@link #delete(Object, Header...)}.
      */
-    public static Response deleteOf(Object url, Header... headers)   { return delete(url, headers); }
+    public static Response deleteOf(Object url, Header... headers) {
+        return delete(url, headers);
+    }
 
     /**
-     * Synonym for {@link #delete(Object, Header...)}
+     * Synonym for {@link #delete(Object, Header...)}.
      */
-    public static Response doDeleteOf(Object url, Header... headers) { return delete(url, headers); }
+    public static Response doDeleteOf(Object url, Header... headers) {
+        return delete(url, headers);
+    }
 
     /**
-     * Synonym for {@link #delete(Object, Header...)}
+     * Synonym for {@link #delete(Object, Header...)}.
      */
-    public static Response deleting(Object url, Header... headers) { return delete(url, headers); }
-
-    
+    public static Response deleting(Object url, Header... headers) {
+        return delete(url, headers);
+    }
 
     /*
      * Internal methods for creating requests and responses
      */
 
-
-
     /**
-     * turns an array of rest-driver headers into an array of apache http headers
+     * turns an array of rest-driver headers into an array of apache http headers.
      */
     private static org.apache.http.Header[] headersFromHeaderList(Header[] headerList) {
         List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
@@ -224,7 +248,7 @@ public final class RestServerDriver {
     }
 
     /**
-     * turns a rest-driver RequestBody into an apache HttpEntity
+     * turns a rest-driver RequestBody into an apache HttpEntity.
      */
     private static HttpEntity entityFromRequestBody(RequestBody body) {
         try {
@@ -234,9 +258,8 @@ public final class RestServerDriver {
         }
     }
 
-
     /**
-     * This is the method which actually makes http requests over the wire
+     * This is the method which actually makes http requests over the wire.
      *
      * @param request The Apache Http request to make
      *
@@ -247,7 +270,7 @@ public final class RestServerDriver {
         HttpClient httpClient = new DefaultHttpClient();
 
         HttpParams httpParams = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, 10000);
+        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_HTTP_TIMEOUT_MS);
         HttpConnectionParams.setSoTimeout(httpParams, 0);
 
         HttpResponse response;
@@ -257,13 +280,13 @@ public final class RestServerDriver {
             response = httpClient.execute(request);
             long endTime = System.currentTimeMillis();
 
-            return new DefaultResponse( response, (endTime - startTime) );
+            return new DefaultResponse(response, (endTime - startTime));
 
-        } catch (UnknownHostException uhe){
-            throw new RuntimeUnknownHostException( uhe );
+        } catch (UnknownHostException uhe) {
+            throw new RuntimeUnknownHostException(uhe);
 
-        } catch (HttpHostConnectException hhce){
-            throw new RuntimeHttpHostConnectException( hhce );
+        } catch (HttpHostConnectException hhce) {
+            throw new RuntimeHttpHostConnectException(hhce);
 
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);
