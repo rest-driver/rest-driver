@@ -8,6 +8,9 @@ import org.apache.http.conn.HttpHostConnectException;
  * Time: 16:33
  */
 public class RuntimeHttpHostConnectException extends RuntimeException {
+
+    private static final long serialVersionUID = -8998669008887196143L;
+
     public RuntimeHttpHostConnectException(HttpHostConnectException hhce) {
         super(hhce);
     }

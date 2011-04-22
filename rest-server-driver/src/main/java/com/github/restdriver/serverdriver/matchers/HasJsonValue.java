@@ -7,40 +7,40 @@ import org.hamcrest.TypeSafeMatcher;
 
 public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
 
-	private final String jsonFieldName;
-	private final Matcher<?> responseMatcher;
+    private final String jsonFieldName;
+    private final Matcher<?> responseMatcher;
 
-	public HasJsonValue(String jsonNode, Matcher<?> responseMatcher) {
-		this.jsonFieldName = jsonNode;
-		this.responseMatcher = responseMatcher;
-	}
+    public HasJsonValue(String jsonNode, Matcher<?> responseMatcher) {
+        this.jsonFieldName = jsonNode;
+        this.responseMatcher = responseMatcher;
+    }
 
-	@Override
-	public void describeTo(Description description) {
-		description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
-		responseMatcher.describeTo(description);
-	}
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
+        responseMatcher.describeTo(description);
+    }
 
-	@Override
-	public boolean matchesSafely(JsonNode jsonNode) {
+    @Override
+    public boolean matchesSafely(JsonNode jsonNode) {
 
-		JsonNode node = jsonNode.get(jsonFieldName);
+        JsonNode node = jsonNode.get(jsonFieldName);
 
-		if (node == null) {
-			return false;
-		}
+        if (node == null) {
+            return false;
+        }
 
-		if (node.isInt()) {
-			return responseMatcher.matches(node.getIntValue());
+        if (node.isInt()) {
+            return responseMatcher.matches(node.getIntValue());
 
-		} else if (node.isTextual()) {
-			return responseMatcher.matches(node.getTextValue());
+        } else if (node.isTextual()) {
+            return responseMatcher.matches(node.getTextValue());
 
-		} else {
-			return false;
+        } else {
+            return false;
 
-		}
+        }
 
-	}
+    }
 
 }

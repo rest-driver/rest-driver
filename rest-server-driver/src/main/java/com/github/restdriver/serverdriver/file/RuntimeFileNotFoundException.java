@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
  */
 public class RuntimeFileNotFoundException extends RuntimeException {
 
+    private static final long serialVersionUID = 3651887477900227630L;
+
     public RuntimeFileNotFoundException(FileNotFoundException fnfe) {
         super(fnfe);
     }

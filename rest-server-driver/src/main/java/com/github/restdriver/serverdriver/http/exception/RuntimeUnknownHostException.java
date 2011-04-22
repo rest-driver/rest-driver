@@ -9,9 +9,11 @@ import java.net.UnknownHostException;
  *
  * RuntimeException wrapper for java.net.UnknownHostException
  */
-public final class RuntimeUnknownHostException extends RuntimeException{
+public final class RuntimeUnknownHostException extends RuntimeException {
 
-    public RuntimeUnknownHostException(UnknownHostException e){
+    private static final long serialVersionUID = -3385006541772137637L;
+
+    public RuntimeUnknownHostException(UnknownHostException e) {
         super(e);
     }
 
