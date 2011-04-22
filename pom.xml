@@ -11,8 +11,9 @@
 	<name>REST Driver Parent</name>
 
     <scm>
-        <connection>scm:hg:https://github.com/rest-driver</connection>
-        <developerConnection>scm:hg:https://github.com/rest-driver</developerConnection>
+        <connection>scm:git:git@github.com:rest-driver/rest-driver.git</connection>
+        <url>scm:git:git@github.com:rest-driver/rest-driver.git</url>
+        <developerConnection>scm:git:git@github.com:rest-driver/rest-driver.git</developerConnection>
     </scm>
 
 	<modules>
@@ -36,6 +37,12 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plguin</artifactId>
+				<version>2.1</version>
 			</plugin>
 			
 		</plugins>
