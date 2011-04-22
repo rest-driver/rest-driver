@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class for encapsulating an HTTP response
+ * Class for encapsulating an HTTP response.
  */
 public final class ClientDriverResponse {
 
@@ -46,8 +46,8 @@ public final class ClientDriverResponse {
      *            the status to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverResponse withStatus(int status) {
-        this.status = status;
+    public ClientDriverResponse withStatus(int withStatus) {
+        status = withStatus;
         return this;
     }
 
@@ -70,13 +70,13 @@ public final class ClientDriverResponse {
      *            the contentType to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverResponse withContentType(String contentType) {
-        this.contentType = contentType;
+    public ClientDriverResponse withContentType(String withContentType) {
+        this.contentType = withContentType;
         return this;
     }
 
     /**
-     * Set headers on the response
+     * Set headers on the response.
      * 
      * @param name
      *            The header name

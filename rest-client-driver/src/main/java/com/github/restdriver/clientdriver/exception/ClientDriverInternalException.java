@@ -8,7 +8,7 @@ public final class ClientDriverInternalException extends RuntimeException {
     private static final long serialVersionUID = -2270688849375416363L;
 
     /**
-     * Constructor
+     * Constructor.
      * 
      * @param message
      *            The message

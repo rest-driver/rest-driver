@@ -1,12 +1,12 @@
 package com.github.restdriver.clientdriver.jetty;
 
-import com.github.restdriver.clientdriver.ClientDriverResponse;
 import org.eclipse.jetty.server.Handler;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
 
 /**
- * Interface for classes which handle incoming http requests in the Client Driver
+ * Interface for classes which handle incoming http requests in the Client Driver.
  */
 public interface ClientDriverJettyHandler {
 

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * Class for encapsulating an HTTP request
+ * Class for encapsulating an HTTP request.
  */
 public final class ClientDriverRequest {
 
@@ -21,7 +21,7 @@ public final class ClientDriverRequest {
 
     private final Object path;
     private final Map<String, Object> params;
-    
+
     private Method method;
     private Object bodyContent;
     private Object bodyContentType;
@@ -51,7 +51,7 @@ public final class ClientDriverRequest {
     }
 
     /**
-     * Get the path
+     * Get the path.
      * 
      * @return the path which requests are expected on.
      */
@@ -64,8 +64,8 @@ public final class ClientDriverRequest {
      *            the method to set
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withMethod(Method method) {
-        this.method = method;
+    public ClientDriverRequest withMethod(Method withMethod) {
+        this.method = withMethod;
         return this;
     }
 
@@ -145,9 +145,9 @@ public final class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(String bodyContent, String contentType) {
-        this.bodyContent = bodyContent;
-        bodyContentType = contentType;
+    public ClientDriverRequest withBody(String withBodyContent, String withContentType) {
+        bodyContent = withBodyContent;
+        bodyContentType = withContentType;
         return this;
     }
 
@@ -161,8 +161,8 @@ public final class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(String bodyContent, Pattern contentType) {
-        this.bodyContent = bodyContent;
+    public ClientDriverRequest withBody(String withBodyContent, Pattern contentType) {
+        bodyContent = withBodyContent;
         bodyContentType = contentType;
         return this;
     }
@@ -177,8 +177,8 @@ public final class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(Pattern bodyContent, String contentType) {
-        this.bodyContent = bodyContent;
+    public ClientDriverRequest withBody(Pattern withBodyContent, String contentType) {
+        bodyContent = withBodyContent;
         bodyContentType = contentType;
         return this;
     }
@@ -193,8 +193,8 @@ public final class ClientDriverRequest {
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
-    public ClientDriverRequest withBody(Pattern bodyContent, Pattern contentType) {
-        this.bodyContent = bodyContent;
+    public ClientDriverRequest withBody(Pattern withBodyContent, Pattern contentType) {
+        this.bodyContent = withBodyContent;
         bodyContentType = contentType;
         return this;
     }

@@ -9,16 +9,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.RequestMatcher;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
 /**
  * Class which acts as a Jetty Handler to see if the actual incoming HTTP request matches any expectation and to act
@@ -32,7 +32,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     private String unexpectedRequest;
 
     /**
-     * Constructor which accepts a {@link RequestMatcher}
+     * Constructor which accepts a {@link RequestMatcher}.
      * 
      * @param matcher
      *            The {@link RequestMatcher} to use.

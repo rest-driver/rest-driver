@@ -3,13 +3,14 @@ package com.github.restdriver.clientdriver;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import org.eclipse.jetty.server.Server;
+
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
 import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
-import org.eclipse.jetty.server.Server;
 
 /**
- * The main class which acts as a facade for the Client Driver
+ * The main class which acts as a facade for the Client Driver.
  */
 public final class ClientDriver {
 

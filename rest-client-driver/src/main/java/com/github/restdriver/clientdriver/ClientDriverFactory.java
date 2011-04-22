@@ -7,7 +7,7 @@ import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
  * <code>new {@link ClientDriverFactory}().{@link #createClientDriver()}</code> to get a {@link ClientDriver} running on a
  * free port. You cannot specify which port, one will be chosen for you.
  */
-public class ClientDriverFactory {
+public final class ClientDriverFactory {
 
     /**
      * Factory method to create and start a {@link ClientDriver}.
