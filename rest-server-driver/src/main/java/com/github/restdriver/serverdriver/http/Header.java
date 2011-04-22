@@ -32,6 +32,7 @@ public final class Header {
 
     @Generated("Eclipse")
     @Override
+    // CHECKSTYLE:OFF
     public int hashCode() {
         int prime = 31;
         int result = 1;
@@ -39,6 +40,8 @@ public final class Header {
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
+
+    // CHECKSTYLE:ON
 
     @Generated("Eclipse")
     @Override
