@@ -14,6 +14,11 @@ public final class WithSize extends TypeSafeMatcher<JsonNode> {
 
     private final Matcher<?> matcher;
 
+    /**
+     * Creates a new instance of this matcher.
+     * 
+     * @param matcher The matcher against which the size of the JSON node will be evaluated
+     */
     public WithSize(Matcher<?> matcher) {
         this.matcher = matcher;
     }

@@ -13,6 +13,11 @@ public class RuntimeFileNotFoundException extends RuntimeException {
 
     private static final long serialVersionUID = 3651887477900227630L;
 
+    /**
+     * Creates a new instance of the exception.
+     * 
+     * @param fnfe The exception to use as the cause
+     */
     public RuntimeFileNotFoundException(FileNotFoundException fnfe) {
         super(fnfe);
     }

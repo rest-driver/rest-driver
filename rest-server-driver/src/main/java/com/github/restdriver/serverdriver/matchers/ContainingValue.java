@@ -14,6 +14,11 @@ public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
 
     private final Matcher<?> matcher;
 
+    /**
+     * Create a new instance which uses the given matcher against all values in a JSON array.
+     * 
+     * @param matcher The matcher to be used for evaluation
+     */
     public ContainingValue(Matcher<?> matcher) {
         this.matcher = matcher;
     }

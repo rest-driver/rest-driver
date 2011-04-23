@@ -20,6 +20,11 @@ public final class HasHeader extends TypeSafeMatcher<Response> {
 
     private final String name;
 
+    /**
+     * Creates an instance of this matcher.
+     * 
+     * @param name The name of the header to check for the presence of
+     */
     public HasHeader(String name) {
         this.name = name;
     }

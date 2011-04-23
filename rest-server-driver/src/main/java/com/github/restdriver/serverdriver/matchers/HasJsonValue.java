@@ -10,34 +10,40 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
 
-    private final String jsonFieldName;
-    private final Matcher<?> responseMatcher;
+    private final String fieldName;
+    private final Matcher<?> valueMatcher;
 
-    public HasJsonValue(String jsonNode, Matcher<?> responseMatcher) {
-        this.jsonFieldName = jsonNode;
-        this.responseMatcher = responseMatcher;
+    /**
+     * Creates an instance of this matcher.
+     * 
+     * @param fieldName The field name against which the matcher will be evaluated
+     * @param valueMatcher The matcher to be used to evaluate the value found at the given field name
+     */
+    public HasJsonValue(String fieldName, Matcher<?> valueMatcher) {
+        this.fieldName = fieldName;
+        this.valueMatcher = valueMatcher;
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
-        responseMatcher.describeTo(description);
+        description.appendText("JsonNode with '" + fieldName + "' matching: ");
+        valueMatcher.describeTo(description);
     }
 
     @Override
     public boolean matchesSafely(JsonNode jsonNode) {
 
-        JsonNode node = jsonNode.get(jsonFieldName);
+        JsonNode node = jsonNode.get(fieldName);
 
         if (node == null) {
             return false;
         }
 
         if (node.isInt()) {
-            return responseMatcher.matches(node.getIntValue());
+            return valueMatcher.matches(node.getIntValue());
 
         } else if (node.isTextual()) {
-            return responseMatcher.matches(node.getTextValue());
+            return valueMatcher.matches(node.getTextValue());
 
         } else {
             return false;

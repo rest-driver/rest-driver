@@ -15,6 +15,12 @@ public final class WithValueAt extends TypeSafeMatcher<JsonNode> {
     private final int position;
     private final Matcher<?> matcher;
 
+    /**
+     * Create a new instance of this matcher.
+     * 
+     * @param position The position in the array at which the value is to be evaluated
+     * @param matcher The matcher to use to evaluate the value
+     */
     public WithValueAt(int position, Matcher<?> matcher) {
         this.position = position;
         this.matcher = matcher;

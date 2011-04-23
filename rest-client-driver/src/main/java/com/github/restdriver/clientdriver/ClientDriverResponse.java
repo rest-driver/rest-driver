@@ -46,7 +46,7 @@ public final class ClientDriverResponse {
     }
 
     /**
-     * @param status
+     * @param withStatus
      *            the status to set
      * @return the object you called the method on, so you can chain these calls.
      */
@@ -70,7 +70,7 @@ public final class ClientDriverResponse {
     }
 
     /**
-     * @param contentType
+     * @param withContentType
      *            the contentType to set
      * @return the object you called the method on, so you can chain these calls.
      */

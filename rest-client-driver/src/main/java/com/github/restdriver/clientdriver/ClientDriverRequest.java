@@ -13,10 +13,7 @@ public final class ClientDriverRequest {
      * HTTP method enum for specifying which method you expect to be called with.
      */
     public enum Method {
-        GET,
-        POST,
-        PUT,
-        DELETE
+        GET, POST, PUT, DELETE
     }
 
     private final Object path;
@@ -60,7 +57,7 @@ public final class ClientDriverRequest {
     }
 
     /**
-     * @param method
+     * @param withMethod
      *            the method to set
      * @return the object you called the method on, so you can chain these calls.
      */
@@ -139,9 +136,9 @@ public final class ClientDriverRequest {
      * Setter for expecting body content and type, where content is in the form of a String and type is in the form of a
      * String.
      * 
-     * @param bodyContent
+     * @param withBodyContent
      *            the bodyContent to set
-     * @param contentType
+     * @param withContentType
      *            eg "text/plain"
      * @return the object you called the method on, so you can chain these calls.
      */
@@ -155,7 +152,7 @@ public final class ClientDriverRequest {
      * Setter for expecting body content and type, where content is in the form of a String and type is in the form of a
      * Pattern.
      * 
-     * @param bodyContent
+     * @param withBodyContent
      *            the bodyContent to set
      * @param contentType
      *            eg "text/plain"
@@ -171,7 +168,7 @@ public final class ClientDriverRequest {
      * Setter for expecting body content and type, where content is in the form of a Pattern and type is in the form of
      * a String.
      * 
-     * @param bodyContent
+     * @param withBodyContent
      *            the bodyContent to set
      * @param contentType
      *            eg "text/plain"
@@ -187,7 +184,7 @@ public final class ClientDriverRequest {
      * Setter for expecting body content and type, where content is in the form of a Pattern and type is in the form of
      * a Pattern.
      * 
-     * @param bodyContent
+     * @param withBodyContent
      *            the bodyContent to set
      * @param contentType
      *            eg "text/plain"

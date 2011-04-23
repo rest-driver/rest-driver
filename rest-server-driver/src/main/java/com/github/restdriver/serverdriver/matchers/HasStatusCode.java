@@ -13,6 +13,11 @@ public final class HasStatusCode extends TypeSafeMatcher<Response> {
 
     private final Matcher<Integer> statusCodeMatcher;
 
+    /**
+     * Creates an instance of this matcher.
+     * 
+     * @param statusCodeMatcher The matcher to be used to evaluate the status code of a response
+     */
     public HasStatusCode(Matcher<Integer> statusCodeMatcher) {
         this.statusCodeMatcher = statusCodeMatcher;
     }

@@ -13,6 +13,11 @@ public class RuntimeHttpHostConnectException extends RuntimeException {
 
     private static final long serialVersionUID = -8998669008887196143L;
 
+    /**
+     * Create a new instance of the exception with a given cause.
+     * 
+     * @param hhce The exception to use as the cause
+     */
     public RuntimeHttpHostConnectException(HttpHostConnectException hhce) {
         super(hhce);
     }

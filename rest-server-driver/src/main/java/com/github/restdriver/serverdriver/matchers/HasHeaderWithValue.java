@@ -22,6 +22,12 @@ public final class HasHeaderWithValue extends TypeSafeMatcher<Response> {
     private final String name;
     private final Matcher<String> valueMatcher;
 
+    /**
+     * Creates a new instance of this matcher.
+     * 
+     * @param name The name of the header to evaluate
+     * @param valueMatcher The matcher to use against the header value if a header with the specified name is found
+     */
     public HasHeaderWithValue(String name, Matcher<String> valueMatcher) {
         this.name = name;
         this.valueMatcher = valueMatcher;

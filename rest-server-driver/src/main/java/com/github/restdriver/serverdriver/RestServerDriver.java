@@ -45,6 +45,14 @@ public final class RestServerDriver {
      *                      Helper methods to make value objects                  *
      ******************************************************************************/
 
+    /**
+     * Make a Header.
+     * 
+     * @param name The name for the header
+     * @param value The value for the header
+     * 
+     * @return The new header instance
+     */
     public static Header header(String name, String value) {
         return new Header(name, value);
     }
@@ -54,6 +62,8 @@ public final class RestServerDriver {
      *
      * @param content Request body content as String
      * @param contentType content-type eg text/plain
+     * 
+     * @return The new request body instance
      */
     public static RequestBody body(String content, String contentType) {
         return new RequestBody(content, contentType);
@@ -79,6 +89,11 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #get(Object, Header...)}.
+     * 
+     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param headers Optional HTTP headers to put on the request.
+     *
+     * @return A Response encapsulating the server's reply.
      */
     public static Response getOf(Object url, Header... headers) {
         return get(url, headers);
@@ -86,6 +101,11 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #get(Object, Header...)}.
+     * 
+     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param headers Optional HTTP headers to put on the request.
+     *
+     * @return A Response encapsulating the server's reply.
      */
     public static Response doGetOf(Object url, Header... headers) {
         return get(url, headers);
@@ -93,6 +113,11 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #get(Object, Header...)}.
+     * 
+     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param headers Optional HTTP headers to put on the request.
+     *
+     * @return A Response encapsulating the server's reply.
      */
     public static Response getting(Object url, Header... headers) {
         return get(url, headers);
@@ -125,6 +150,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response postOf(Object url, RequestBody body, Header... headers) {
         return post(url, body, headers);
@@ -132,6 +163,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response doPostOf(Object url, RequestBody body, Header... headers) {
         return post(url, body, headers);
@@ -139,6 +176,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response posting(Object url, RequestBody body, Header... headers) {
         return post(url, body, headers);
@@ -171,6 +214,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response putOf(Object url, RequestBody body, Header... headers) {
         return put(url, body, headers);
@@ -178,6 +227,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response doPutOf(Object url, RequestBody body, Header... headers) {
         return put(url, body, headers);
@@ -185,6 +240,12 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     *
+     * @param url The URL.  Any object may be passed, we will call .toString() on it.
+     * @param body The body of the post, as text/plain.
+     * @param headers Any HTTP headers.
+     *
+     * @return Response encapsulating the server's reply
      */
     public static Response putting(Object url, RequestBody body, Header... headers) {
         return put(url, body, headers);
@@ -209,6 +270,10 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #delete(Object, Header...)}.
+     *
+     * @param url The resource to delete
+     * @param headers Any http headers
+     * @return Response encapsulating the server's reply
      */
     public static Response deleteOf(Object url, Header... headers) {
         return delete(url, headers);
@@ -216,6 +281,10 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #delete(Object, Header...)}.
+     *
+     * @param url The resource to delete
+     * @param headers Any http headers
+     * @return Response encapsulating the server's reply
      */
     public static Response doDeleteOf(Object url, Header... headers) {
         return delete(url, headers);
@@ -223,6 +292,10 @@ public final class RestServerDriver {
 
     /**
      * Synonym for {@link #delete(Object, Header...)}.
+     *
+     * @param url The resource to delete
+     * @param headers Any http headers
+     * @return Response encapsulating the server's reply
      */
     public static Response deleting(Object url, Header... headers) {
         return delete(url, headers);

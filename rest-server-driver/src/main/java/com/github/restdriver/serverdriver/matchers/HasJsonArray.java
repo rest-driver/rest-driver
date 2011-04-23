@@ -10,24 +10,30 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public final class HasJsonArray extends TypeSafeMatcher<JsonNode> {
 
-    private final String jsonFieldName;
-    private final Matcher<?> responseMatcher;
+    private final String fieldName;
+    private final Matcher<?> arrayMatcher;
 
-    public HasJsonArray(String jsonNode, Matcher<?> responseMatcher) {
-        this.jsonFieldName = jsonNode;
-        this.responseMatcher = responseMatcher;
+    /**
+     * Create an instance of this matcher.
+     * 
+     * @param fieldName The field name to check for
+     * @param arrayMatcher The matcher to be used to check the array found at the given field name 
+     */
+    public HasJsonArray(String fieldName, Matcher<?> arrayMatcher) {
+        this.fieldName = fieldName;
+        this.arrayMatcher = arrayMatcher;
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("JsonNode with '" + jsonFieldName + "' matching: ");
-        responseMatcher.describeTo(description);
+        description.appendText("JsonNode with '" + fieldName + "' matching: ");
+        arrayMatcher.describeTo(description);
     }
 
     @Override
     public boolean matchesSafely(JsonNode jsonNode) {
 
-        JsonNode node = jsonNode.get(jsonFieldName);
+        JsonNode node = jsonNode.get(fieldName);
 
         if (node == null) {
             return false;
@@ -35,7 +41,7 @@ public final class HasJsonArray extends TypeSafeMatcher<JsonNode> {
 
         if (node.isArray()) {
 
-            return responseMatcher.matches(node);
+            return arrayMatcher.matches(node);
 
         } else {
             return false;

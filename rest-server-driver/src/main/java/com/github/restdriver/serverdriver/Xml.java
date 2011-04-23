@@ -24,6 +24,12 @@ public final class Xml {
     private Xml() {
     }
 
+    /**
+     * Converts the given string to an XML element.
+     * 
+     * @param xml The XML string to be converted
+     * @return The converted element
+     */
     public static Element asXml(String xml) {
 
         try {
@@ -42,6 +48,13 @@ public final class Xml {
 
     }
 
+    /**
+     * Extracts an XPath value from an XML element and returns the result as a string.
+     * 
+     * @param expression The XPath expression to use for extraction
+     * @param element The element to use the XPath expression on
+     * @return The result of evaluating the XPath expression on the element
+     */
     public static String extractXPathValue(String expression, Element element) {
 
         XPath xPath = XPathFactory.newInstance().newXPath();

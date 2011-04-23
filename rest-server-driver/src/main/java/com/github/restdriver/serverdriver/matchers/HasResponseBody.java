@@ -11,16 +11,21 @@ import com.github.restdriver.serverdriver.http.response.Response;
  */
 public final class HasResponseBody extends TypeSafeMatcher<Response> {
 
-    private final Matcher<String> responseMatcher;
+    private final Matcher<String> bodyMatcher;
 
-    public HasResponseBody(Matcher<String> responseMatcher) {
-        this.responseMatcher = responseMatcher;
+    /**
+     * Creates a new instance of this matcher.
+     * 
+     * @param bodyMatcher The matcher to be used to evaluate the body of the response
+     */
+    public HasResponseBody(Matcher<String> bodyMatcher) {
+        this.bodyMatcher = bodyMatcher;
     }
 
     @Override
     public void describeTo(Description description) {
         description.appendText("HttpMethod with response body matching:");
-        responseMatcher.describeTo(description);
+        bodyMatcher.describeTo(description);
     }
 
     @Override
@@ -28,7 +33,7 @@ public final class HasResponseBody extends TypeSafeMatcher<Response> {
 
         String actualContent = actualResponse.getContent();
 
-        return responseMatcher.matches(actualContent);
+        return bodyMatcher.matches(actualContent);
     }
 
 }
