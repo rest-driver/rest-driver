@@ -22,11 +22,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.restdriver.serverdriver.Json;
+import com.github.restdriver.serverdriver.Xml;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 
 import com.github.restdriver.serverdriver.http.Header;
+import org.codehaus.jackson.JsonNode;
+import org.w3c.dom.Element;
 
 /**
  * Our class which describes an HTTP response.
@@ -68,6 +72,16 @@ public final class DefaultResponse implements Response {
     @Override
     public long getResponseTime() {
         return responseTime;
+    }
+
+    @Override
+    public JsonNode asJson() {
+        return Json.asJson(this);
+    }
+
+    @Override
+    public Element asXml() {
+        return Xml.asXml(this.getContent());
     }
 
     @Override

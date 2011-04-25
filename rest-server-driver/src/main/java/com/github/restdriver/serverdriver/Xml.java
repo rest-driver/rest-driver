@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -52,13 +53,13 @@ public final class Xml {
             return document;
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Failed to create XML document", e);
 
         } catch (SAXException e) {
-            throw new RuntimeException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Failed to create XML document", e);
 
         } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Failed to create XML document", e);
         }
 
     }

@@ -17,6 +17,7 @@ package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
@@ -61,7 +62,7 @@ public final class Json {
         try {
             return MAPPER.readTree(json);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to create JSON node", e);
+            throw new RuntimeMappingException("Failed to create JSON node", e);
         }
     }
 

@@ -15,7 +15,6 @@
  */
 package com.github.restdriver.serverdriver.http.exception;
 
-import java.io.IOException;
 
 /**
  * Exception thrown when HTTP response bodies cannot be mapped to Java Objects as expected.
@@ -25,6 +24,8 @@ import java.io.IOException;
  * Time: 21:56
  */
 public class RuntimeMappingException extends RuntimeException {
+
+    private static final long serialVersionUID = 123456789L;
 
     /**
      * Create a new exception.
