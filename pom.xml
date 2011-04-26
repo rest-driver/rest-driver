@@ -108,7 +108,7 @@
                     <execution>
                         <id>attach-javadocs</id>
                         <goals>
-                            <goal>aggregate-jar</goal>
+                            <goal>jar</goal>
                         </goals>
                         <configuration>
                             <outputDirectory>${project.basedir}/apidocs</outputDirectory>
