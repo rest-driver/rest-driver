@@ -40,13 +40,11 @@
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
-			<version>1.7.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.7.1</version>
 		</dependency>
 
 		<dependency>
@@ -58,13 +56,6 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 		</dependency>
-
-		<!-- /* to sort out with JLJ */ <dependency> <groupId>eu.vahlas.json.schema</groupId> <artifactId>json-schema-validator</artifactId> 
-			<version>0.0.1-nokia</version> <exclusions> <exclusion> <groupId>junit</groupId> <artifactId>junit</artifactId> </exclusion> 
-			<exclusion> <groupId>org.hamcrest</groupId> <artifactId>hamcrest-all</artifactId> </exclusion> <exclusion> <groupId>org.slf4j</groupId> 
-			<artifactId>slf4j-api</artifactId> </exclusion> <exclusion> <groupId>ch.qos.logback</groupId> <artifactId>logback-classic</artifactId> 
-			</exclusion> <exclusion> <groupId>ch.qos.logback</groupId> <artifactId>logback-core</artifactId> </exclusion> </exclusions> 
-			</dependency> -->
 
 		<dependency>
 			<groupId>junit</groupId>
