@@ -1,8 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+	
 	<artifactId>rest-client-driver</artifactId>
 	<name>REST Client Driver</name>
+	<description>Test Driver to test your RESTful services</description>
 
 	<parent>
 		<groupId>com.github.rest-driver</groupId>

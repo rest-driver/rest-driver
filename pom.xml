@@ -8,11 +8,19 @@
 	<packaging>pom</packaging>
 
 	<name>REST Driver Parent</name>
+	<description>Test Driver to test your RESTful services and clients</description>
+	<url>https://github.com/rest-driver/rest-driver</url>
+	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
     <scm>
         <connection>scm:git:git@github.com:rest-driver/rest-driver.git</connection>
-        <url>scm:git:git@github.com:rest-driver/rest-driver.git</url>
         <developerConnection>scm:git:git@github.com:rest-driver/rest-driver.git</developerConnection>
+        <url>git@github.com:rest-driver/rest-driver.git</url>
     </scm>
 
     <licenses>
@@ -21,6 +29,21 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0</url>
         </license>
     </licenses>
+    
+    <developers>
+    	<developer>
+    		<name>Matthew Gilliard</name>
+    		<email>matthew.gilliard@gmail.com</email>
+            <organization>Nokia</organization>
+            <organizationUrl>http://music.ovi.com</organizationUrl>
+    	</developer>
+    	<developer>
+    		<name>Neil Prosser</name>
+    		<email>neil.prosser@gmail.com</email>
+            <organization>Nokia</organization>
+            <organizationUrl>http://music.ovi.com</organizationUrl>
+    	</developer>
+    </developers>
 
 	<modules>
 		<module>rest-server-driver</module>
@@ -73,6 +96,23 @@
                         <goals>
                             <goal>format</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>aggregate-jar</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/apidocs</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

@@ -3,6 +3,7 @@
 
 	<artifactId>rest-server-driver</artifactId>
 	<name>REST Server Driver</name>
+	<description>Test Driver to test your RESTful clients</description>
 
 	<parent>
 		<groupId>com.github.rest-driver</groupId>
