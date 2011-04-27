@@ -26,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -85,6 +86,33 @@ public final class RestServerDriver {
     }
 
     /* ****************************************************************************
+     *                             HTTP OPTIONS methods                           *
+     ******************************************************************************/
+
+    /**
+     * Perform an HTTP OPTIONS on a resource.
+     *
+     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     *
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response options(Object url) {
+        HttpOptions request = new HttpOptions(url.toString());
+        return doHttpRequest(request);
+    }
+
+    /**
+     * Synonym for {@link #options(Object)}.
+     *
+     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     *
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response optionsOf(Object url) {
+        return options(url);
+    }
+
+    /* ****************************************************************************
      *                               HTTP GET methods                             *
      ******************************************************************************/
 
@@ -99,7 +127,7 @@ public final class RestServerDriver {
     public static Response get(Object url, Header... headers) {
         HttpGet request = new HttpGet(url.toString());
         request.setHeaders(headersFromHeaderList(headers));
-        return makeHttpRequest(request);
+        return doHttpRequest(request);
     }
 
     /**
@@ -160,7 +188,7 @@ public final class RestServerDriver {
             request.addHeader(new BasicHeader("Content-type", body.getContentType()));
         }
 
-        return makeHttpRequest(request);
+        return doHttpRequest(request);
     }
 
     /**
@@ -224,7 +252,7 @@ public final class RestServerDriver {
             request.addHeader(new BasicHeader("Content-type", body.getContentType()));
         }
 
-        return makeHttpRequest(request);
+        return doHttpRequest(request);
     }
 
     /**
@@ -280,7 +308,7 @@ public final class RestServerDriver {
     public static Response delete(Object url, Header... headers) {
         HttpDelete request = new HttpDelete(url.toString());
         request.setHeaders(headersFromHeaderList(headers));
-        return makeHttpRequest(request);
+        return doHttpRequest(request);
     }
 
     /**
@@ -353,7 +381,7 @@ public final class RestServerDriver {
      *
      * @return Our wrapped response type
      */
-    private static Response makeHttpRequest(HttpUriRequest request) {
+    private static Response doHttpRequest(HttpUriRequest request) {
 
         HttpClient httpClient = new DefaultHttpClient();
 
