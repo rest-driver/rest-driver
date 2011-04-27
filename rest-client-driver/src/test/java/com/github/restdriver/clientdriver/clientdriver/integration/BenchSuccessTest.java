@@ -15,22 +15,24 @@
  */
 package com.github.restdriver.clientdriver.clientdriver.integration;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import java.util.regex.Pattern;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.regex.Pattern;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 
 public class BenchSuccessTest extends ClientDriverUnitTest {
 
@@ -214,5 +216,21 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
 
         Assert.assertEquals(501, response.getStatusLine().getStatusCode());
         Assert.assertEquals("___", IOUtils.toString(response.getEntity().getContent()));
+    }
+
+    @Test
+    public void testHttpOPTIONS() throws Exception {
+
+        String baseUrl = getClientDriver().getBaseUrl();
+        getClientDriver().addExpectation(
+                new ClientDriverRequest("/blah2").withMethod(Method.OPTIONS),
+                new ClientDriverResponse(null).withStatus(200).withHeader("Allow", "POST, OPTIONS"));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpOptions options = new HttpOptions(baseUrl + "/blah2");
+        HttpResponse response = client.execute(options);
+
+        Assert.assertEquals(200, response.getStatusLine().getStatusCode(), 200);
+        Assert.assertEquals("POST, OPTIONS", response.getHeaders("Allow")[0].getValue());
     }
 }
