@@ -16,6 +16,7 @@
         <dependency>
             <groupId>com.github.rest-driver</groupId>
             <artifactId>rest-client-driver</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
