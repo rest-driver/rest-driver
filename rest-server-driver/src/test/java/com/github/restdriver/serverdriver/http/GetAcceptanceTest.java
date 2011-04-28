@@ -15,17 +15,18 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.Matchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GetAcceptanceTest extends ClientDriverUnitTest {
 
@@ -49,13 +50,13 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
     @Test
     public void getRetrievesHeaders() {
         getClientDriver().addExpectation(
-            new ClientDriverRequest("/"),
-            new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
+                new ClientDriverRequest("/"),
+                new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
 
         Response response = get(baseUrl);
 
         assertThat(response, hasStatusCode(409));
-        assertThat(response.getHeaders(), hasItem(new Header("X-foo", "barrr")));
+        assertThat(response, hasHeaderWithValue("X-foo", equalTo("barrr")));
 
     }
 
@@ -79,10 +80,9 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
         // TODO: ClientDriver doesn't match on headers yet,
         // so we don't know if they are actually being sent!
 
-        Response response = get(baseUrl, header("Accept", "Nothing"));
+        Response response = get(baseUrl, header("Accept: Nothing"));
 
         assertThat(response.getResponseTime(), greaterThanOrEqualTo(0L));
     }
-
 
 }

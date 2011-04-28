@@ -74,6 +74,17 @@ public final class RestServerDriver {
     }
 
     /**
+     * Make a Header.
+     * 
+     * @param nameAndValue The name and value of the header in the form "name: value"
+     * 
+     * @return The new header instance
+     */
+    public static Header header(String nameAndValue) {
+        return new Header(nameAndValue);
+    }
+
+    /**
      * Make a RequestBody for PUT or POST.
      *
      * @param content Request body content as String
