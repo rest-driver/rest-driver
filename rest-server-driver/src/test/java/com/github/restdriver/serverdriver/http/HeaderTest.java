@@ -123,7 +123,7 @@ public class HeaderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void headerWithSingleStringAndTwoColonsIsIllegal() {
-        new Header("  X-foo : yes : no");
+        new Header("  X-foo : yes : perhaps");
     }
 
     public void headerAppliesItselfToRequest() {
