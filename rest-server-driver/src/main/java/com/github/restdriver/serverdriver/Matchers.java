@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.*;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.matchers.HasHeader;
 import com.github.restdriver.serverdriver.matchers.HasHeaderWithValue;
@@ -76,6 +77,43 @@ public final class Matchers {
      */
     public static TypeSafeMatcher<Response> hasHeader(String name) {
         return new HasHeader(name);
+    }
+
+    /**
+     * Creates a new instance of HasHeader.
+     * 
+     * @param header
+     *            The header to check for the presence of
+     * @return The new matcher
+     */
+    public static TypeSafeMatcher<Response> hasHeader(Header header) {
+        return hasHeader(header.getName(), header.getValue());
+    }
+
+    /**
+     * Synonym for {@link HasHeaderWithValue}, using exact match for the value.
+     * 
+     * @param name
+     *            The name of the header to check for the presence of
+     * @param value
+     *            The the header value to check
+     * @return The new matcher
+     */
+    public static TypeSafeMatcher<Response> hasHeader(String name, String value) {
+        return new HasHeaderWithValue(name, equalTo(value));
+    }
+
+    /**
+     * Synonym for {@link HasHeaderWithValue}, using exact match for the value.
+     * 
+     * @param name
+     *            The name of the header to check for the presence and value of
+     * @param valueMatcher
+     *            The matcher against which the header value will be evaluated
+     * @return The new matcher
+     */
+    public static TypeSafeMatcher<Response> hasHeader(String name, Matcher<String> valueMatcher) {
+        return new HasHeaderWithValue(name, valueMatcher);
     }
 
     /**
