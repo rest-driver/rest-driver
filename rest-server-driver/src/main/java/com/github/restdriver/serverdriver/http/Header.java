@@ -39,6 +39,23 @@ public final class Header {
     }
 
     /**
+     * Creates a new header instance.
+     * 
+     * @param nameAndValue The name and value as "name: value".
+     */
+    public Header(String nameAndValue) {
+
+        String[] parts = nameAndValue.split(":");
+
+        if (parts.length != 2) {
+            throw new IllegalArgumentException("Single-argument Header must be 'name: value'");
+        }
+
+        name = StringUtils.trim(parts[0]);
+        value = StringUtils.trim(parts[1]);
+    }
+
+    /**
      * Get the name of this header.
      * 
      * @return The header name
