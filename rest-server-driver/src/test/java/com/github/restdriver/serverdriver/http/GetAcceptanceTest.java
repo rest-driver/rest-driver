@@ -85,4 +85,18 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
         assertThat(response.getResponseTime(), greaterThanOrEqualTo(0L));
     }
 
+    @Test
+    public void getDoesntFollowRedirects() {
+        getClientDriver().addExpectation(
+                new ClientDriverRequest("/"),
+                new ClientDriverResponse("")
+                        .withStatus(303)
+                        .withHeader("Location", "http://foobar"));
+
+        Response response = get(baseUrl);
+
+        assertThat(response, hasStatusCode(303));
+        assertThat(response, hasHeader("Location", "http://foobar"));
+    }
+
 }

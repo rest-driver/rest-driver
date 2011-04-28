@@ -26,6 +26,7 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
@@ -357,6 +358,7 @@ public final class RestServerDriver {
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_HTTP_TIMEOUT_MS);
         HttpConnectionParams.setSoTimeout(httpParams, 0);
+        HttpClientParams.setRedirecting(httpParams, false);
 
         HttpResponse response;
 
@@ -378,5 +380,4 @@ public final class RestServerDriver {
         }
 
     }
-
 }
