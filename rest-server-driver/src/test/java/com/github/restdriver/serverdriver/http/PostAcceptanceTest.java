@@ -15,17 +15,18 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * User: mjg
@@ -33,7 +34,6 @@ import static org.hamcrest.Matchers.is;
  * Time: 13:52
  */
 public class PostAcceptanceTest extends ClientDriverUnitTest {
-
 
     private String baseUrl;
 
@@ -48,7 +48,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST),
                 new ClientDriverResponse("Content"));
 
-        Response response = post(baseUrl, null);
+        Response response = post(baseUrl);
 
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
@@ -80,7 +80,6 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
         assertThat(response.getContent(), is("Back at you"));
     }
 
-
     @Test
     public void postWithApplicationJsonBodyAndHeaders() {
         getClientDriver().addExpectation(
@@ -98,5 +97,18 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
         assertThat(response.getContent(), is("Back at you"));
     }
 
+    @Test
+    public void postWithDuplicateBodyUsesLastOne() {
+        getClientDriver().addExpectation(
+                new ClientDriverRequest("/xml")
+                        .withMethod(ClientDriverRequest.Method.POST)
+                        .withBody("<yo/>", "application/xml"),
+                new ClientDriverResponse("Back at you").withStatus(202));
+
+        Response response = post(baseUrl + "/xml", body("{}", "application/json"), body("<yo/>", "application/xml"));
+
+        assertThat(response, hasStatusCode(202));
+        assertThat(response.getContent(), is("Back at you"));
+    }
 
 }
