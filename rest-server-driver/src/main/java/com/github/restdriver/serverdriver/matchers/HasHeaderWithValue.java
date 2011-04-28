@@ -27,10 +27,6 @@ import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * Matcher to enable assertion on HTTP header values.
- * 
- * TODO: Is this class necessary we can do:
- * <p/>
- * assertThat(response.getHeaders(), hasItem(new Header("header", "value")))
  */
 public final class HasHeaderWithValue extends TypeSafeMatcher<Response> {
 
