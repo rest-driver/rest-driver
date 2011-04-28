@@ -233,7 +233,7 @@ public final class RestServerDriver {
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestModifer...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
@@ -245,7 +245,7 @@ public final class RestServerDriver {
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestModifer...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
@@ -257,7 +257,7 @@ public final class RestServerDriver {
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestModifer...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
