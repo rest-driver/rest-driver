@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.http.request;
+package com.github.restdriver.serverdriver.http;
+
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 
 /**
  * Encapsulates a Request body for a PUT or a POST.
@@ -22,7 +28,9 @@ package com.github.restdriver.serverdriver.http.request;
  * Date: 21/04/11
  * Time: 14:32
  */
-public final class RequestBody {
+public final class RequestBody implements RequestModifier {
+
+    private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
 
     private final String content;
     private final String contentType;
@@ -54,5 +62,24 @@ public final class RequestBody {
      */
     public String getContentType() {
         return contentType;
+    }
+
+    @Override
+    public void applyTo(HttpUriRequest request) {
+
+        if (!(request instanceof HttpEntityEnclosingRequest)) {
+            return;
+        }
+
+        HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) request;
+
+        entityRequest.setHeader("Content-type", contentType);
+
+        try {
+            entityRequest.setEntity(new StringEntity(content, contentType, DEFAULT_CONTENT_ENCODING));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Error setting entity of request", e);
+        }
+
     }
 }

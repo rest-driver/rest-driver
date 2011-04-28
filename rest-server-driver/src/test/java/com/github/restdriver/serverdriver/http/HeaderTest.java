@@ -18,6 +18,8 @@ package com.github.restdriver.serverdriver.http;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Test;
 
 public class HeaderTest {
@@ -122,6 +124,13 @@ public class HeaderTest {
     @Test(expected = IllegalArgumentException.class)
     public void headerWithSingleStringAndTwoColonsIsIllegal() {
         new Header("  X-foo : yes : no");
+    }
+
+    public void headerAppliesItselfToRequest() {
+        HttpUriRequest request = new HttpGet();
+        Header header = new Header("name", "value");
+        header.applyTo(request);
+        assertThat(request.getFirstHeader("name").getValue(), is("value"));
     }
 
 }

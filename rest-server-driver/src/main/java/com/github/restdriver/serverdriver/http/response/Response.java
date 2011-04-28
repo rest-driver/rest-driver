@@ -17,9 +17,10 @@ package com.github.restdriver.serverdriver.http.response;
 
 import java.util.List;
 
-import com.github.restdriver.serverdriver.http.Header;
 import org.codehaus.jackson.JsonNode;
 import org.w3c.dom.Element;
+
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
  * Encapsulates a response from an HTTP server.
@@ -54,16 +55,15 @@ public interface Response {
      */
     long getResponseTime();
 
-
     /**
-     * Returns the JSON response content as a JsonNode, or throws RuntimeMappingException
+     * Returns the JSON response content as a JsonNode, or throws RuntimeMappingException.
      *
      * @return The JsonNode
      */
     JsonNode asJson();
 
     /**
-     * Returns the XML response content as an org.w3c.Element, or throws RuntimeMappingException
+     * Returns the XML response content as an org.w3c.Element, or throws RuntimeMappingException.
      *
      * @return The Element
      */

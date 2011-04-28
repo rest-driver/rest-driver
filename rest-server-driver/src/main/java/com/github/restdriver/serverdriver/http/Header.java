@@ -18,11 +18,12 @@ package com.github.restdriver.serverdriver.http;
 import javax.annotation.Generated;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.methods.HttpUriRequest;
 
 /**
  * Represents an HTTP header.
  */
-public final class Header {
+public final class Header implements RequestModifier {
 
     private final String name;
     private final String value;
@@ -71,6 +72,11 @@ public final class Header {
      */
     public String getValue() {
         return value;
+    }
+
+    @Override
+    public void applyTo(HttpUriRequest request) {
+        request.addHeader(name, value);
     }
 
     @Override

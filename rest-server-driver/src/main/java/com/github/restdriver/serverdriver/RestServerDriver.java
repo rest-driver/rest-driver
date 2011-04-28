@@ -16,12 +16,8 @@
 package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
@@ -31,16 +27,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.HttpHostConnectException;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.RequestBody;
+import com.github.restdriver.serverdriver.http.RequestModifier;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
-import com.github.restdriver.serverdriver.http.request.RequestBody;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -54,7 +49,6 @@ public final class RestServerDriver {
     private RestServerDriver() {
     }
 
-    private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
     private static final int DEFAULT_HTTP_TIMEOUT_MS = 10000;
 
     /* ****************************************************************************
@@ -137,7 +131,7 @@ public final class RestServerDriver {
      */
     public static Response get(Object url, Header... headers) {
         HttpGet request = new HttpGet(url.toString());
-        request.setHeaders(headersFromHeaderList(headers));
+        applyModifiersToRequest(headers, request);
         return doHttpRequest(request);
     }
 
@@ -185,60 +179,50 @@ public final class RestServerDriver {
      * Perform an HTTP POST to the given URL.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response post(Object url, RequestBody body, Header... headers) {
+    public static Response post(Object url, RequestModifier... modifiers) {
         HttpPost request = new HttpPost(url.toString());
-        request.setHeaders(headersFromHeaderList(headers));
-
-        if (body != null) {
-            request.setEntity(entityFromRequestBody(body));
-            request.addHeader(new BasicHeader("Content-type", body.getContentType()));
-        }
-
+        applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     * Synonym for {@link #post(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response postOf(Object url, RequestBody body, Header... headers) {
-        return post(url, body, headers);
+    public static Response postOf(Object url, RequestModifier... modifiers) {
+        return post(url, modifiers);
     }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     * Synonym for {@link #post(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response doPostOf(Object url, RequestBody body, Header... headers) {
-        return post(url, body, headers);
+    public static Response doPostOf(Object url, RequestModifier... modifiers) {
+        return post(url, modifiers);
     }
 
     /**
-     * Synonym for {@link #post(Object, RequestBody, Header...)}.
+     * Synonym for {@link #post(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response posting(Object url, RequestBody body, Header... headers) {
-        return post(url, body, headers);
+    public static Response posting(Object url, RequestModifier... modifiers) {
+        return post(url, modifiers);
     }
 
     /* ****************************************************************************
@@ -249,60 +233,50 @@ public final class RestServerDriver {
      * Perform an HTTP PUT to the given URL.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response put(Object url, RequestBody body, Header... headers) {
+    public static Response put(Object url, RequestModifier... modifiers) {
         HttpPut request = new HttpPut(url.toString());
-        request.setHeaders(headersFromHeaderList(headers));
-
-        if (body != null) {
-            request.setEntity(entityFromRequestBody(body));
-            request.addHeader(new BasicHeader("Content-type", body.getContentType()));
-        }
-
+        applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response putOf(Object url, RequestBody body, Header... headers) {
-        return put(url, body, headers);
+    public static Response putOf(Object url, RequestModifier... modifiers) {
+        return put(url, modifiers);
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response doPutOf(Object url, RequestBody body, Header... headers) {
-        return put(url, body, headers);
+    public static Response doPutOf(Object url, RequestModifier... modifiers) {
+        return put(url, modifiers);
     }
 
     /**
-     * Synonym for {@link #put(Object, RequestBody, Header...)}.
+     * Synonym for {@link #put(Object, RequestModifier...)}.
      *
      * @param url The URL.  Any object may be passed, we will call .toString() on it.
-     * @param body The body of the post, as text/plain.
-     * @param headers Any HTTP headers.
+     * @param modifiers The modifiers to be applied to the request.
      *
      * @return Response encapsulating the server's reply
      */
-    public static Response putting(Object url, RequestBody body, Header... headers) {
-        return put(url, body, headers);
+    public static Response putting(Object url, RequestModifier... modifiers) {
+        return put(url, modifiers);
     }
 
     /* ****************************************************************************
@@ -318,7 +292,7 @@ public final class RestServerDriver {
      */
     public static Response delete(Object url, Header... headers) {
         HttpDelete request = new HttpDelete(url.toString());
-        request.setHeaders(headersFromHeaderList(headers));
+        applyModifiersToRequest(headers, request);
         return doHttpRequest(request);
     }
 
@@ -359,29 +333,13 @@ public final class RestServerDriver {
      * Internal methods for creating requests and responses
      */
 
-    /**
-     * turns an array of rest-driver headers into an array of apache http headers.
-     */
-    private static org.apache.http.Header[] headersFromHeaderList(Header[] headerList) {
-        List<org.apache.http.Header> headers = new ArrayList<org.apache.http.Header>();
-
-        if (headerList != null) {
-            for (Header header : headerList) {
-                headers.add(new BasicHeader(header.getName(), header.getValue()));
-            }
+    private static void applyModifiersToRequest(RequestModifier[] modifiers, HttpUriRequest request) {
+        if (modifiers == null) {
+            return;
         }
 
-        return headers.toArray(new org.apache.http.Header[headers.size()]);
-    }
-
-    /**
-     * turns a rest-driver RequestBody into an apache HttpEntity.
-     */
-    private static HttpEntity entityFromRequestBody(RequestBody body) {
-        try {
-            return new StringEntity(body.getContent(), DEFAULT_CONTENT_ENCODING);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error setting entity of request", e);
+        for (RequestModifier modifier : modifiers) {
+            modifier.applyTo(request);
         }
     }
 
