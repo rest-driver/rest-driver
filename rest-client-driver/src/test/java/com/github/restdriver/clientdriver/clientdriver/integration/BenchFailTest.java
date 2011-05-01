@@ -31,6 +31,9 @@ import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 public class BenchFailTest {
 
     private ClientDriver bServer;
@@ -50,7 +53,7 @@ public class BenchFailTest {
             bServer.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("Unexpected request: /blah?foo=bar", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?foo=bar"));
         }
 
     }
@@ -68,7 +71,7 @@ public class BenchFailTest {
             bServer.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("2 unmatched expectation(s), first is: BenchRequest: GET /blah; ", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: BenchRequest: GET /blah; "));
         }
 
     }
@@ -92,7 +95,7 @@ public class BenchFailTest {
             bServer.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("Unexpected request: /blah?gang=groon", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=groon"));
         }
 
     }
@@ -116,7 +119,7 @@ public class BenchFailTest {
             bServer.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("Unexpected request: /blah?gang=goon", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=goon"));
         }
 
     }

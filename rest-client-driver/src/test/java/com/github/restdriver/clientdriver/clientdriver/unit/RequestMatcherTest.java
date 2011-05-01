@@ -24,9 +24,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import junit.framework.Assert;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,6 +31,8 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,7 +56,7 @@ public class RequestMatcherTest {
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
     }
 
     @Test
@@ -70,7 +69,7 @@ public class RequestMatcherTest {
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
 
     }
 
@@ -90,7 +89,7 @@ public class RequestMatcherTest {
         when(aReq.getParameter("kk")).thenReturn("vv");
         when(aReq.getParameter("k2")).thenReturn("v2");
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
 
     }
 
@@ -107,7 +106,7 @@ public class RequestMatcherTest {
         when(aReq.getParameter("kk")).thenReturn("vv");
         when(aReq.getParameter("k2")).thenReturn("v2");
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
 
     }
 
@@ -122,7 +121,7 @@ public class RequestMatcherTest {
         when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
         when(aReq.getParameter("kk")).thenReturn("not vv");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -138,7 +137,7 @@ public class RequestMatcherTest {
         when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
         when(aReq.getParameter("kk")).thenReturn("xx");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -153,7 +152,7 @@ public class RequestMatcherTest {
         when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
         when(aReq.getParameter("kk")).thenReturn(null);
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -180,7 +179,7 @@ public class RequestMatcherTest {
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -194,7 +193,7 @@ public class RequestMatcherTest {
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -206,7 +205,7 @@ public class RequestMatcherTest {
 
         when(aReq.getMethod()).thenReturn("GET");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -219,7 +218,7 @@ public class RequestMatcherTest {
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -232,7 +231,7 @@ public class RequestMatcherTest {
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -251,7 +250,7 @@ public class RequestMatcherTest {
         BufferedReader contentReader = new BufferedReader(new StringReader("ooooh"));
         when(aReq.getReader()).thenReturn(contentReader);
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
 
     }
 
@@ -271,7 +270,7 @@ public class RequestMatcherTest {
         BufferedReader contentReader = new BufferedReader(new StringReader("ooooh"));
         when(aReq.getReader()).thenReturn(contentReader);
 
-        Assert.assertTrue(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(true));
 
     }
 
@@ -287,7 +286,7 @@ public class RequestMatcherTest {
 
         when(aReq.getContentType()).thenReturn("text/jnkular");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -304,7 +303,7 @@ public class RequestMatcherTest {
 
         when(aReq.getContentType()).thenReturn("text/jnkular");
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -323,7 +322,7 @@ public class RequestMatcherTest {
         BufferedReader contentReader = new BufferedReader(new StringReader("ooook"));
         when(aReq.getReader()).thenReturn(contentReader);
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 
@@ -343,7 +342,7 @@ public class RequestMatcherTest {
         BufferedReader contentReader = new BufferedReader(new StringReader("ooook"));
         when(aReq.getReader()).thenReturn(contentReader);
 
-        Assert.assertFalse(sut.isMatch(aReq, bReq));
+        assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
 

@@ -26,13 +26,15 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class BenchSuccessTest extends ClientDriverUnitTest {
 
@@ -53,9 +55,9 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
 
         HttpResponse response = client.execute(getter);
 
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("OUCH!!", IOUtils.toString(response.getEntity().getContent()));
-        Assert.assertEquals("TestServer", response.getHeaders("Server")[0].getValue());
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), is("OUCH!!"));
+        assertThat(response.getHeaders("Server")[0].getValue(), is("TestServer"));
 
     }
 
@@ -69,8 +71,8 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
         HttpResponse response = client.execute(getter);
 
-        Assert.assertEquals(404, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("o.O", IOUtils.toString(response.getEntity().getContent()));
+        assertThat(response.getStatusLine().getStatusCode(), is(404));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("o.O"));
 
     }
 
@@ -84,8 +86,8 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
         HttpResponse response = client.execute(getter);
 
-        Assert.assertEquals(500, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("___", IOUtils.toString(response.getEntity().getContent()));
+        assertThat(response.getStatusLine().getStatusCode(), is(500));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
 
     }
 
@@ -100,13 +102,13 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
 
         HttpGet getter1 = new HttpGet(baseUrl + "/blah123");
         HttpResponse response1 = client.execute(getter1);
-        Assert.assertEquals(200, response1.getStatusLine().getStatusCode());
-        Assert.assertEquals("__2_", IOUtils.toString(response1.getEntity().getContent()));
+        assertThat(response1.getStatusLine().getStatusCode(), is(200));
+        assertThat(IOUtils.toString(response1.getEntity().getContent()), equalTo("__2_"));
 
         HttpGet getter2 = new HttpGet(baseUrl + "/blah456");
         HttpResponse response2 = client.execute(getter2);
-        Assert.assertEquals(300, response2.getStatusLine().getStatusCode());
-        Assert.assertEquals("__7_", IOUtils.toString(response2.getEntity().getContent()));
+        assertThat(response2.getStatusLine().getStatusCode(), is(300));
+        assertThat(IOUtils.toString(response2.getEntity().getContent()), equalTo("__7_"));
     }
 
     @Test
@@ -124,9 +126,9 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
 
         HttpResponse response = client.execute(deleter);
 
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("OUCH!!", IOUtils.toString(response.getEntity().getContent()));
-        Assert.assertEquals("TestServer", response.getHeaders("Server")[0].getValue());
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("OUCH!!"));
+        assertThat(response.getHeaders("Server")[0].getValue(), equalTo("TestServer"));
 
     }
 
@@ -146,10 +148,7 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
 
         HttpResponse response = client.execute(deleter);
 
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("OUCH!!", IOUtils.toString(response.getEntity().getContent()));
-        Assert.assertEquals("TestServer", response.getHeaders("Server")[0].getValue());
-
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
     }
 
     @Test
@@ -170,16 +169,16 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         HttpGet getter = new HttpGet(baseUrl + "/blah");
         HttpResponse response = client.execute(getter);
 
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("OUCH!!", IOUtils.toString(response.getEntity().getContent()));
-        Assert.assertEquals("TestServer", response.getHeaders("Server")[0].getValue());
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("OUCH!!"));
+        assertThat(response.getHeaders("Server")[0].getValue(), equalTo("TestServer"));
 
         HttpGet getter2 = new HttpGet(baseUrl + "/blah");
         HttpResponse response2 = client.execute(getter2);
 
-        Assert.assertEquals(404, response2.getStatusLine().getStatusCode());
-        Assert.assertEquals("OUCH!!404", IOUtils.toString(response2.getEntity().getContent()));
-        Assert.assertEquals("TestServer404", response2.getHeaders("Server")[0].getValue());
+        assertThat(response2.getStatusLine().getStatusCode(), is(404));
+        assertThat(IOUtils.toString(response2.getEntity().getContent()), equalTo("OUCH!!404"));
+        assertThat(response2.getHeaders("Server")[0].getValue(), equalTo("TestServer404"));
 
     }
 
@@ -196,8 +195,8 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         putter.setEntity(new StringEntity("Jack your body!", "text/plain", "UTF-8"));
         HttpResponse response = client.execute(putter);
 
-        Assert.assertEquals(501, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("___", IOUtils.toString(response.getEntity().getContent()));
+        assertThat(response.getStatusLine().getStatusCode(), is(501));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
 
     }
 
@@ -214,8 +213,8 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         putter.setEntity(new StringEntity("Jack your body!", "text/plain", "UTF-8"));
         HttpResponse response = client.execute(putter);
 
-        Assert.assertEquals(501, response.getStatusLine().getStatusCode());
-        Assert.assertEquals("___", IOUtils.toString(response.getEntity().getContent()));
+        assertThat(response.getStatusLine().getStatusCode(), is(501));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
     }
 
     @Test
@@ -230,7 +229,7 @@ public class BenchSuccessTest extends ClientDriverUnitTest {
         HttpOptions options = new HttpOptions(baseUrl + "/blah2");
         HttpResponse response = client.execute(options);
 
-        Assert.assertEquals(200, response.getStatusLine().getStatusCode(), 200);
-        Assert.assertEquals("POST, OPTIONS", response.getHeaders("Allow")[0].getValue());
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+        assertThat(response.getHeaders("Allow")[0].getValue(), equalTo("POST, OPTIONS"));
     }
 }

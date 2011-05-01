@@ -28,14 +28,16 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
-import junit.framework.Assert;
 
 import org.eclipse.jetty.server.Request;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -75,7 +77,7 @@ public class BenchHandlerTest {
             sut.checkForUnmatchedExpectations();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("1 unmatched expectation(s), first is: BenchRequest: GET hmm; ", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: BenchRequest: GET hmm; "));
         }
 
     }
@@ -97,14 +99,14 @@ public class BenchHandlerTest {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
         } catch (ClientDriverInternalException bre) {
-            Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
         }
 
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
+            assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
         }
 
     }
@@ -139,7 +141,7 @@ public class BenchHandlerTest {
         sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
 
         printWriter.close();
-        Assert.assertEquals("lovely", new String(baos.toByteArray()));
+        assertThat(new String(baos.toByteArray()), equalTo("lovely"));
 
     }
 }

@@ -18,15 +18,19 @@ package com.github.restdriver.clientdriver.clientdriver.unit;
 import com.github.restdriver.clientdriver.ClientDriver;
 import junit.framework.Assert;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverFactory;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 
 public class ClientDriverFactoryTest {
 
 	@Test
 	public void simpleTest() {
 		// Hopefully no exceptions here
-		Assert.assertEquals(ClientDriver.class, new ClientDriverFactory().createClientDriver().getClass());
+		assertThat(new ClientDriverFactory().createClientDriver(), instanceOf(ClientDriver.class));
 	}
 }
