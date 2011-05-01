@@ -44,7 +44,8 @@ public final class DefaultResponse implements Response {
 
     /**
      * Constructor from apache HttpResponse.
-     * @param response the HttpResponse
+     *
+     * @param response     the HttpResponse
      * @param responseTime time taken for the request in milliseconds
      */
     public DefaultResponse(HttpResponse response, long responseTime) {
@@ -67,6 +68,32 @@ public final class DefaultResponse implements Response {
     @Override
     public List<Header> getHeaders() {
         return headers;
+    }
+
+    @Override
+    public List<Header> getHeaders(String headerName) {
+
+        List<Header> matchingHeaders = new ArrayList<Header>();
+
+        for (Header header : headers) {
+            if (header.getName().equalsIgnoreCase(headerName)) {
+                matchingHeaders.add(header);
+            }
+        }
+
+        return matchingHeaders;
+    }
+
+    @Override
+    public Header getHeader(String headerName) {
+
+        for (Header header : headers) {
+            if (header.getName().equalsIgnoreCase(headerName)) {
+                return header;
+            }
+        }
+
+        return null;
     }
 
     @Override

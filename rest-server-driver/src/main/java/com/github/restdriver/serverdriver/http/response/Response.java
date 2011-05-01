@@ -49,8 +49,26 @@ public interface Response {
     List<Header> getHeaders();
 
     /**
+     * Get the all headers with the specified name.
+     *
+     * @param headerName The name of the header
+     * @return The Headers associated with that name.  Possibly an empty list.
+     */
+    List<Header> getHeaders(String headerName);
+
+    /**
+     * Get the value of an individual Header.  If there are multiple values for the same header, this
+     * method will return the first one found.  If you expect there to be multiple values for the same header
+     * then you should use {@link #getHeaders(String)}.
+     *
+     * @param headerName The name of the header
+     * @return The Header associated with that name.  Possibly null.
+     */
+    Header getHeader(String headerName);
+
+    /**
      * How long did the response take?
-     * 
+     *
      * @return Round-trip response time in milliseconds
      */
     long getResponseTime();
