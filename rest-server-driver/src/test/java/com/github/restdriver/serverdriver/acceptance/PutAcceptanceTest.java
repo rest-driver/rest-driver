@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.http;
+package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
@@ -33,7 +33,7 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Date: 21/04/11
  * Time: 13:52
  */
-public class PostAcceptanceTest extends ClientDriverUnitTest {
+public class PutAcceptanceTest extends ClientDriverUnitTest {
 
     private String baseUrl;
 
@@ -45,10 +45,10 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
     @Test
     public void postEmptyBody() {
         getClientDriver().addExpectation(
-                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST),
+                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT),
                 new ClientDriverResponse("Content"));
 
-        Response response = post(baseUrl);
+        Response response = put(baseUrl);
 
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
@@ -57,10 +57,10 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
     @Test
     public void postWithTextPlainBody() {
         getClientDriver().addExpectation(
-                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST).withBody("Your body", "text/plain"),
+                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT).withBody("Your body", "text/plain"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        Response response = post(baseUrl, body("Your body", "text/plain"));
+        Response response = put(baseUrl, body("Your body", "text/plain"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
@@ -70,11 +70,11 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
     public void postWithApplicationXmlBody() {
         getClientDriver().addExpectation(
                 new ClientDriverRequest("/")
-                        .withMethod(ClientDriverRequest.Method.POST)
+                        .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        Response response = post(baseUrl, body("<yo/>", "application/xml"));
+        Response response = put(baseUrl, body("<yo/>", "application/xml"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
@@ -84,28 +84,28 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
     public void postWithApplicationJsonBodyAndHeaders() {
         getClientDriver().addExpectation(
                 new ClientDriverRequest("/jsons")
-                        .withMethod(ClientDriverRequest.Method.POST)
+                        .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
         // TODO: see https://github.com/rest-driver/rest-driver/issues/1
         // we don't know if this test actually sets the headers...
 
-        Response response = post(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
+        Response response = put(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
     }
 
     @Test
-    public void postWithDuplicateBodyUsesLastOne() {
+    public void putWithDuplicateBodyUsesLastOne() {
         getClientDriver().addExpectation(
                 new ClientDriverRequest("/xml")
-                        .withMethod(ClientDriverRequest.Method.POST)
+                        .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
-        Response response = post(baseUrl + "/xml", body("{}", "application/json"), body("<yo/>", "application/xml"));
+        Response response = put(baseUrl + "/xml", body("{}", "application/json"), body("<yo/>", "application/xml"));
 
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));

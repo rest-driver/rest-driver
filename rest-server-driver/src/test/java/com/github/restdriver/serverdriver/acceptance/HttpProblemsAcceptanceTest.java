@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.http;
+package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
 
