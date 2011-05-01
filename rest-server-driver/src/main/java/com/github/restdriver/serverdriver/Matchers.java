@@ -109,7 +109,7 @@ public final class Matchers {
     }
 
     /**
-     * Synonym for {@link HasHeaderWithValue}, using exact match for the value.
+     * Synonym for {@link HasHeaderWithValue}, using matcher for the value.
      * 
      * @param name
      *            The name of the header to check for the presence and value of
