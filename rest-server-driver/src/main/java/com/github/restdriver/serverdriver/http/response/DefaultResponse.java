@@ -87,13 +87,17 @@ public final class DefaultResponse implements Response {
     @Override
     public Header getHeader(String headerName) {
 
-        for (Header header : headers) {
-            if (header.getName().equalsIgnoreCase(headerName)) {
-                return header;
-            }
+        List<Header> matchingHeaders = getHeaders(headerName);
+
+        if ( matchingHeaders.isEmpty() ){
+            return null;
         }
 
-        return null;
+        if ( matchingHeaders.size() >1 ){
+            throw new IllegalStateException("Attempt to get single header '" + headerName + "' but more than one value found.");
+        }
+
+        return matchingHeaders.get(0);
     }
 
     @Override
