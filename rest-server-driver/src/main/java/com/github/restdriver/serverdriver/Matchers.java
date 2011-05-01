@@ -71,12 +71,17 @@ public final class Matchers {
     /**
      * Creates a new instance of HasHeader.
      * 
-     * @param name
-     *            The name of the header to check for the presence of
+     * @param header
+     *            The name of the header to check for the presence of - or name and value separated by ":"
      * @return The new matcher
      */
-    public static TypeSafeMatcher<Response> hasHeader(String name) {
-        return new HasHeader(name);
+    public static TypeSafeMatcher<Response> hasHeader(String header) {
+
+        if ( header.indexOf( ":" ) != -1 ){
+            return hasHeader( new Header(header) );
+        }
+
+        return new HasHeader(header);
     }
 
     /**

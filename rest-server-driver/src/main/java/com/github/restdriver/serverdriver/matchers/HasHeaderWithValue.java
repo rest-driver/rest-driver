@@ -36,8 +36,8 @@ public final class HasHeaderWithValue extends TypeSafeMatcher<Response> {
     /**
      * Creates a new instance of this matcher.
      * 
-     * @param name The name of the header to evaluate
-     * @param valueMatcher The matcher to use against the header value if a header with the specified name is found
+     * @param name The name of the header to evaluate  - case INSENSITIVE
+     * @param valueMatcher The matcher to use against the header value if a header with the specified name is found - case SENSITIVE
      */
     public HasHeaderWithValue(String name, Matcher<String> valueMatcher) {
         this.name = name;
@@ -48,7 +48,7 @@ public final class HasHeaderWithValue extends TypeSafeMatcher<Response> {
     protected boolean matchesSafely(Response response) {
 
         for (Header header : response.getHeaders()) {
-            if (!StringUtils.equals(header.getName(), name)) {
+            if (!StringUtils.equalsIgnoreCase(header.getName(), name)) {
                 continue;
             }
 

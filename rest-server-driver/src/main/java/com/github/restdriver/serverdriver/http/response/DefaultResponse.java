@@ -89,11 +89,11 @@ public final class DefaultResponse implements Response {
 
         List<Header> matchingHeaders = getHeaders(headerName);
 
-        if ( matchingHeaders.isEmpty() ){
+        if (matchingHeaders.isEmpty()) {
             return null;
         }
 
-        if ( matchingHeaders.size() >1 ){
+        if (matchingHeaders.size() > 1) {
             throw new IllegalStateException("Attempt to get single header '" + headerName + "' but more than one value found.");
         }
 

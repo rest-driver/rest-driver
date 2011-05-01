@@ -39,7 +39,7 @@ public class HeaderTest {
     @Test
     public void headerHasSensibleToString() {
         Header header = new Header("name", "value");
-        assertThat(header.toString(), is("name:value"));
+        assertThat(header.toString(), is("name: value"));
     }
 
     @Test
@@ -111,6 +111,7 @@ public class HeaderTest {
 
     @Test
     public void headerWithSingleStringAndCrazyWhitespaceIsParsedCorrectly() {
+        // NB this is not valid according to HTTP spec, but we allow it anyway.
         Header header = new Header("  X-foo  :   blah  ");
         assertThat(header.getName(), is("X-foo"));
         assertThat(header.getValue(), is("blah"));
@@ -131,6 +132,24 @@ public class HeaderTest {
         Header header = new Header("name", "value");
         header.applyTo(request);
         assertThat(request.getFirstHeader("name").getValue(), is("value"));
+    }
+
+    @Test
+    public void headerNameIsCaseInsensitiveButValueIsnt() {
+        Header upper = new Header("HELLO: there");
+        Header lower = new Header("hello: there");
+        Header lowerUpper = new Header("hello: THERE");
+
+        assertThat(upper, equalTo(lower));
+        assertThat(lower, not(equalTo(lowerUpper)));
+    }
+
+        @Test
+    public void hashCodeTreatsNameAsCaseInsensitive() {
+        Header upper = new Header("HELLO: there");
+        Header lower = new Header("hello: there");
+
+        assertThat(upper.hashCode(), equalTo(lower.hashCode()));
     }
 
 }

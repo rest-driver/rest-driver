@@ -49,8 +49,18 @@ public class HeadersAcceptanceTest extends ClientDriverUnitTest {
         assertThat(response, hasHeaderWithValue("X-foo", equalTo("barrr")));
         assertThat(response, hasHeader("X-foo", equalTo("barrr")));
         assertThat(response, hasHeader("X-foo", "barrr"));
+        assertThat(response, hasHeader("X-foo: barrr"));
         assertThat(response, hasHeader(header("X-foo", "barrr")));
         assertThat(response, hasHeader(header("X-foo: barrr")));
+
+        // header *names* are case insensitive
+        assertThat(response, hasHeader(header("X-FOO: barrr")));
+        assertThat(response, hasHeader("X-FOO: barrr"));
+        assertThat(response, hasHeader("X-FOO"));
+
+        // but values are case-sensitive
+        assertThat(response, not(hasHeader(header("X-foo: BARRR"))));
+        assertThat(response, not(hasHeader("X-foo: BARRR")));
 
     }
 

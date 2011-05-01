@@ -44,7 +44,7 @@ public final class HasHeader extends TypeSafeMatcher<Response> {
     protected boolean matchesSafely(Response response) {
 
         for (Header header : response.getHeaders()) {
-            if (StringUtils.equals(header.getName(), name)) {
+            if (StringUtils.equalsIgnoreCase(header.getName(), name)) {
                 return true;
             }
         }

@@ -81,7 +81,7 @@ public final class Header implements RequestModifier {
 
     @Override
     public String toString() {
-        return String.format("%s:%s", name, value);
+        return String.format("%s: %s", name, value);
     }
 
     @Generated("Eclipse")
@@ -90,7 +90,7 @@ public final class Header implements RequestModifier {
     public int hashCode() {
         int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.toLowerCase().hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -110,7 +110,7 @@ public final class Header implements RequestModifier {
 
         Header other = (Header) object;
 
-        return StringUtils.equals(name, other.name) && StringUtils.equals(value, other.value);
+        return StringUtils.equalsIgnoreCase(name, other.name) && StringUtils.equals(value, other.value);
 
     }
 
