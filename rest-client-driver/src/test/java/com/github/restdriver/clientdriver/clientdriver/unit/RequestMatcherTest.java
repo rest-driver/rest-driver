@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import junit.framework.Assert;
 
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +33,9 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RequestMatcherTest {
 
@@ -45,38 +47,28 @@ public class RequestMatcherTest {
         sut = new DefaultRequestMatcher();
     }
 
-    @After
-    public void after() {
-        EasyMock.verify(aReq);
-    }
-
     @Test
     public void testMatchNoParams() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(new HashMap<Object, Object>());
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
-
     }
 
     @Test
     public void testMatchNoParamsPattern() {
 
         ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[a]{5}")).withMethod(Method.GET);
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(new HashMap<Object, Object>());
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
 
@@ -90,15 +82,13 @@ public class RequestMatcherTest {
                                         .withParam("kk", "vv")
                                         .withParam("k2", "v2");
 
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(2));
-        EasyMock.expect(aReq.getParameter("kk")).andReturn("vv");
-        EasyMock.expect(aReq.getParameter("k2")).andReturn("v2");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
+        when(aReq.getParameter("kk")).thenReturn("vv");
+        when(aReq.getParameter("k2")).thenReturn("v2");
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
 
@@ -109,15 +99,13 @@ public class RequestMatcherTest {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk",
                 Pattern.compile("[v]{2}")).withParam("k2", Pattern.compile("v[0-9]"));
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(2));
-        EasyMock.expect(aReq.getParameter("kk")).andReturn("vv");
-        EasyMock.expect(aReq.getParameter("k2")).andReturn("v2");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
+        when(aReq.getParameter("kk")).thenReturn("vv");
+        when(aReq.getParameter("k2")).thenReturn("v2");
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
 
@@ -127,14 +115,12 @@ public class RequestMatcherTest {
     public void testMatchWithWrongParam() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(1));
-        EasyMock.expect(aReq.getParameter("kk")).andReturn("not vv");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
+        when(aReq.getParameter("kk")).thenReturn("not vv");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -145,14 +131,12 @@ public class RequestMatcherTest {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk",
                 Pattern.compile("[v]{2}"));
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(1));
-        EasyMock.expect(aReq.getParameter("kk")).andReturn("xx");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
+        when(aReq.getParameter("kk")).thenReturn("xx");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -162,14 +146,12 @@ public class RequestMatcherTest {
     public void testMatchWithNullParam() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(1));
-        EasyMock.expect(aReq.getParameter("kk")).andReturn(null);
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
+        when(aReq.getParameter("kk")).thenReturn(null);
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -192,13 +174,11 @@ public class RequestMatcherTest {
                                         .withParam("kk", "vv")
                                         .withParam("k2", "v2");
 
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(1));
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -208,13 +188,11 @@ public class RequestMatcherTest {
     public void testMatchWithParamsTooFew() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(2));
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -224,11 +202,9 @@ public class RequestMatcherTest {
     public void testMatchWrongMethod() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.DELETE);
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-
-        EasyMock.replay(aReq);
+        when(aReq.getMethod()).thenReturn("GET");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -238,12 +214,10 @@ public class RequestMatcherTest {
     public void testMatchWrongPath() {
 
         ClientDriverRequest bReq = new ClientDriverRequest("bbbbb").withMethod(Method.GET);
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -253,12 +227,10 @@ public class RequestMatcherTest {
     public void testMatchWrongPathPattern() {
 
         ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[b]{5}")).withMethod(Method.GET);
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-
-        EasyMock.replay(aReq);
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -268,18 +240,16 @@ public class RequestMatcherTest {
     public void testMatchWithRequestBody() throws IOException {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/junk");
+        when(aReq.getContentType()).thenReturn("text/junk");
 
         BufferedReader contentReader = new BufferedReader(new StringReader("ooooh"));
-        EasyMock.expect(aReq.getReader()).andReturn(contentReader);
-
-        EasyMock.replay(aReq);
+        when(aReq.getReader()).thenReturn(contentReader);
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
 
@@ -290,18 +260,16 @@ public class RequestMatcherTest {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
                 Pattern.compile("text/j[a-z]{3}"));
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/junk");
+        when(aReq.getContentType()).thenReturn("text/junk");
 
         BufferedReader contentReader = new BufferedReader(new StringReader("ooooh"));
-        EasyMock.expect(aReq.getReader()).andReturn(contentReader);
-
-        EasyMock.replay(aReq);
+        when(aReq.getReader()).thenReturn(contentReader);
 
         Assert.assertTrue(sut.isMatch(aReq, bReq));
 
@@ -311,15 +279,13 @@ public class RequestMatcherTest {
     public void testMatchWithRequestBodyWrongType() throws IOException {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/jnkular");
-
-        EasyMock.replay(aReq);
+        when(aReq.getContentType()).thenReturn("text/jnkular");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -330,15 +296,13 @@ public class RequestMatcherTest {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh",
                 Pattern.compile("text/[a-z]{4}"));
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/jnkular");
-
-        EasyMock.replay(aReq);
+        when(aReq.getContentType()).thenReturn("text/jnkular");
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -348,18 +312,16 @@ public class RequestMatcherTest {
     public void testMatchWithRequestBodyWrongContent() throws IOException {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/junk");
+        when(aReq.getContentType()).thenReturn("text/junk");
 
         BufferedReader contentReader = new BufferedReader(new StringReader("ooook"));
-        EasyMock.expect(aReq.getReader()).andReturn(contentReader);
-
-        EasyMock.replay(aReq);
+        when(aReq.getReader()).thenReturn(contentReader);
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 
@@ -370,18 +332,16 @@ public class RequestMatcherTest {
 
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"),
                 "text/junk");
-        aReq = EasyMock.createMock(HttpServletRequest.class);
+        aReq = mock(HttpServletRequest.class);
 
-        EasyMock.expect(aReq.getPathInfo()).andReturn("aaaaa");
-        EasyMock.expect(aReq.getMethod()).andReturn("GET");
-        EasyMock.expect(aReq.getParameterMap()).andReturn(getMapOfSize(0));
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
 
-        EasyMock.expect(aReq.getContentType()).andReturn("text/junk");
+        when(aReq.getContentType()).thenReturn("text/junk");
 
         BufferedReader contentReader = new BufferedReader(new StringReader("ooook"));
-        EasyMock.expect(aReq.getReader()).andReturn(contentReader);
-
-        EasyMock.replay(aReq);
+        when(aReq.getReader()).thenReturn(contentReader);
 
         Assert.assertFalse(sut.isMatch(aReq, bReq));
 

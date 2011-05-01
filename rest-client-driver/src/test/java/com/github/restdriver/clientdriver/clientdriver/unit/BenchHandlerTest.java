@@ -30,13 +30,14 @@ import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectatio
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 import junit.framework.Assert;
 
-import org.easymock.EasyMock;
 import org.eclipse.jetty.server.Request;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BenchHandlerTest {
 
@@ -45,13 +46,8 @@ public class BenchHandlerTest {
 
     @Before
     public void before() {
-        mockRequestMatcher = EasyMock.createMock(RequestMatcher.class);
+        mockRequestMatcher = mock(RequestMatcher.class);
         sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
-    }
-
-    @After
-    public void after() {
-        EasyMock.verify(mockRequestMatcher);
     }
 
     /**
@@ -59,8 +55,6 @@ public class BenchHandlerTest {
      */
     @Test
     public void testMinimalHandler() {
-
-        EasyMock.replay(mockRequestMatcher);
 
         sut.checkForUnexpectedRequests();
         sut.checkForUnmatchedExpectations();
@@ -74,8 +68,6 @@ public class BenchHandlerTest {
     public void testUnmetExpectation() {
 
         sut.addExpectation(new ClientDriverRequest("hmm"), new ClientDriverResponse("mmm"));
-
-        EasyMock.replay(mockRequestMatcher);
 
         sut.checkForUnexpectedRequests();
 
@@ -94,16 +86,12 @@ public class BenchHandlerTest {
     @Test
     public void testUnexpectedRequest() throws IOException, ServletException {
 
-        Request mockRequest = EasyMock.createMock(Request.class);
-        HttpServletRequest mockHttpRequest = EasyMock.createMock(HttpServletRequest.class);
-        HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+        Request mockRequest = mock(Request.class);
+        HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
+        HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
 
-        EasyMock.expect(mockHttpRequest.getPathInfo()).andReturn("yarr");
-        EasyMock.expect(mockHttpRequest.getQueryString()).andReturn("gooo=gredge");
-
-        EasyMock.replay(mockHttpRequest);
-        EasyMock.replay(mockHttpResponse);
-        EasyMock.replay(mockRequestMatcher);
+        when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
+        when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
 
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
@@ -111,9 +99,6 @@ public class BenchHandlerTest {
         } catch (ClientDriverInternalException bre) {
             Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
         }
-
-        EasyMock.verify(mockHttpRequest);
-        EasyMock.verify(mockHttpResponse);
 
         try {
             sut.checkForUnexpectedRequests();
@@ -130,15 +115,15 @@ public class BenchHandlerTest {
     @Test
     public void testExpectedRequest() throws IOException, ServletException {
 
-        Request mockRequest = EasyMock.createMock(Request.class);
+        Request mockRequest = mock(Request.class);
         HttpServletRequest mockHttpRequest = new Request();
-        HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+        HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
 
         ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
         ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
                 .withHeader("hhh", "JJJ");
 
-        EasyMock.expect(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).andReturn(true);
+        when(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).thenReturn(true);
 
         mockHttpResponse.setContentType("fhieow");
         mockHttpResponse.setStatus(404);
@@ -146,17 +131,12 @@ public class BenchHandlerTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintWriter printWriter = new PrintWriter(baos);
 
-        EasyMock.expect(mockHttpResponse.getWriter()).andReturn(printWriter);
+        when(mockHttpResponse.getWriter()).thenReturn(printWriter);
         mockHttpResponse.setHeader("hhh", "JJJ");
-
-        EasyMock.replay(mockHttpResponse);
-        EasyMock.replay(mockRequestMatcher);
 
         sut.addExpectation(realRequest, realResponse);
 
         sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
-
-        EasyMock.verify(mockHttpResponse);
 
         printWriter.close();
         Assert.assertEquals("lovely", new String(baos.toByteArray()));
