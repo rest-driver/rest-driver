@@ -40,126 +40,126 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
 
 public class BenchHandlerTest {
 
-	private DefaultClientDriverJettyHandler sut;
-	private RequestMatcher mockRequestMatcher;
+    private DefaultClientDriverJettyHandler sut;
+    private RequestMatcher mockRequestMatcher;
 
-	@Before
-	public void before() {
-		mockRequestMatcher = EasyMock.createMock(RequestMatcher.class);
-		sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
-	}
+    @Before
+    public void before() {
+        mockRequestMatcher = EasyMock.createMock(RequestMatcher.class);
+        sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
+    }
 
-	@After
-	public void after() {
-		// EasyMock.verify(mockRequestMatcher);
-	}
+    @After
+    public void after() {
+        EasyMock.verify(mockRequestMatcher);
+    }
 
-	/**
-	 * with no expectations set, and no requests made, the handler does not report any errors
-	 */
-	@Test
-	public void testMinimalHandler() {
+    /**
+     * with no expectations set, and no requests made, the handler does not report any errors
+     */
+    @Test
+    public void testMinimalHandler() {
 
-		EasyMock.replay(mockRequestMatcher);
+        EasyMock.replay(mockRequestMatcher);
 
-		sut.checkForUnexpectedRequests();
-		sut.checkForUnmatchedExpectations();
+        sut.checkForUnexpectedRequests();
+        sut.checkForUnmatchedExpectations();
 
-	}
+    }
 
-	/**
-	 * with expectations set, and no requests made, the handler throws an error upon verification
-	 */
-	@Test
-	public void testUnmetExpectation() {
+    /**
+     * with expectations set, and no requests made, the handler throws an error upon verification
+     */
+    @Test
+    public void testUnmetExpectation() {
 
-		sut.addExpectation(new ClientDriverRequest("hmm"), new ClientDriverResponse("mmm"));
+        sut.addExpectation(new ClientDriverRequest("hmm"), new ClientDriverResponse("mmm"));
 
-		EasyMock.replay(mockRequestMatcher);
+        EasyMock.replay(mockRequestMatcher);
 
-		sut.checkForUnexpectedRequests();
+        sut.checkForUnexpectedRequests();
 
-		try {
-			sut.checkForUnmatchedExpectations();
-			Assert.fail();
-		} catch (ClientDriverFailedExpectationException bre) {
-			Assert.assertEquals("1 unmatched expectation(s), first is: BenchRequest: GET hmm; ", bre.getMessage());
-		}
+        try {
+            sut.checkForUnmatchedExpectations();
+            Assert.fail();
+        } catch (ClientDriverFailedExpectationException bre) {
+            Assert.assertEquals("1 unmatched expectation(s), first is: BenchRequest: GET hmm; ", bre.getMessage());
+        }
 
-	}
+    }
 
-	/**
-	 * with no expectations set, and a request made, the handler throws an error upon verification
-	 */
-	@Test
-	public void testUnexpectedRequest() throws IOException, ServletException {
+    /**
+     * with no expectations set, and a request made, the handler throws an error upon verification
+     */
+    @Test
+    public void testUnexpectedRequest() throws IOException, ServletException {
 
-		Request mockRequest = EasyMock.createMock(Request.class);
-		HttpServletRequest mockHttpRequest = EasyMock.createMock(HttpServletRequest.class);
-		HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+        Request mockRequest = EasyMock.createMock(Request.class);
+        HttpServletRequest mockHttpRequest = EasyMock.createMock(HttpServletRequest.class);
+        HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
 
-		EasyMock.expect(mockHttpRequest.getPathInfo()).andReturn("yarr");
-		EasyMock.expect(mockHttpRequest.getQueryString()).andReturn("gooo=gredge");
+        EasyMock.expect(mockHttpRequest.getPathInfo()).andReturn("yarr");
+        EasyMock.expect(mockHttpRequest.getQueryString()).andReturn("gooo=gredge");
 
-		EasyMock.replay(mockHttpRequest);
-		EasyMock.replay(mockHttpResponse);
-		EasyMock.replay(mockRequestMatcher);
+        EasyMock.replay(mockHttpRequest);
+        EasyMock.replay(mockHttpResponse);
+        EasyMock.replay(mockRequestMatcher);
 
-		try {
-			sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
-			Assert.fail();
-		} catch (ClientDriverInternalException bre) {
-			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
-		}
+        try {
+            sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+            Assert.fail();
+        } catch (ClientDriverInternalException bre) {
+            Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
+        }
 
-		EasyMock.verify(mockHttpRequest);
-		EasyMock.verify(mockHttpResponse);
+        EasyMock.verify(mockHttpRequest);
+        EasyMock.verify(mockHttpResponse);
 
-		try {
-			sut.checkForUnexpectedRequests();
-			Assert.fail();
-		} catch (ClientDriverFailedExpectationException bre) {
-			Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
-		}
+        try {
+            sut.checkForUnexpectedRequests();
+            Assert.fail();
+        } catch (ClientDriverFailedExpectationException bre) {
+            Assert.assertEquals("Unexpected request: yarr?gooo=gredge", bre.getMessage());
+        }
 
-	}
+    }
 
-	/**
-	 * with an expectation set, and a request made, the handler checks for a match and returns the match if one is found
-	 */
-	@Test
-	public void testExpectedRequest() throws IOException, ServletException {
+    /**
+     * with an expectation set, and a request made, the handler checks for a match and returns the match if one is found
+     */
+    @Test
+    public void testExpectedRequest() throws IOException, ServletException {
 
-		Request mockRequest = EasyMock.createMock(Request.class);
-		HttpServletRequest mockHttpRequest = new Request();
-		HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
+        Request mockRequest = EasyMock.createMock(Request.class);
+        HttpServletRequest mockHttpRequest = new Request();
+        HttpServletResponse mockHttpResponse = EasyMock.createMock(HttpServletResponse.class);
 
-		ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
-		ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
-				.withHeader("hhh", "JJJ");
+        ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
+        ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
+                .withHeader("hhh", "JJJ");
 
-		EasyMock.expect(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).andReturn(true);
+        EasyMock.expect(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).andReturn(true);
 
-		mockHttpResponse.setContentType("fhieow");
-		mockHttpResponse.setStatus(404);
+        mockHttpResponse.setContentType("fhieow");
+        mockHttpResponse.setStatus(404);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		PrintWriter printWriter = new PrintWriter(baos);
+        PrintWriter printWriter = new PrintWriter(baos);
 
         EasyMock.expect(mockHttpResponse.getWriter()).andReturn(printWriter);
-		mockHttpResponse.setHeader("hhh", "JJJ");
+        mockHttpResponse.setHeader("hhh", "JJJ");
 
-		EasyMock.replay(mockHttpResponse);
-		EasyMock.replay(mockRequestMatcher);
+        EasyMock.replay(mockHttpResponse);
+        EasyMock.replay(mockRequestMatcher);
 
-		sut.addExpectation(realRequest, realResponse);
+        sut.addExpectation(realRequest, realResponse);
 
-		sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+        sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
 
-		EasyMock.verify(mockHttpResponse);
+        EasyMock.verify(mockHttpResponse);
 
-		printWriter.close();
-		Assert.assertEquals("lovely", new String(baos.toByteArray()));
+        printWriter.close();
+        Assert.assertEquals("lovely", new String(baos.toByteArray()));
 
-	}
+    }
 }
