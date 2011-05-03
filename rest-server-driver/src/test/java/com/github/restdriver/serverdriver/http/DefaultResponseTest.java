@@ -25,7 +25,6 @@ import org.junit.Test;
 
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.github.restdriver.serverdriver.RestServerDriver.header;
 import static org.hamcrest.MatcherAssert.*;

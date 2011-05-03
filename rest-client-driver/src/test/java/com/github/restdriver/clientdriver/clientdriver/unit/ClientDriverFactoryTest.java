@@ -15,16 +15,13 @@
  */
 package com.github.restdriver.clientdriver.clientdriver.unit;
 
-import com.github.restdriver.clientdriver.ClientDriver;
-import junit.framework.Assert;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
 
 public class ClientDriverFactoryTest {
 
