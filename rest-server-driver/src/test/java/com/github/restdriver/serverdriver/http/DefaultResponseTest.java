@@ -15,23 +15,23 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.serverdriver.http.response.DefaultResponse;
-import com.github.restdriver.serverdriver.http.response.Response;
-import org.apache.http.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+
 import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.message.BasicHeader;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
-
-import java.util.ArrayList;
-
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.github.restdriver.serverdriver.http.response.DefaultResponse;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * User: mjg
@@ -44,6 +44,8 @@ public class DefaultResponseTest {
         StatusLine mockStatusLine = mock(StatusLine.class);
         when(mockResponse.getStatusLine()).thenReturn(mockStatusLine);
         when(mockStatusLine.getStatusCode()).thenReturn(code);
+        when(mockStatusLine.getProtocolVersion()).thenReturn(new ProtocolVersion("HTTP", 1, 1));
+        when(mockStatusLine.getReasonPhrase()).thenReturn("Reason");
     }
 
     @Test

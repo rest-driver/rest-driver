@@ -22,22 +22,27 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.restdriver.serverdriver.Json;
-import com.github.restdriver.serverdriver.Xml;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-
-import com.github.restdriver.serverdriver.http.Header;
 import org.codehaus.jackson.JsonNode;
 import org.w3c.dom.Element;
+
+import com.github.restdriver.serverdriver.Json;
+import com.github.restdriver.serverdriver.Xml;
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
  * Our class which describes an HTTP response.
  */
 public final class DefaultResponse implements Response {
 
+    private final String protocolVersion;
     private final int statusCode;
+    private final String statusMessage;
     private final String content;
     private final List<Header> headers;
     private final long responseTime;
@@ -49,7 +54,9 @@ public final class DefaultResponse implements Response {
      * @param responseTime time taken for the request in milliseconds
      */
     public DefaultResponse(HttpResponse response, long responseTime) {
+        this.protocolVersion = response.getStatusLine().getProtocolVersion().toString();
         this.statusCode = response.getStatusLine().getStatusCode();
+        this.statusMessage = response.getStatusLine().getReasonPhrase();
         this.content = contentFromResponse(response);
         this.headers = headersFromResponse(response);
         this.responseTime = responseTime;
@@ -118,6 +125,24 @@ public final class DefaultResponse implements Response {
     @Override
     public String toString() {
         return "status=" + statusCode + "|content=" + content + "|headers=[" + join(headers, ",") + "]";
+    }
+
+    @Override
+    public String toHttpString() {
+
+        StrBuilder httpString = new StrBuilder();
+        httpString.append(protocolVersion + " " + statusCode + " " + statusMessage);
+        httpString.appendNewLine();
+
+        httpString.appendWithSeparators(headers, SystemUtils.LINE_SEPARATOR);
+
+        if (StringUtils.isNotEmpty(content)) {
+            httpString.appendNewLine();
+            httpString.append(StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH));
+        }
+
+        return httpString.toString();
+
     }
 
     private static String contentFromResponse(HttpResponse response) {

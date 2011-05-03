@@ -92,4 +92,11 @@ public interface Response {
      */
     Element asXml();
 
+    /**
+     * Returns the response as an HTTP-style String.
+     * 
+     * @return The String
+     */
+    String toHttpString();
+
 }
