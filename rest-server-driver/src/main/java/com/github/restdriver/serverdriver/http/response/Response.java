@@ -28,6 +28,11 @@ import com.github.restdriver.serverdriver.http.Header;
 public interface Response {
 
     /**
+     * The maximum number of response body characters to display. 
+     */
+    int MAX_BODY_DISPLAY_LENGTH = 1024;
+
+    /**
      * What was the response code?
      *
      * @return the HTTP status code of the response

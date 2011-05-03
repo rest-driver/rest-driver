@@ -56,7 +56,7 @@ public final class HasStatusCode extends TypeSafeMatcher<Response> {
         String content = item.getContent();
 
         if (StringUtils.isNotEmpty(content)) {
-            mismatchDescription.appendText("body: " + content + "");
+            mismatchDescription.appendText("body: " + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "");
         } else {
             mismatchDescription.appendText("an empty body");
         }
