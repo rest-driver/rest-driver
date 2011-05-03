@@ -77,8 +77,8 @@ public final class Matchers {
      */
     public static TypeSafeMatcher<Response> hasHeader(String header) {
 
-        if ( header.indexOf( ":" ) != -1 ){
-            return hasHeader( new Header(header) );
+        if (header.indexOf(":") != -1) {
+            return hasHeader(new Header(header));
         }
 
         return new HasHeader(header);
