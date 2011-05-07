@@ -15,7 +15,6 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -51,15 +50,7 @@ public final class HasStatusCode extends TypeSafeMatcher<Response> {
 
     @Override
     protected void describeMismatchSafely(Response item, Description mismatchDescription) {
-        mismatchDescription.appendText("Response has status code: " + item.getStatusCode() + ", and ");
-
-        String content = item.getContent();
-
-        if (StringUtils.isNotEmpty(content)) {
-            mismatchDescription.appendText("body: " + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "");
-        } else {
-            mismatchDescription.appendText("an empty body");
-        }
+        mismatchDescription.appendText("Response has status code: " + item.getStatusCode());
     }
 
 }

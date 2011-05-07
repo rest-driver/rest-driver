@@ -19,8 +19,6 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.junit.Before;
@@ -72,7 +70,7 @@ public class HasStatusCodeTest {
     }
 
     @Test
-    public void mismatchResponseWithNoBodyDescribesCorrectly() {
+    public void mismatchResponseDescribesCorrectly() {
 
         when(response.getStatusCode()).thenReturn(200);
         when(response.getContent()).thenReturn(null);
@@ -81,37 +79,7 @@ public class HasStatusCodeTest {
 
         matcher.describeMismatchSafely(response, description);
 
-        assertThat(description.toString(), is("Response has status code: 200, and an empty body"));
-
-    }
-
-    @Test
-    public void mismatchResponseWithBodyDescribesCorrectly() {
-
-        when(response.getStatusCode()).thenReturn(200);
-        when(response.getContent()).thenReturn("{}");
-
-        Description description = new StringDescription();
-
-        matcher.describeMismatchSafely(response, description);
-
-        assertThat(description.toString(), is("Response has status code: 200, and body: {}"));
-
-    }
-
-    @Test
-    public void mismatchResponseWithLargeBodyTruncates() {
-
-        String longString = RandomStringUtils.randomAlphanumeric(Response.MAX_BODY_DISPLAY_LENGTH + 100);
-
-        when(response.getStatusCode()).thenReturn(200);
-        when(response.getContent()).thenReturn(longString);
-
-        Description description = new StringDescription();
-
-        matcher.describeMismatchSafely(response, description);
-
-        assertThat(description.toString(), is("Response has status code: 200, and body: " + StringUtils.left(longString, Response.MAX_BODY_DISPLAY_LENGTH - 3) + "..."));
+        assertThat(description.toString(), is("Response has status code: 200"));
 
     }
 
