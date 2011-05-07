@@ -15,6 +15,9 @@
  */
 package com.github.restdriver.clientdriver.clientdriver.integration;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -33,10 +36,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-
-public class BenchSuccessTest extends ClientDriverUnitTest {
+public class ClientDriverSuccessTest extends ClientDriverUnitTest {
 
     @Test
     public void testJettyWorking200() throws Exception {

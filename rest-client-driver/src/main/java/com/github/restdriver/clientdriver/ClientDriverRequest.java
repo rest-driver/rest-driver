@@ -130,7 +130,7 @@ public final class ClientDriverRequest {
      */
     @Override
     public String toString() {
-        return "BenchRequest: " + method + " " + path.toString() + "; ";
+        return "ClientDriverRequest: " + method + " " + path.toString() + "; ";
     }
 
     /**

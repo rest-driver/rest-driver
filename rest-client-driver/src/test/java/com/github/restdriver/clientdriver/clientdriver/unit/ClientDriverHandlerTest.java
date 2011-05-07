@@ -15,6 +15,10 @@
  */
 package com.github.restdriver.clientdriver.clientdriver.unit;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,25 +27,19 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
-import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
-
 import org.eclipse.jetty.server.Request;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.RequestMatcher;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-public class BenchHandlerTest {
+public class ClientDriverHandlerTest {
 
     private DefaultClientDriverJettyHandler sut;
     private RequestMatcher mockRequestMatcher;
@@ -77,7 +75,7 @@ public class BenchHandlerTest {
             sut.checkForUnmatchedExpectations();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: BenchRequest: GET hmm; "));
+            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET hmm; "));
         }
 
     }

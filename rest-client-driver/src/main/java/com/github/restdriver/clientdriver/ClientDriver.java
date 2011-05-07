@@ -63,7 +63,7 @@ public final class ClientDriver {
     }
 
     /**
-     * Get the base URL which the BenchServer is running on.
+     * Get the base URL which the ClientDriver is running on.
      * 
      * @return The base URL, which will be like "http://localhost:xxxxx". <br/>
      *         <b>There is no trailing slash on this</b>

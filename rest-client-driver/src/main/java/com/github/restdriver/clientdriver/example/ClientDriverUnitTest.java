@@ -22,18 +22,18 @@ import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 /**
- * If you are using the Http Test Bench, you can have your unit tests extend this class which will setup a benchserver & shut it down for you.
+ * If you are using the Client Driver, you can have your unit tests extend this class which will setup a client driver & shut it down for you.
  */
 public abstract class ClientDriverUnitTest {
 
-    private ClientDriver benchServer;
+    private ClientDriver clientDriver;
 
     /**
-     * Starts the bench server. This will be called before your subclass' {@link Before}-annotated methods.
+     * Starts the client driver. This will be called before your subclass' {@link Before}-annotated methods.
      */
     @Before
     public final void startClientDriver() {
-        benchServer = new ClientDriverFactory().createClientDriver();
+        clientDriver = new ClientDriverFactory().createClientDriver();
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class ClientDriverUnitTest {
      */
     @After
     public final void shutdownClientDriver() {
-        benchServer.shutdown();
+        clientDriver.shutdown();
     }
 
     /**
@@ -52,7 +52,7 @@ public abstract class ClientDriverUnitTest {
      * @return The {@link ClientDriver}
      */
     public final ClientDriver getClientDriver() {
-        return benchServer;
+        return clientDriver;
     }
 
 }

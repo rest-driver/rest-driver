@@ -21,8 +21,9 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import org.apache.commons.io.IOUtils;
+
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
 /**
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
@@ -120,7 +121,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             return pattern.matcher(actual).matches();
 
         } else {
-            throw new ClientDriverInternalException("RequestMatcherImpl asked to match " + expected.getClass()
+            throw new ClientDriverInternalException("DefaultRequestMatcher asked to match " + expected.getClass()
                     + ", but only knows String and Pattern.", null);
         }
     }

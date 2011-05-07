@@ -15,6 +15,9 @@
  */
 package com.github.restdriver.clientdriver.clientdriver.integration;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import java.util.regex.Pattern;
 
 import org.apache.http.client.HttpClient;
@@ -31,10 +34,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
-public class BenchFailTest {
+public class ClientDriverFailTest {
 
     private ClientDriver bServer;
 
@@ -71,7 +71,7 @@ public class BenchFailTest {
             bServer.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: BenchRequest: GET /blah; "));
+            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET /blah; "));
         }
 
     }

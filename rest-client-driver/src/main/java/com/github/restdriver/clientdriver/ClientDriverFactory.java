@@ -18,7 +18,7 @@ package com.github.restdriver.clientdriver;
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
 /**
- * Main entry point to the Http Test Bench. Just call
+ * Main entry point to the Rest Client Driver. Just call
  * <code>new {@link ClientDriverFactory}().{@link #createClientDriver()}</code> to get a {@link ClientDriver} running on a
  * free port. You cannot specify which port, one will be chosen for you.
  */

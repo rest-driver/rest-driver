@@ -18,7 +18,7 @@ package com.github.restdriver.clientdriver;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Interface for classes whose responsibility is to match incoming Http requests with expected BenchRequests.
+ * Interface for classes whose responsibility is to match incoming Http requests with expected ClientDriverRequests.
  * 
  * @author mjg
  * 
