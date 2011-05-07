@@ -133,6 +133,7 @@ public final class DefaultResponse implements Response {
 
         if (StringUtils.isNotEmpty(content)) {
             httpString.appendNewLine();
+            httpString.appendNewLine();
             httpString.append(StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH));
         }
 
