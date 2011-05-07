@@ -93,10 +93,10 @@ public interface Response {
     Element asXml();
 
     /**
-     * Returns the response as an HTTP-style String.
+     * Returns the response as a compact single-line String.
      * 
      * @return The String
      */
-    String toHttpString();
+    String toCompactString();
 
 }

@@ -124,11 +124,6 @@ public final class DefaultResponse implements Response {
 
     @Override
     public String toString() {
-        return "status=" + statusCode + "|content=" + content + "|headers=[" + join(headers, ",") + "]";
-    }
-
-    @Override
-    public String toHttpString() {
 
         StrBuilder httpString = new StrBuilder();
         httpString.append(protocolVersion + " " + statusCode + " " + statusMessage);
@@ -143,6 +138,11 @@ public final class DefaultResponse implements Response {
 
         return httpString.toString();
 
+    }
+
+    @Override
+    public String toCompactString() {
+        return "status=" + statusCode + "|content=" + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "|headers=[" + join(headers, ",") + "]";
     }
 
     private static String contentFromResponse(HttpResponse response) {
