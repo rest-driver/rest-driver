@@ -26,9 +26,11 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * Provides static helper methods for XML representations.
@@ -38,6 +40,16 @@ import org.xml.sax.SAXException;
 public final class Xml {
 
     private Xml() {
+    }
+
+    /**
+     * Converts the body of the given Response to an XML element.
+     * 
+     * @param response The response to be converted
+     * @return The converted element
+     */
+    public static Element asXml(Response response) {
+        return asXml(response.getContent());
     }
 
     /**
