@@ -36,21 +36,21 @@ import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectatio
 
 public class ClientDriverFailTest {
 
-    private ClientDriver bServer;
+    private ClientDriver clientDriver;
 
     @Test
     public void testUnexpectedCall() throws Exception {
-        bServer = new ClientDriverFactory().createClientDriver();
+        clientDriver = new ClientDriverFactory().createClientDriver();
 
         // No expectations defined
 
         HttpClient client = new DefaultHttpClient();
-        HttpGet getter = new HttpGet(bServer.getBaseUrl() + "/blah?foo=bar");
+        HttpGet getter = new HttpGet(clientDriver.getBaseUrl() + "/blah?foo=bar");
 
         client.execute(getter);
 
         try {
-            bServer.shutdown();
+            clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?foo=bar"));
@@ -60,15 +60,15 @@ public class ClientDriverFailTest {
 
     @Test
     public void testUnmatchedExpectation() throws Exception {
-        bServer = new ClientDriverFactory().createClientDriver();
+        clientDriver = new ClientDriverFactory().createClientDriver();
 
-        bServer.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
-        bServer.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
+        clientDriver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
+        clientDriver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
 
         // no requests made
 
         try {
-            bServer.shutdown();
+            clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET /blah; "));
@@ -78,21 +78,21 @@ public class ClientDriverFailTest {
 
     @Test
     public void testJettyWorkingWithMethodButIncorrectParams() throws Exception {
-        bServer = new ClientDriverFactory().createClientDriver();
+        clientDriver = new ClientDriverFactory().createClientDriver();
 
-        bServer.addExpectation(new ClientDriverRequest("/blah").withMethod(Method.POST).withParam("gang", "green"),
+        clientDriver.addExpectation(new ClientDriverRequest("/blah").withMethod(Method.POST).withParam("gang", "green"),
                 new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
                         "TestServer"));
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = bServer.getBaseUrl();
+        String baseUrl = clientDriver.getBaseUrl();
         HttpPost poster = new HttpPost(baseUrl + "/blah?gang=groon");
 
         client.execute(poster);
 
         try {
-            bServer.shutdown();
+            clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=groon"));
@@ -102,21 +102,21 @@ public class ClientDriverFailTest {
 
     @Test
     public void testJettyWorkingWithMethodButIncorrectParamsPattern() throws Exception {
-        bServer = new ClientDriverFactory().createClientDriver();
+        clientDriver = new ClientDriverFactory().createClientDriver();
 
-        bServer.addExpectation(new ClientDriverRequest(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
+        clientDriver.addExpectation(new ClientDriverRequest(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
                 "gang", Pattern.compile("r")), new ClientDriverResponse("OUCH!!").withStatus(200)
                 .withContentType("text/plain").withHeader("Server", "TestServer"));
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = bServer.getBaseUrl();
+        String baseUrl = clientDriver.getBaseUrl();
         HttpPost poster = new HttpPost(baseUrl + "/blah?gang=goon");
 
         client.execute(poster);
 
         try {
-            bServer.shutdown();
+            clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=goon"));
