@@ -19,6 +19,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
 import com.github.restdriver.serverdriver.http.response.Response;
+import org.apache.commons.lang.SystemUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,6 +37,7 @@ public class ResponseToStringAcceptanceTest
         extends ClientDriverUnitTest {
 
     private String baseUrl;
+    private String n = SystemUtils.LINE_SEPARATOR;
 
     @Before
     public void getServerDetails() {
@@ -48,10 +50,10 @@ public class ResponseToStringAcceptanceTest
 
         Response response = get(baseUrl);
 
-        String expectedResponse = "HTTP/1.1 400 Bad Request\n";
-        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1\n" +
-                            "Content-Length: 0\n" +
-                            "Server: Jetty(7.3.1.v20110307)";
+        String expectedResponse = "HTTP/1.1 400 Bad Request" + n;
+        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
+                "Content-Length: 0" + n +
+                "Server: Jetty(7.3.1.v20110307)";
 
         assertThat(response.toString(), is(equalTo(expectedResponse)));
 
@@ -63,12 +65,12 @@ public class ResponseToStringAcceptanceTest
 
         Response response = get(baseUrl);
 
-        String expectedResponse = "HTTP/1.1 200 OK\n";
-        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1\n" +
-                            "Content-Length: 19\n" +
-                            "Server: Jetty(7.3.1.v20110307)\n" +
-                            "\n" +
-                            "This is the content";
+        String expectedResponse = "HTTP/1.1 200 OK" + n;
+        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
+                "Content-Length: 19" + n +
+                "Server: Jetty(7.3.1.v20110307)" + n +
+                n +
+                "This is the content";
 
         assertThat(response.toString(), is(equalTo(expectedResponse)));
 
