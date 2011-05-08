@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.serverdriver.http;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeUriSyntaxException;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -98,6 +99,11 @@ public class UrlTest {
     public void paramsAreUrlEncoded(){
         Url url = new Url("http://localhost").withParam("a%a", "b>b");
         assertThat( url.toString(), is("http://localhost?a%25a=b%3Eb") );
+    }
+
+    @Test
+    public void assumesHttpAsScheme(){
+        assertThat( new Url("localhost/").toString(), is("http://localhost/"));
     }
 
 }

@@ -15,10 +15,12 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import org.apache.commons.httpclient.URIException;
-import org.apache.commons.httpclient.util.URIUtil;
+import com.github.restdriver.serverdriver.http.exception.RuntimeUriSyntaxException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,19 +41,15 @@ public class Url {
             this.value = value;
         }
 
-        public String getKey() {
-            return key;
-        }
-
-        public String getValue() {
-            return value;
+        public String toString() {
+            return key + "=" + value;
         }
     }
 
     /**
      * Setup a Url with a base path, like "http://localhost:8080".
      *
-     * @param base the base Url
+     * @param base the base Url.
      */
     public Url(String base) {
         this.url = new StrBuilder(base);
@@ -97,31 +95,38 @@ public class Url {
      */
     public String toString() {
 
-        boolean firstParam = true;
+        String[] baseParts;
 
-        StrBuilder escapedUri;
+        if (url.toString().contains("://")) {
+            baseParts = url.toString().split("://");
 
-        try {
-            escapedUri = new StrBuilder(URIUtil.encodePath(url.toString()));
-
-
-            for (QueryParam qp : queryParams) {
-                if (firstParam) {
-                    escapedUri.append("?");
-                    firstParam = false;
-                } else {
-                    escapedUri.append("&");
-                }
-                escapedUri
-                        .append(URIUtil.encodeQuery(qp.getKey()))
-                        .append("=")
-                        .append(URIUtil.encodeQuery(qp.getValue()));
-            }
-
-        } catch (URIException urie) {
-            throw new RuntimeException("bad uri ", urie);
+        } else {
+            baseParts = new String[]{"http", url.toString()};
         }
 
-        return escapedUri.toString();
+        String scheme, ssp, path, query;
+
+        scheme = baseParts[0];
+
+        if (baseParts[1].contains("/")) {
+            ssp = baseParts[1].substring(0, baseParts[1].indexOf("/"));
+            path = baseParts[1].substring(baseParts[1].indexOf("/"));
+
+        } else {
+            ssp = baseParts[1];
+            path = "";
+
+        }
+
+        query = StringUtils.trimToNull(StringUtils.join(queryParams, "&"));
+
+        try {
+            return new URI(scheme, ssp, path, query, null).toASCIIString();
+
+        } catch (URISyntaxException use) {
+            // NB not sure how this could get caused...
+            throw new RuntimeUriSyntaxException("Cannot create URL", use);
+        }
+
     }
 }
