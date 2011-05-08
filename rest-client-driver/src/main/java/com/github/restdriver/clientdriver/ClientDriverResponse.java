@@ -31,16 +31,16 @@ public final class ClientDriverResponse {
     private final Map<String, String> headers;
 
     /**
-     * Constructor. The only mandatory argument is the content of the response. For an empty response, use "". Defaults
-     * are:<br/>
-     * <ul>
-     * <li>Http status = 200</li>
-     * <li>Content-Type = text/plain</li>
-     * <li>Headers also include the Jetty defaults, which is just "Server: Jetty 6.2.1"</li>
-     * </ul>
+     * Creates a new response with an empty body, a status code of 200 and a Content-Type of 'text/plain'.
+     */
+    public ClientDriverResponse() {
+        this("");
+    }
+
+    /**
+     * Creates a new response with the given body, a status code of 200 and a Content-Type of 'text/plain'.
      * 
-     * @param content
-     *            The mandatory argument.
+     * @param content The content of the response
      */
     public ClientDriverResponse(String content) {
         this.content = content;
