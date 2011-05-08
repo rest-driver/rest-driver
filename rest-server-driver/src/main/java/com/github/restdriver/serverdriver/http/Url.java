@@ -15,6 +15,8 @@
  */
 package com.github.restdriver.serverdriver.http;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.commons.lang.text.StrBuilder;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class Url {
     private StrBuilder url;
     private List<QueryParam> queryParams;
 
-    private class QueryParam{
+    private class QueryParam {
         final String key;
         final String value;
 
@@ -48,25 +50,27 @@ public class Url {
 
     /**
      * Setup a Url with a base path, like "http://localhost:8080".
+     *
      * @param base the base Url
      */
     public Url(String base) {
-        this.url = new StrBuilder( base );
+        this.url = new StrBuilder(base);
         queryParams = new ArrayList<QueryParam>();
     }
 
     /**
      * Add a path to a url.  This method will ensure that there is always exactly one "/" character between segments (so you don't have to :).
+     *
      * @param path the path, eg "foo/bar"
      * @return The new Url object (for chaining calls)
      */
     public Url withPath(String path) {
 
-        if ( ! ( url.endsWith("/") || path.startsWith("/") ) ){
+        if (!(url.endsWith("/") || path.startsWith("/"))) {
             url.append("/");
         }
 
-        if ( url.endsWith("/") && path.startsWith("/") ){
+        if (url.endsWith("/") && path.startsWith("/")) {
             path = path.substring(1);
         }
 
@@ -76,7 +80,8 @@ public class Url {
 
     /**
      * Adds a query-string parameter to the end of the url, like ?key=val.
-     * @param key The key for the query string.
+     *
+     * @param key   The key for the query string.
      * @param value The value for the query string.
      * @return The Url with the query string param added (for chaining calls)
      */
@@ -87,22 +92,36 @@ public class Url {
 
     /**
      * You can pass this object to all the get/post/put/delete etc methods
+     *
      * @return The Url, correctly formatted.
      */
     public String toString() {
 
         boolean firstParam = true;
 
-        for ( QueryParam qp : queryParams ){
-            if ( firstParam ){
-                url.append("?");   
-                firstParam = false;
-            } else {
-                url.append("&");
+        StrBuilder escapedUri;
+
+        try {
+            escapedUri = new StrBuilder(URIUtil.encodePath(url.toString()));
+
+
+            for (QueryParam qp : queryParams) {
+                if (firstParam) {
+                    escapedUri.append("?");
+                    firstParam = false;
+                } else {
+                    escapedUri.append("&");
+                }
+                escapedUri
+                        .append(URIUtil.encodeQuery(qp.getKey()))
+                        .append("=")
+                        .append(URIUtil.encodeQuery(qp.getValue()));
             }
-            url.append(qp.getKey()).append("=").append(qp.getValue());
+
+        } catch (URIException urie) {
+            throw new RuntimeException("bad uri ", urie);
         }
 
-        return url.toString();
+        return escapedUri.toString();
     }
 }

@@ -82,4 +82,22 @@ public class UrlTest {
         assertThat( url.toString(), is("http://localhost/c/?a=b") );
     }
 
+    @Test
+    public void pathsAreUrlEncoded(){
+        Url url = new Url("http://localhost").withPath("   ");
+        assertThat( url.toString(), is("http://localhost/%20%20%20") );
+    }
+
+    @Test
+    public void multiSectionPathsAreUrlEncoded(){
+        Url url = new Url("http://localhost").withPath("   /  ");
+        assertThat( url.toString(), is("http://localhost/%20%20%20/%20%20") );
+    }
+
+    @Test
+    public void paramsAreUrlEncoded(){
+        Url url = new Url("http://localhost").withParam("a%a", "b>b");
+        assertThat( url.toString(), is("http://localhost?a%25a=b%3Eb") );
+    }
+
 }
