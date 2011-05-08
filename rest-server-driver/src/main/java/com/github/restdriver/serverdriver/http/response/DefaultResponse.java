@@ -126,7 +126,7 @@ public final class DefaultResponse implements Response {
     public String toString() {
 
         StrBuilder httpString = new StrBuilder();
-        httpString.append(protocolVersion + " " + statusCode + " " + statusMessage);
+        httpString.append(protocolVersion).append(" ").append(statusCode).append(" ").append(statusMessage);
         httpString.appendNewLine();
 
         httpString.appendWithSeparators(headers, SystemUtils.LINE_SEPARATOR);
