@@ -7,7 +7,7 @@
     <version>1.0.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>REST Driver Parent</name>
+    <name>REST Driver</name>
     <description>Test Driver to test your RESTful services and clients</description>
     <url>https://github.com/rest-driver/rest-driver</url>
 
