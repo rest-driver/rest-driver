@@ -135,4 +135,8 @@ public final class Matchers {
         return new Rfc1123DateMatcher();
     }
 
+    public static TypeSafeMatcher<Header> isRfc1123Compliant(){
+        return new Rfc1123DateMatcher();
+    }
+
 }

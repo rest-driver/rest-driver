@@ -22,9 +22,10 @@ import com.github.restdriver.serverdriver.http.response.Response;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.Matchers.isValidDateHeader;
+import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 
 public class Rfc1123DatesInHeadersAcceptanceTest {
 
@@ -35,15 +36,24 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
     public ClientDriverRule driver = new ClientDriverRule();
 
     @Test
-    public void assertValidDateHeader() {
+    public void assertOnValidDateHeader() {
 
         driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
-
         Response response = get(driver.getBaseUrl());
-
         System.out.println(response.getHeader("Date"));
-
         assertThat( response.getHeader("Date"), isValidDateHeader() );
+        assertThat( response.getHeader("Date"), isRfc1123Compliant() );
+
+    }
+
+    @Test
+    public void assertOnInvalidDateHeader() {
+
+        driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
+        Response response = get(driver.getBaseUrl());
+        System.out.println(response.getHeader("Date"));
+        assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
+        assertThat( response.getHeader("Date"), not(isRfc1123Compliant()) );
 
     }
 
