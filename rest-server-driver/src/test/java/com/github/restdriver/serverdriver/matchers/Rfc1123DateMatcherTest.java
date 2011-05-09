@@ -16,6 +16,8 @@
 package com.github.restdriver.serverdriver.matchers;
 
 import com.github.restdriver.serverdriver.http.Header;
+import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -39,6 +41,14 @@ public class Rfc1123DateMatcherTest {
     @Test
     public void testIncorrectDoesntMatch() {
         assertThat(new Rfc1123DateMatcher().matches(unCompliantDate), is(false));
+    }
+
+    @Test
+    public void testDescription(){
+        Description description = new StringDescription();
+        new Rfc1123DateMatcher().describeTo(description);
+
+        assertThat(description.toString(), is("Rfc1123-compliant date in header, like 'Mon, 09 May 2011 18:49:18 GMT'"));
     }
 
 }

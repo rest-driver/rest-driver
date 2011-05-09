@@ -31,6 +31,7 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
 
     private final String compliantDate = "Mon, 09 May 2011 18:49:18 GMT";
     private final String unCompliantDate = "Junk, 09 May 2011 18:49:18 GMT";
+    private final String compliantButInvalidDate = "Mon, 12 May 2011 18:49:18 GMT"; // was not a Monday
 
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
@@ -40,18 +41,29 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
 
         driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
         Response response = get(driver.getBaseUrl());
-        System.out.println(response.getHeader("Date"));
+
         assertThat( response.getHeader("Date"), isValidDateHeader() );
         assertThat( response.getHeader("Date"), isRfc1123Compliant() );
 
     }
 
     @Test
-    public void assertOnInvalidDateHeader() {
+    public void assertOnInvalidFormatDateHeader() {
 
         driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
         Response response = get(driver.getBaseUrl());
-        System.out.println(response.getHeader("Date"));
+
+        assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
+        assertThat( response.getHeader("Date"), not(isRfc1123Compliant()) );
+
+    }
+
+    @Test
+    public void assertOnInvalidDateHeader() {
+
+        driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantButInvalidDate));
+        Response response = get(driver.getBaseUrl());
+
         assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
         assertThat( response.getHeader("Date"), not(isRfc1123Compliant()) );
 

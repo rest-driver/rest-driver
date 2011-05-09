@@ -131,11 +131,23 @@ public final class Matchers {
         return new HasHeaderWithValue(name, valueMatcher);
     }
 
-    public static TypeSafeMatcher<Header> isValidDateHeader(){
+    /**
+     * Checks whether a header's value is a valid date according to RFC1123.  All headers containing dates (Date, Expires, etc) should
+     * be valid.
+     *
+     * @return The new matcher.
+     */
+    public static TypeSafeMatcher<Header> isValidDateHeader() {
         return new Rfc1123DateMatcher();
     }
 
-    public static TypeSafeMatcher<Header> isRfc1123Compliant(){
+    /**
+     * Checks whether a header's value is a valid date according to RFC1123.  All headers containing dates (Date, Expires, etc) should
+     * be valid.
+     *
+     * @return The new matcher.
+     */    
+    public static TypeSafeMatcher<Header> isRfc1123Compliant() {
         return new Rfc1123DateMatcher();
     }
 

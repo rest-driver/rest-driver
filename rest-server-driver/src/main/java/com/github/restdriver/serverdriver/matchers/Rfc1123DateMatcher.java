@@ -23,16 +23,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * User: mjg
- * Date: 09/05/11
- * Time: 20:16
+ * Matcher to check that headers contain dates which are spec-valid.  All dates in HTTP headers (Date-header, caching, etc) should
+ * pass this matcher.
  */
-public class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
+public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
 
     @Override
     protected boolean matchesSafely(Header dateHeader) {
 
         SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
 
         try {
             formatter.parse(dateHeader.getValue());
@@ -44,7 +44,7 @@ public class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
 
     @Override
     public void describeTo(Description description) {
-//            description.appendText("Response with header named '" + name + "'");
+        description.appendText("Rfc1123-compliant date in header");
     }
-    
+
 }
