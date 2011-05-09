@@ -18,15 +18,20 @@ package com.github.restdriver.serverdriver.http.exception;
 import java.net.URISyntaxException;
 
 /**
+ * RuntimeException wrapper for URISyntaxException.
+ *
  * User: mjg
  * Date: 08/05/11
  * Time: 14:59
  */
 public class RuntimeUriSyntaxException extends RuntimeException {
-    public RuntimeUriSyntaxException(String message) {
-        super(message);
-    }
 
+    /**
+     * Constructor.
+     *
+     * @param message The reason for the exception.
+     * @param e The underlying URISyntaxException.
+     */
     public RuntimeUriSyntaxException(String message, URISyntaxException e) {
         super(message, e);
     }

@@ -15,7 +15,6 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeUriSyntaxException;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

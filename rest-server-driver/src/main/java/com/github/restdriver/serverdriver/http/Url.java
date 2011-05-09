@@ -25,16 +25,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class to help with building of URLs
+ * Class to help with building of URLs.
  */
-public class Url {
+public final class Url {
 
     private StrBuilder url;
     private List<QueryParam> queryParams;
 
-    private class QueryParam {
-        final String key;
-        final String value;
+    /**
+     * Encapsulates key & value for a query parameter.
+     */
+    private final class QueryParam {
+        private final String key;
+        private final String value;
 
         private QueryParam(String key, String value) {
             this.key = key;
@@ -47,7 +50,8 @@ public class Url {
     }
 
     /**
-     * Setup a Url with a base path, like "http://localhost:8080".
+     * Setup a Url with a base path, like "http://localhost:8080".  You can also supply just "localhost" and the
+     * "http" will be
      *
      * @param base the base Url.
      */
@@ -89,7 +93,7 @@ public class Url {
     }
 
     /**
-     * You can pass this object to all the get/post/put/delete etc methods
+     * You can pass this object to all the get/post/put/delete etc methods.
      *
      * @return The Url, correctly formatted.
      */

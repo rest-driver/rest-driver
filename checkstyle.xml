@@ -97,7 +97,9 @@
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
     <module name="UpperEll"/>
-    <module name="ParameterAssignment"/>
+    <module name="ParameterAssignment">
+      <property name="severity" value="ignore"/>
+    </module>
     <module name="FinalParameters">
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
