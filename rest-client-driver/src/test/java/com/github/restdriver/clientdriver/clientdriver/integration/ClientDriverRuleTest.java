@@ -42,8 +42,8 @@ public class ClientDriverRuleTest {
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
 
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -56,7 +56,7 @@ public class ClientDriverRuleTest {
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
 
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("").withStatus(404));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 
