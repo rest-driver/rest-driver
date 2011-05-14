@@ -19,8 +19,11 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
+import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
+
+import java.util.Date;
 
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
@@ -66,6 +69,13 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
 
         assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
         assertThat( response.getHeader("Date"), not(isRfc1123Compliant()) );
+
+    }
+
+    @Test
+    public void assertOnDateHeaderInThePast() {
+
+        
 
     }
 
