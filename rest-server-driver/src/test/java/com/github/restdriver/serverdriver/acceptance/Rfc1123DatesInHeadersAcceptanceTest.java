@@ -100,5 +100,4 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
 
     }
 
-
 }

@@ -89,7 +89,7 @@ public final class Header implements RequestModifier {
     }
 
     /**
-     * The value of this header as a JodaTime {@link DateTime}.  If not valid, a RuntimeDateFormatException will be thrown.
+     * The value of this header as a JodaTime {@link DateTime} in UTC.  If not valid, a RuntimeDateFormatException will be thrown.
      *
      * @return The DateTime object..
      */
