@@ -16,11 +16,15 @@
 package com.github.restdriver.serverdriver.matchers;
 
 import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 /**
  * Matcher to check that headers contain dates which are spec-valid.  All dates in HTTP headers (Date-header, caching, etc) should
@@ -28,17 +32,32 @@ import java.text.SimpleDateFormat;
  */
 public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
 
-    @Override
-    protected boolean matchesSafely(Header dateHeader) {
+    public final static String DATE_FORMAT =  "EEE, dd MMM yyyy HH:mm:ss zzz";
 
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+    public final DateTime getDateTime(String rawString){
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
 
         try {
-            formatter.parse(dateHeader.getValue());
-            return true;
+            return new DateTime(formatter.parse(rawString)).toDateTime(DateTimeZone.UTC);
+
         } catch (ParseException pe) {
+            throw new RuntimeDateFormatException(pe);
+        }
+
+    }
+
+
+    @Override
+    protected boolean matchesSafely(Header dateHeader) {
+
+        try {
+            getDateTime(dateHeader.getValue());
+            return true;
+
+        } catch (RuntimeDateFormatException pe) {
             return false;
+            
         }
     }
 

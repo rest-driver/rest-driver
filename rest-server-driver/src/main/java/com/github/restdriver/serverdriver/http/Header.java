@@ -17,8 +17,12 @@ package com.github.restdriver.serverdriver.http;
 
 import javax.annotation.Generated;
 
+import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.joda.time.DateTime;
+
+import java.text.SimpleDateFormat;
 
 /**
  * Represents an HTTP header.
@@ -30,8 +34,8 @@ public final class Header implements RequestModifier {
 
     /**
      * Creates a new header instance.
-     * 
-     * @param name The header name
+     *
+     * @param name  The header name
      * @param value The header value
      */
     public Header(String name, String value) {
@@ -41,7 +45,7 @@ public final class Header implements RequestModifier {
 
     /**
      * Creates a new header instance.
-     * 
+     *
      * @param nameAndValue The name and value as "name: value".
      */
     public Header(String nameAndValue) {
@@ -58,7 +62,7 @@ public final class Header implements RequestModifier {
 
     /**
      * Get the name of this header.
-     * 
+     *
      * @return The header name
      */
     public String getName() {
@@ -67,7 +71,7 @@ public final class Header implements RequestModifier {
 
     /**
      * Get the value of this header.
-     * 
+     *
      * @return The header value
      */
     public String getValue() {
@@ -82,6 +86,15 @@ public final class Header implements RequestModifier {
     @Override
     public String toString() {
         return String.format("%s: %s", name, value);
+    }
+
+    /**
+     * The value of this header as a JodaTime {@link DateTime}.  If not valid, a RuntimeDateFormatException will be thrown.
+     *
+     * @return The DateTime object..
+     */
+    public DateTime asDateTime() {
+        return new Rfc1123DateMatcher().getDateTime(this.getValue());
     }
 
     @Generated("Eclipse")
