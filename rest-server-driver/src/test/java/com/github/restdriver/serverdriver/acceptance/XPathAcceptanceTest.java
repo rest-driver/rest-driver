@@ -38,7 +38,7 @@ public class XPathAcceptanceTest extends ClientDriverUnitTest {
     }
 
     @Test
-    public void jsonPathCanBeRunOverJsonResponse() {
+    public void xPathCanBeRunOnXmlResponse() {
 
         getClientDriver().addExpectation(
                 new ClientDriverRequest("/"),
@@ -47,7 +47,7 @@ public class XPathAcceptanceTest extends ClientDriverUnitTest {
         Response response = get(baseUrl);
 
         assertThat(response, hasStatusCode(200));
-        assertThat(response.asXml(), hasXPath("/some/content[@type]", is("awesome")));
+        assertThat(response.asXml(), hasXPath("/some/content/@type", is("awesome")));
     }
 
 }
