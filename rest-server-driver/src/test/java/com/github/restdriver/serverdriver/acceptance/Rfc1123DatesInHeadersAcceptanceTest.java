@@ -42,7 +42,7 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
     @Test
     public void assertOnValidDateHeader() {
 
-        driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
         Response response = get(driver.getBaseUrl());
 
         assertThat( response.getHeader("Date"), isValidDateHeader() );
@@ -53,7 +53,7 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
     @Test
     public void assertOnInvalidFormatDateHeader() {
 
-        driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
         Response response = get(driver.getBaseUrl());
 
         assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
@@ -64,7 +64,7 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
     @Test
     public void assertOnInvalidDateHeader() {
 
-        driver.expect(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantButInvalidDate));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantButInvalidDate));
         Response response = get(driver.getBaseUrl());
 
         assertThat( response.getHeader("Date"), not(isValidDateHeader()) );
