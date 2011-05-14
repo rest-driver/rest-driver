@@ -86,8 +86,6 @@ public class Rfc1123DatesInHeadersAcceptanceTest {
 
         DateTime headerDate = response.getHeader("Date").asDateTime();
 
-        System.out.println(headerDate);
-
         assertThat(headerDate.getDayOfWeek(), is(DateTimeConstants.MONDAY));
 
         assertThat(headerDate.getDayOfMonth(), is(9));

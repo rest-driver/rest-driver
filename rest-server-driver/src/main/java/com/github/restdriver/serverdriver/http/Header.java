@@ -48,7 +48,7 @@ public final class Header implements RequestModifier {
      */
     public Header(String nameAndValue) {
 
-        String[] parts = nameAndValue.split(":");
+        String[] parts = nameAndValue.split(":", 2);
 
         if (parts.length != 2) {
             throw new IllegalArgumentException("Single-argument Header must be 'name: value'");

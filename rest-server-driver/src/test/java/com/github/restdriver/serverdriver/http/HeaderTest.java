@@ -16,10 +16,15 @@
 package com.github.restdriver.serverdriver.http;
 
 import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.junit.Test;
 
 public class HeaderTest {
@@ -122,9 +127,12 @@ public class HeaderTest {
         new Header("  X-foo ");
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void headerWithSingleStringAndTwoColonsIsIllegal() {
-        new Header("  X-foo : yes : perhaps");
+    @Test
+    public void headerWithSingleStringAndTwoColonsIsLegal() {
+        Header header = new Header("  X-foo : yes : perhaps");
+
+        assertThat(header.getName(), is("X-foo"));
+        assertThat(header.getValue(), is("yes : perhaps"));
     }
 
     public void headerAppliesItselfToRequest() {
@@ -150,6 +158,31 @@ public class HeaderTest {
         Header lower = new Header("hello: there");
 
         assertThat(upper.hashCode(), equalTo(lower.hashCode()));
+    }
+
+    @Test
+    public void asDateTimeReturnsCorrectDate() {
+        Header dateHeader = new Header("HELLO: Mon, 09 May 2011 18:49:18 GMT");
+
+        DateTime headerDate = dateHeader.asDateTime();
+
+        assertThat(headerDate.getDayOfWeek(), is(DateTimeConstants.MONDAY));
+
+        assertThat(headerDate.getDayOfMonth(), is(9));
+        assertThat(headerDate.getMonthOfYear(), is(DateTimeConstants.MAY));
+        assertThat(headerDate.getYear(), is(2011));
+
+        assertThat(headerDate.getHourOfDay(), is(18));
+        assertThat(headerDate.getMinuteOfHour(), is(49));
+        assertThat(headerDate.getSecondOfMinute(), is(18));
+
+    }
+
+    @Test(expected = RuntimeDateFormatException.class)
+    public void asDateTimeThrowsIfNotCorrectFormat() {
+        Header dateHeader = new Header("HELLO: XXX, 09 May 2011 18:49:18 GMT");
+
+        DateTime headerDate = dateHeader.asDateTime();
     }
 
 }
