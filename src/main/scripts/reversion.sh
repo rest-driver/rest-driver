@@ -19,6 +19,7 @@ cd $WORKING_DIRECTORY
 git clone git@github.com:rest-driver/rest-driver.wiki.git $WORKING_DIRECTORY/rest-driver.wiki
 cd $WORKING_DIRECTORY/rest-driver.wiki
 find . -name "*.md" -type f -exec perl -pi -e "s/\d+\.\d+\.\d+/$VERSION/g" {} \;
+git checkout -- Roadmap.md
 git add .
 git commit -m "Updating version number in wiki pages to $VERSION"
 git push
