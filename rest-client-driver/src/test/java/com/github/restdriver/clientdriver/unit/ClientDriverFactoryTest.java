@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.clientdriver.clientdriver.unit;
+package com.github.restdriver.clientdriver.unit;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -25,9 +25,9 @@ import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 public class ClientDriverFactoryTest {
 
-	@Test
-	public void simpleTest() {
-		// Hopefully no exceptions here
-		assertThat(new ClientDriverFactory().createClientDriver(), instanceOf(ClientDriver.class));
-	}
+    @Test
+    public void simpleTest() {
+        // Hopefully no exceptions here
+        assertThat(new ClientDriverFactory().createClientDriver(), instanceOf(ClientDriver.class));
+    }
 }

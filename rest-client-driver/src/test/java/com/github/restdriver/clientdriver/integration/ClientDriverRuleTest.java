@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.clientdriver.clientdriver.integration;
+package com.github.restdriver.clientdriver.integration;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -42,8 +42,8 @@ public class ClientDriverRuleTest {
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
 
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -56,7 +56,7 @@ public class ClientDriverRuleTest {
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
 
-        driver.expect(new ClientDriverRequest("/blah"), new ClientDriverResponse("").withStatus(404));
+        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 
