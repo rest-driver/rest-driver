@@ -17,15 +17,12 @@ package com.github.restdriver.serverdriver;
 
 import static org.hamcrest.Matchers.*;
 
+import com.github.restdriver.serverdriver.matchers.*;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.matchers.HasHeader;
-import com.github.restdriver.serverdriver.matchers.HasHeaderWithValue;
-import com.github.restdriver.serverdriver.matchers.HasResponseBody;
-import com.github.restdriver.serverdriver.matchers.HasStatusCode;
 
 /**
  * Class to help easy & fluent use of our matchers.
@@ -132,6 +129,26 @@ public final class Matchers {
      */
     public static TypeSafeMatcher<Response> hasHeaderWithValue(String name, Matcher<String> valueMatcher) {
         return new HasHeaderWithValue(name, valueMatcher);
+    }
+
+    /**
+     * Checks whether a header's value is a valid date according to RFC1123.  All headers containing dates (Date, Expires, etc) should
+     * be valid.
+     *
+     * @return The new matcher.
+     */
+    public static TypeSafeMatcher<Header> isValidDateHeader() {
+        return new Rfc1123DateMatcher();
+    }
+
+    /**
+     * Checks whether a header's value is a valid date according to RFC1123.  All headers containing dates (Date, Expires, etc) should
+     * be valid.
+     *
+     * @return The new matcher.
+     */    
+    public static TypeSafeMatcher<Header> isRfc1123Compliant() {
+        return new Rfc1123DateMatcher();
     }
 
 }
