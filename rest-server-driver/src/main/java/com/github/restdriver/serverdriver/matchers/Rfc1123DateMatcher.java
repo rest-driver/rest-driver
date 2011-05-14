@@ -24,7 +24,6 @@ import org.joda.time.DateTimeZone;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 /**
  * Matcher to check that headers contain dates which are spec-valid.  All dates in HTTP headers (Date-header, caching, etc) should
@@ -32,9 +31,15 @@ import java.util.TimeZone;
  */
 public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
 
-    public final static String DATE_FORMAT =  "EEE, dd MMM yyyy HH:mm:ss zzz";
+    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
 
-    public final DateTime getDateTime(String rawString){
+    /**
+     * Parse a string as if it is an RFC1123-compliant date.
+     *
+     * @param rawString The original String.
+     * @return The DateTime object set to UTC.
+     */
+    public DateTime getDateTime(String rawString) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
 
@@ -57,7 +62,7 @@ public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
 
         } catch (RuntimeDateFormatException pe) {
             return false;
-            
+
         }
     }
 

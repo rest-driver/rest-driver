@@ -15,14 +15,12 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import javax.annotation.Generated;
-
 import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.joda.time.DateTime;
 
-import java.text.SimpleDateFormat;
+import javax.annotation.Generated;
 
 /**
  * Represents an HTTP header.

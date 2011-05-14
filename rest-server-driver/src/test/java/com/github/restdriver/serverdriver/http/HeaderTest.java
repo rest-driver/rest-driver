@@ -144,7 +144,7 @@ public class HeaderTest {
         assertThat(lower, not(equalTo(lowerUpper)));
     }
 
-        @Test
+    @Test
     public void hashCodeTreatsNameAsCaseInsensitive() {
         Header upper = new Header("HELLO: there");
         Header lower = new Header("hello: there");
