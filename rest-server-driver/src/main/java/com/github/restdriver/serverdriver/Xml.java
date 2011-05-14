@@ -78,11 +78,14 @@ public final class Xml {
 
     /**
      * Extracts an XPath value from an XML element and returns the result as a string.
-     * 
+     *
+     * @deprecated  - for assertions, better use <code>assertThat(response.asXml(),.hasXPath()</code>
+     *
      * @param expression The XPath expression to use for extraction
      * @param element The element to use the XPath expression on
      * @return The result of evaluating the XPath expression on the element
      */
+    @Deprecated
     public static String extractXPathValue(String expression, Element element) {
 
         XPath xPath = XPathFactory.newInstance().newXPath();
