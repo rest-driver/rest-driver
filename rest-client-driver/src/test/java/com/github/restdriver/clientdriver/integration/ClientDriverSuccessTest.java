@@ -29,19 +29,23 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 
-public class ClientDriverSuccessTest extends ClientDriverUnitTest {
+public class ClientDriverSuccessTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     @Test
     public void testJettyWorking200() throws Exception {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/blah"),
                 new ClientDriverResponse("OUCH!!")
                         .withStatus(200)
@@ -50,7 +54,7 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = getClientDriver().getBaseUrl();
+        String baseUrl = driver.getBaseUrl();
         HttpGet getter = new HttpGet(baseUrl + "/blah");
 
         HttpResponse response = client.execute(getter);
@@ -64,8 +68,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorking404() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("o.O").withStatus(404));
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("o.O").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -79,8 +83,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorking500() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("___").withStatus(500));
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(new ClientDriverRequest("/blah2"), new ClientDriverResponse("___").withStatus(500));
 
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -94,9 +98,9 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingTwoRequests() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(new ClientDriverRequest("/blah123"), new ClientDriverResponse("__2_").withStatus(200));
-        getClientDriver().addExpectation(new ClientDriverRequest("/blah456"), new ClientDriverResponse("__7_").withStatus(300));
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(new ClientDriverRequest("/blah123"), new ClientDriverResponse("__2_").withStatus(200));
+        driver.addExpectation(new ClientDriverRequest("/blah456"), new ClientDriverResponse("__7_").withStatus(300));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -114,14 +118,14 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingWithMethodAndParams() throws Exception {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/blah").withMethod(Method.DELETE).withParam("gang", "green"),
                 new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
                         "TestServer"));
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = getClientDriver().getBaseUrl();
+        String baseUrl = driver.getBaseUrl();
         HttpDelete deleter = new HttpDelete(baseUrl + "/blah?gang=green");
 
         HttpResponse response = client.execute(deleter);
@@ -135,7 +139,7 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingWithMethodAndParamsPattern() throws Exception {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest(Pattern.compile("/[a-z]l[a-z]{2}")).withMethod(Method.DELETE).withParam("gang",
                         Pattern.compile("gre[a-z]+")),
                 new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
@@ -143,7 +147,7 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = getClientDriver().getBaseUrl();
+        String baseUrl = driver.getBaseUrl();
         HttpDelete deleter = new HttpDelete(baseUrl + "/blah?gang=green");
 
         HttpResponse response = client.execute(deleter);
@@ -154,17 +158,17 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingTwoSameRequests() throws Exception {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/blah"),
                 new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/blah"),
                 new ClientDriverResponse("OUCH!!404").withStatus(404).withContentType("text/plain404").withHeader("Server", "TestServer404"));
 
         HttpClient client = new DefaultHttpClient();
 
-        String baseUrl = getClientDriver().getBaseUrl();
+        String baseUrl = driver.getBaseUrl();
 
         HttpGet getter = new HttpGet(baseUrl + "/blah");
         HttpResponse response = client.execute(getter);
@@ -185,8 +189,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingWithPostBody() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
                 new ClientDriverRequest("/blah2").withMethod(Method.PUT).withBody("Jack your body!", "text/plain"),
                 new ClientDriverResponse("___").withStatus(501));
 
@@ -203,8 +207,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingWithPostBodyPattern() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
                 new ClientDriverRequest("/blah2").withMethod(Method.PUT).withBody(Pattern.compile("Jack [\\w\\s]+!"),
                         "text/plain"), new ClientDriverResponse("___").withStatus(501));
 
@@ -220,8 +224,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testHttpOPTIONS() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
                 new ClientDriverRequest("/blah2").withMethod(Method.OPTIONS),
                 new ClientDriverResponse(null).withStatus(200).withHeader("Allow", "POST, OPTIONS"));
 
@@ -236,8 +240,8 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
     @Test
     public void testJettyWorkingWithHeaderString() throws Exception {
 
-        String baseUrl = getClientDriver().getBaseUrl();
-        getClientDriver().addExpectation(
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
                 new ClientDriverRequest("/header").withMethod(Method.GET),
                 new ClientDriverResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
 

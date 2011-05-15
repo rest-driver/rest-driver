@@ -21,11 +21,12 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
@@ -33,18 +34,21 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Date: 21/04/11
  * Time: 13:52
  */
-public class PostAcceptanceTest extends ClientDriverUnitTest {
+public class PostAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void postEmptyBody() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST),
                 new ClientDriverResponse("Content"));
 
@@ -56,7 +60,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void postWithTextPlainBody() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.POST).withBody("Your body", "text/plain"),
                 new ClientDriverResponse("Back at you").withStatus(202));
 
@@ -68,7 +72,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void postWithApplicationXmlBody() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/")
                         .withMethod(ClientDriverRequest.Method.POST)
                         .withBody("<yo/>", "application/xml"),
@@ -82,14 +86,12 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void postWithApplicationJsonBodyAndHeaders() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/jsons")
                         .withMethod(ClientDriverRequest.Method.POST)
-                        .withBody("<yo/>", "application/xml"),
+                        .withBody("<yo/>", "application/xml")
+                        .withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Back at you").withStatus(202));
-
-        // TODO: see https://github.com/rest-driver/rest-driver/issues/1
-        // we don't know if this test actually sets the headers...
 
         Response response = post(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
 
@@ -99,7 +101,7 @@ public class PostAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void postWithDuplicateBodyUsesLastOne() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/xml")
                         .withMethod(ClientDriverRequest.Method.POST)
                         .withBody("<yo/>", "application/xml"),

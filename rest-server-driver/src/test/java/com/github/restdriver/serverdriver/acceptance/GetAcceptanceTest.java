@@ -21,25 +21,29 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
-public class GetAcceptanceTest extends ClientDriverUnitTest {
+public class GetAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void simpleGetRetrievesStatusAndContent() {
-        getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
 
         Response response = get(baseUrl);
 
@@ -49,7 +53,7 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getRetrievesHeaders() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
 
@@ -62,7 +66,7 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getIncludesResponseTime() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("Hello"));
 
@@ -73,12 +77,9 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getSendsHeaders() {
-        getClientDriver().addExpectation(
-                new ClientDriverRequest("/"),
+        driver.addExpectation(
+                new ClientDriverRequest("/").withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Hello"));
-
-        // TODO: ClientDriver doesn't match on headers yet,
-        // so we don't know if they are actually being sent!
 
         Response response = get(baseUrl, header("Accept: Nothing"));
 
@@ -87,7 +88,7 @@ public class GetAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void getDoesntFollowRedirects() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("")
                         .withStatus(303)

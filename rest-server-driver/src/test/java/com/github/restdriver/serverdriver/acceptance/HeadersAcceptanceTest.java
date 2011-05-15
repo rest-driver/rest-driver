@@ -21,25 +21,29 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
-public class HeadersAcceptanceTest extends ClientDriverUnitTest {
+public class HeadersAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void getRetrievesHeaders() {
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("").withHeader("X-foo", "barrr"));
 

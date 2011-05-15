@@ -15,32 +15,36 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import org.junit.Before;
-import org.junit.Test;
-
-import static com.github.restdriver.serverdriver.RestServerDriver.delete;
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
-import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-public class DeleteAcceptanceTest extends ClientDriverUnitTest {
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.http.response.Response;
+
+public class DeleteAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void simpleDeleteRetrievesStatusAndContent() {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE),
                 new ClientDriverResponse("Content"));
 
@@ -52,16 +56,12 @@ public class DeleteAcceptanceTest extends ClientDriverUnitTest {
 
     @Test
     public void deleteSendsHeaders() {
-        getClientDriver().addExpectation(
-                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE),
+        driver.addExpectation(
+                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE).withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Hello"));
-
-        // TODO: ClientDriver doesn't match on headers yet,
-        // so we don't know if they are actually being sent!
 
         Response response = delete(baseUrl, header("Accept", "Nothing"));
         assertThat(response.getContent(), is("Hello"));
     }
-
 
 }

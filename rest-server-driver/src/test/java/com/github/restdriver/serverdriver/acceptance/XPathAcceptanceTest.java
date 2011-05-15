@@ -15,32 +15,36 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
-import com.github.restdriver.serverdriver.http.response.Response;
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasXPath;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.http.response.Response;
 
-public class XPathAcceptanceTest extends ClientDriverUnitTest {
+public class XPathAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void xPathCanBeRunOnXmlResponse() {
 
-        getClientDriver().addExpectation(
+        driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("<some><content type='awesome'/></some>"));
 

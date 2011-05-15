@@ -23,26 +23,30 @@ import static org.hamcrest.Matchers.*;
 import java.text.ParseException;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.example.ClientDriverUnitTest;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
-public class JsonPathAcceptanceTest extends ClientDriverUnitTest {
+public class JsonPathAcceptanceTest {
+
+    @Rule
+    public ClientDriverRule driver = new ClientDriverRule();
 
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
-        baseUrl = super.getClientDriver().getBaseUrl();
+        baseUrl = driver.getBaseUrl();
     }
 
     @Test
     public void jsonPathCanBeRunOverJsonResponse() {
         String jsonContent = makeJson(" { 'thing' : 'valuoid' } ");
-        getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
         Response response = get(baseUrl);
 
         assertThat(response.asJson(), hasJsonPath("$.thing", equalTo("valuoid")));
@@ -51,7 +55,7 @@ public class JsonPathAcceptanceTest extends ClientDriverUnitTest {
     @Test
     public void moreComplexJsonPathCanBeRunOverJsonResponse() throws ParseException {
         String jsonContent = makeJson(" { 'thing' : { 'sub' : { 'subsub' : 'valutron' } } } ");
-        getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
         Response response = get(baseUrl);
 
         assertThat(response.asJson(), hasJsonPath("$..subsub", hasItem(equalTo("valutron"))));
@@ -65,7 +69,7 @@ public class JsonPathAcceptanceTest extends ClientDriverUnitTest {
                         "[ { 'thing' : { 'a': 'one', 'c' : 100 } } , " +
                         "  { 'thing' : { 'a': 'two', 'c' : 150 } } ] } ");
 
-        getClientDriver().addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
         Response response = get(baseUrl);
 
         assertThat(response.asJson(), hasJsonPath("$.things.thing[?(@.c > 125)].a", hasItem(equalTo("two"))));
