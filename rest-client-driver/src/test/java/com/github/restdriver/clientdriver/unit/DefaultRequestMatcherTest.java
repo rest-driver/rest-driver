@@ -22,6 +22,9 @@ import static org.mockito.Mockito.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -35,7 +38,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
 
-public class RequestMatcherTest {
+public class DefaultRequestMatcherTest {
 
     private DefaultRequestMatcher sut;
     private HttpServletRequest aReq;
@@ -343,6 +346,122 @@ public class RequestMatcherTest {
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
+    }
+
+    @Test
+    public void testMatchWithRequestHeaderString() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Cache-Control")).thenReturn(enumerationFrom("no-cache"));
+
+        assertThat(sut.isMatch(aReq, bReq), is(true));
+
+    }
+
+    @Test
+    public void testMatchMultipleWithRequestHeaderString() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Some-Header", "bar");
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Some-Header")).thenReturn(enumerationFrom("foo", "bar"));
+
+        assertThat(sut.isMatch(aReq, bReq), is(true));
+
+    }
+
+    @Test
+    public void testMatchWrongWithRequestHeaderString() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Cache-Control")).thenReturn(enumerationFrom("cache-please!"));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+
+    }
+
+    @Test
+    public void testMatchWrongWithMissingRequestHeaderString() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Cache-Control")).thenReturn(null);
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+
+    }
+
+    @Test
+    public void testMatchWithRequestHeaderPattern() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Content-Length")).thenReturn(enumerationFrom("1234"));
+
+        assertThat(sut.isMatch(aReq, bReq), is(true));
+
+    }
+
+    @Test
+    public void testMatchWrongWithRequestHeaderPattern() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Content-Length")).thenReturn(enumerationFrom("invalid"));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+
+    }
+
+    @Test
+    public void testMatchWrongWithMissingRequestHeaderPattern() throws Exception {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+
+        when(aReq.getHeaders("Content-Length")).thenReturn(null);
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+
+    }
+
+    private <T> Enumeration<T> enumerationFrom(T... items) {
+        return Collections.enumeration(Arrays.asList(items));
     }
 
 }

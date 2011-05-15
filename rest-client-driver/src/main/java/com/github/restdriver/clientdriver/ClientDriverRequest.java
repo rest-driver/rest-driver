@@ -33,6 +33,7 @@ public final class ClientDriverRequest {
 
     private final Object path;
     private final Map<String, Object> params;
+    private final Map<String, Object> headers;
 
     private Method method;
     private Object bodyContent;
@@ -48,6 +49,7 @@ public final class ClientDriverRequest {
         this.path = path;
         method = Method.GET;
         params = new HashMap<String, Object>();
+        headers = new HashMap<String, Object>();
     }
 
     /**
@@ -60,6 +62,7 @@ public final class ClientDriverRequest {
         this.path = path;
         method = Method.GET;
         params = new HashMap<String, Object>();
+        headers = new HashMap<String, Object>();
     }
 
     /**
@@ -209,6 +212,42 @@ public final class ClientDriverRequest {
         this.bodyContent = withBodyContent;
         bodyContentType = contentType;
         return this;
+    }
+
+    /**
+     * Setter for expecting a specific header name and value pair.
+     * 
+     * @param withHeaderName
+     *            the headerName to match on
+     * @param withHeaderValue
+     *            the headerValue to match on
+     * @return the object you called the method on, so you can chain these calls
+     */
+    public ClientDriverRequest withHeader(String withHeaderName, String withHeaderValue) {
+        headers.put(withHeaderName, withHeaderValue);
+        return this;
+    }
+
+    /**
+     * Setter for expecting a specific header name and value pair, where value is in the form of a Pattern.
+     * 
+     * @param withHeaderName
+     *            the headerName to match on
+     * @param withHeaderValue
+     *            the headerValue to match on
+     * @return the object you called the method on, so you can chain these calls
+     */
+    public ClientDriverRequest withHeader(String withHeaderName, Pattern withHeaderValue) {
+        headers.put(withHeaderName, withHeaderValue);
+        return this;
+    }
+
+    /**
+     * @return the headers
+     * @return
+     */
+    public Map<String, Object> getHeaders() {
+        return headers;
     }
 
 }

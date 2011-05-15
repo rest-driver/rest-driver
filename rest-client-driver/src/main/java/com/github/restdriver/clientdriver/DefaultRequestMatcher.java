@@ -16,6 +16,7 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -74,6 +75,35 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             Object expectedParamValue = expectedParams.get(expectedKey);
 
             if (!isStringOrPattternMatch(actualParamValue, expectedParamValue)) {
+                return false;
+            }
+
+        }
+
+        // same keys/values in headers map?
+        Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
+        for (String expectedHeaderName : expectedHeaders.keySet()) {
+
+            @SuppressWarnings("unchecked")
+            Enumeration<String> actualHeaderValues = actualRequest.getHeaders(expectedHeaderName);
+
+            if (actualHeaderValues == null) {
+                return false;
+            }
+
+            Object expectedHeaderValue = expectedHeaders.get(expectedHeaderName);
+
+            boolean matched = false;
+
+            while (actualHeaderValues.hasMoreElements()) {
+                String value = actualHeaderValues.nextElement();
+                if (isStringOrPattternMatch(value, expectedHeaderValue)) {
+                    matched = true;
+                    break;
+                }
+            }
+
+            if (!matched) {
                 return false;
             }
 

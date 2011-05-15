@@ -232,4 +232,22 @@ public class ClientDriverSuccessTest extends ClientDriverUnitTest {
         assertThat(response.getStatusLine().getStatusCode(), is(200));
         assertThat(response.getHeaders("Allow")[0].getValue(), equalTo("POST, OPTIONS"));
     }
+
+    @Test
+    public void testJettyWorkingWithHeaderString() throws Exception {
+
+        String baseUrl = getClientDriver().getBaseUrl();
+        getClientDriver().addExpectation(
+                new ClientDriverRequest("/header").withMethod(Method.GET),
+                new ClientDriverResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/header");
+        HttpResponse response = client.execute(get);
+
+        assertThat(response.getStatusLine().getStatusCode(), is(204));
+        assertThat(response.getHeaders("Cache-Control")[0].getValue(), equalTo("no-cache"));
+
+    }
+
 }
