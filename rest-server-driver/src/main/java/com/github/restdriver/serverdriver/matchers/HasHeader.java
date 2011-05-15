@@ -65,7 +65,7 @@ public final class HasHeader extends TypeSafeMatcher<Response> {
         if (headers.isEmpty()) {
             mismatchDescription.appendText("Response has no headers");
         } else {
-            mismatchDescription.appendText("Response has headers [" + StringUtils.join(response.getHeaders(), ",") + "]");
+            mismatchDescription.appendText("Response has headers [" + StringUtils.join(response.getHeaders(), ", ") + "]");
         }
     }
 
