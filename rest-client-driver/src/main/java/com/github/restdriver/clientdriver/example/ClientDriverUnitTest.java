@@ -24,6 +24,7 @@ import com.github.restdriver.clientdriver.ClientDriverFactory;
 /**
  * If you are using the Client Driver, you can have your unit tests extend this class which will setup a client driver & shut it down for you.
  */
+@Deprecated
 public abstract class ClientDriverUnitTest {
 
     private ClientDriver clientDriver;
