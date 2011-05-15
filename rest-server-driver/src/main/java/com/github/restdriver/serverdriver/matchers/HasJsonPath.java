@@ -31,11 +31,13 @@ public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
     private final String jsonPath;
     private final Matcher<?> matcher;
 
+    private JsonNode givenNode;
+
     /**
      * Constructor.
      *
      * @param jsonPath The JSONpath to use.
-     * @param matcher The matcher to apply to the result of the JSONpath.
+     * @param matcher  The matcher to apply to the result of the JSONpath.
      */
     public HasJsonPath(String jsonPath, Matcher<?> matcher) {
         this.jsonPath = jsonPath;
@@ -44,6 +46,8 @@ public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
 
     @Override
     public boolean matchesSafely(JsonNode jsonNode) {
+
+        givenNode = jsonNode;
 
         try {
             return matcher.matches(JsonPath.read(jsonNode.toString(), jsonPath));
@@ -57,6 +61,18 @@ public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
 
     @Override
     public void describeTo(Description description) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        description.appendText("a JSON object matching JSONpath \"" + jsonPath + "\" with ");
+        matcher.describeTo(description);
+
+        String result;
+
+        try {
+            result = JsonPath.read(givenNode.toString(), jsonPath);
+
+        } catch (ParseException pe) {
+            result = "ParseException";
+        }
+
+        description.appendText(", got " + result);
     }
 }

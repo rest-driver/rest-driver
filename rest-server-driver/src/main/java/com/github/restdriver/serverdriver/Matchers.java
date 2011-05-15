@@ -142,7 +142,8 @@ public final class Matchers {
     }
 
     /**
-     * Checks whether the given JSON object matches the JSONpath.
+     * Checks whether the given JSON object matches the JSONpath.  NB when asserting on numeric values you will *have* to use Longs and
+     * Doubles, or face the wrath of the ClassCastException!
      *
      * @param jsonPath The JSONpath to match.
      * @param matcher  The matcher to apply to the result of the JSONpath.
