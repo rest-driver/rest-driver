@@ -22,10 +22,10 @@ import com.github.restdriver.serverdriver.http.response.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.Matchers.hasStatusCode;
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.equalTo;
 
 public class JsonPathAcceptanceTest extends ClientDriverUnitTest {
 
@@ -39,14 +39,18 @@ public class JsonPathAcceptanceTest extends ClientDriverUnitTest {
     @Test
     public void jsonPathCanBeRunOverJsonResponse() {
 
+        String jsonContent = makeJson(" { 'thing' : 'valuoid' } ");
+
         getClientDriver().addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("Content"));
+                new ClientDriverResponse(jsonContent));
 
         Response response = get(baseUrl);
 
-        assertThat(response, hasStatusCode(200));
-        assertThat(response.getContent(), is("Content"));
+        assertThat(response.asJson(), hasJsonPath("$.thing", equalTo("valuoid")));
     }
 
+    private String makeJson(String fakeJson) {
+        return fakeJson.replace("'", "\"");
+    }
 }

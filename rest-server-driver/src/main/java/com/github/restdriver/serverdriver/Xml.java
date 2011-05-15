@@ -79,7 +79,8 @@ public final class Xml {
     /**
      * Extracts an XPath value from an XML element and returns the result as a string.
      *
-     * @deprecated  - for assertions, better use <code>assertThat(response.asXml(),.hasXPath()</code>
+     * @deprecated  - for assertions, better use <code>assertThat(response.asXml(),.hasXPath())</code>.  This will definitely
+     * be removed in the next major version.
      *
      * @param expression The XPath expression to use for extraction
      * @param element The element to use the XPath expression on

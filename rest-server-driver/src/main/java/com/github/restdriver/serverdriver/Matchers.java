@@ -18,6 +18,7 @@ package com.github.restdriver.serverdriver;
 import static org.hamcrest.Matchers.*;
 
 import com.github.restdriver.serverdriver.matchers.*;
+import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
@@ -34,9 +35,8 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasStatusCode.
-     * 
-     * @param statusCode
-     *            The status code to match
+     *
+     * @param statusCode The status code to match
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasStatusCode(int statusCode) {
@@ -45,9 +45,8 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasStatusCode.
-     * 
-     * @param statusCodeMatcher
-     *            The matcher against which the status code will be evaluated
+     *
+     * @param statusCodeMatcher The matcher against which the status code will be evaluated
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasStatusCode(Matcher<Integer> statusCodeMatcher) {
@@ -56,9 +55,8 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasResponseBody.
-     * 
-     * @param bodyMatcher
-     *            The matcher against which the response body will be evaluated
+     *
+     * @param bodyMatcher The matcher against which the response body will be evaluated
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasResponseBody(Matcher<String> bodyMatcher) {
@@ -67,9 +65,8 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasHeader.
-     * 
-     * @param header
-     *            The name of the header to check for the presence of - or name and value separated by ":"
+     *
+     * @param header The name of the header to check for the presence of - or name and value separated by ":"
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasHeader(String header) {
@@ -83,9 +80,8 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasHeader.
-     * 
-     * @param header
-     *            The header to check for the presence of
+     *
+     * @param header The header to check for the presence of
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasHeader(Header header) {
@@ -94,11 +90,9 @@ public final class Matchers {
 
     /**
      * Synonym for {@link HasHeaderWithValue}, using exact match for the value.
-     * 
-     * @param name
-     *            The name of the header to check for the presence of
-     * @param value
-     *            The the header value to check
+     *
+     * @param name  The name of the header to check for the presence of
+     * @param value The the header value to check
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasHeader(String name, String value) {
@@ -107,11 +101,9 @@ public final class Matchers {
 
     /**
      * Synonym for {@link HasHeaderWithValue}, using matcher for the value.
-     * 
-     * @param name
-     *            The name of the header to check for the presence and value of
-     * @param valueMatcher
-     *            The matcher against which the header value will be evaluated
+     *
+     * @param name         The name of the header to check for the presence and value of
+     * @param valueMatcher The matcher against which the header value will be evaluated
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasHeader(String name, Matcher<String> valueMatcher) {
@@ -120,11 +112,9 @@ public final class Matchers {
 
     /**
      * Creates a new instance of HasHeaderWithValue.
-     * 
-     * @param name
-     *            The name of the header to check for the presence and value of
-     * @param valueMatcher
-     *            The matcher against which the header value will be evaluated
+     *
+     * @param name         The name of the header to check for the presence and value of
+     * @param valueMatcher The matcher against which the header value will be evaluated
      * @return The new matcher
      */
     public static TypeSafeMatcher<Response> hasHeaderWithValue(String name, Matcher<String> valueMatcher) {
@@ -146,9 +136,19 @@ public final class Matchers {
      * be valid.
      *
      * @return The new matcher.
-     */    
+     */
     public static TypeSafeMatcher<Header> isRfc1123Compliant() {
         return new Rfc1123DateMatcher();
     }
 
+    /**
+     * Checks whether the given JSON object matches the JSONpath.
+     *
+     * @param jsonPath The JSONpath to match.
+     * @param matcher  The matcher to apply to the result of the JSONpath.
+     * @return The new matcher.
+     */
+    public static TypeSafeMatcher<JsonNode> hasJsonPath(String jsonPath, Matcher<?> matcher) {
+        return null;
+    }
 }
