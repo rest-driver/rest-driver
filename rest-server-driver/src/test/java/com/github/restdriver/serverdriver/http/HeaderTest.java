@@ -16,16 +16,15 @@
 package com.github.restdriver.serverdriver.http;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.is;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.junit.Test;
+
+import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 
 public class HeaderTest {
 
@@ -182,7 +181,7 @@ public class HeaderTest {
     public void asDateTimeThrowsIfNotCorrectFormat() {
         Header dateHeader = new Header("HELLO: XXX, 09 May 2011 18:49:18 GMT");
 
-        DateTime headerDate = dateHeader.asDateTime();
+        dateHeader.asDateTime();
     }
 
 }
