@@ -15,8 +15,6 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import java.util.Iterator;
-
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -27,14 +25,14 @@ import org.hamcrest.TypeSafeMatcher;
  */
 public final class WithSize extends TypeSafeMatcher<JsonNode> {
 
-    private final Matcher<?> matcher;
+    private final Matcher<Integer> matcher;
 
     /**
      * Creates a new instance of this matcher.
      * 
      * @param matcher The matcher against which the size of the JSON node will be evaluated
      */
-    public WithSize(Matcher<?> matcher) {
+    public WithSize(Matcher<Integer> matcher) {
         this.matcher = matcher;
     }
 
@@ -51,15 +49,8 @@ public final class WithSize extends TypeSafeMatcher<JsonNode> {
             return false;
         }
 
-        Iterator<JsonNode> nodeIterator = node.getElements();
-        int nodeCount = 0;
+        return matcher.matches(node.size());
 
-        while (nodeIterator.hasNext()) {
-            nodeIterator.next();
-            nodeCount++;
-        }
-
-        return matcher.matches(nodeCount);
     }
 
 }

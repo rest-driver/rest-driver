@@ -17,12 +17,12 @@ package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.matchers.ContainingValue;
 import com.github.restdriver.serverdriver.matchers.HasJsonArray;
@@ -123,7 +123,7 @@ public final class Json {
      *            The matcher to use for evaluation
      * @return The new matcher
      */
-    public static TypeSafeMatcher<JsonNode> withSize(Matcher<?> matcher) {
+    public static TypeSafeMatcher<JsonNode> withSize(Matcher<Integer> matcher) {
         return new WithSize(matcher);
     }
 
