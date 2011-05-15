@@ -149,6 +149,6 @@ public final class Matchers {
      * @return The new matcher.
      */
     public static TypeSafeMatcher<JsonNode> hasJsonPath(String jsonPath, Matcher<?> matcher) {
-        return null;
+        return new HasJsonPath(jsonPath, matcher);
     }
 }
