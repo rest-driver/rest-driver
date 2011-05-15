@@ -39,7 +39,7 @@ public final class HasResponseBody extends TypeSafeMatcher<Response> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("HttpMethod with response body matching:");
+        description.appendText("Response with body matching: ");
         bodyMatcher.describeTo(description);
     }
 
