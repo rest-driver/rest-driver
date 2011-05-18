@@ -15,13 +15,14 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.jayway.jsonpath.JsonPath;
+import java.text.ParseException;
+
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import java.text.ParseException;
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * Matcher to enable assertions on JSON objects using JSONpath.

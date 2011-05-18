@@ -15,12 +15,14 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.Json;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.codehaus.jackson.JsonNode;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import com.github.restdriver.serverdriver.Json;
 
 /**
  * User: mjg
@@ -40,10 +42,29 @@ public class HasJsonPathTest {
     }
 
     @Test
-    public void jsonMatchesInteger() {
+    public void jsonMatchesLong() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
 
         hasJsonPath = new HasJsonPath("$.foo", greaterThan(4L));
+        assertThat(hasJsonPath.matchesSafely(json), is(true));
+    }
+
+    @Ignore
+    @Test
+    public void jsonMatchesInteger() {
+        JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
+
+        hasJsonPath = new HasJsonPath("$.foo", is(5));
+        assertThat(hasJsonPath.matchesSafely(json), is(true));
+    }
+
+    // Test that we can avoid class cast exception
+
+    @Test
+    public void jsonMatchesFloat() {
+        JsonNode json = Json.asJson(makeJson("{'foo': 5.5}"));
+
+        hasJsonPath = new HasJsonPath("$.foo", is(5.5));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
 
@@ -68,5 +89,3 @@ public class HasJsonPathTest {
     }
 
 }
-
-
