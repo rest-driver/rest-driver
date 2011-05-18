@@ -147,9 +147,10 @@ public final class Matchers {
      *
      * @param jsonPath The JSONpath to match.
      * @param matcher  The matcher to apply to the result of the JSONpath.
+     * @param <T> The type of the matcher.
      * @return The new matcher.
      */
-    public static TypeSafeMatcher<JsonNode> hasJsonPath(String jsonPath, Matcher<?> matcher) {
-        return new HasJsonPath(jsonPath, matcher);
+    public static <T> TypeSafeMatcher<JsonNode> hasJsonPath(String jsonPath, Matcher<T> matcher) {
+        return new HasJsonPath<T>(jsonPath, matcher);
     }
 }

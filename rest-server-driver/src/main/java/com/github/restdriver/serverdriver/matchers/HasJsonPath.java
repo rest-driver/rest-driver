@@ -15,24 +15,23 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import java.text.ParseException;
-
+import com.jayway.jsonpath.JsonPath;
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.jayway.jsonpath.JsonPath;
+import java.text.ParseException;
 
 /**
  * Matcher to enable assertions on JSON objects using JSONpath.
+ *
+ * @param <T> The type of the matcher.
  */
-public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
+public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
     private final String jsonPath;
-    private final Matcher<?> matcher;
-
-    private JsonNode givenNode;
+    private final Matcher<T> matcher;
 
     /**
      * Constructor.
@@ -40,7 +39,7 @@ public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
      * @param jsonPath The JSONpath to use.
      * @param matcher  The matcher to apply to the result of the JSONpath.
      */
-    public HasJsonPath(String jsonPath, Matcher<?> matcher) {
+    public HasJsonPath(String jsonPath, Matcher<T> matcher) {
         this.jsonPath = jsonPath;
         this.matcher = matcher;
     }
@@ -48,32 +47,62 @@ public final class HasJsonPath extends TypeSafeMatcher<JsonNode> {
     @Override
     public boolean matchesSafely(JsonNode jsonNode) {
 
-        givenNode = jsonNode;
+        Object jsonPathResult = null;
 
         try {
-            return matcher.matches(JsonPath.read(jsonNode.toString(), jsonPath));
 
-        } catch (ParseException e) {
-            // we weren't passed valid JSON, which can only happen if Jackson produces bad JSON...
+            jsonPathResult = JsonPath.read(jsonNode.toString(), jsonPath);
+
+            boolean initialMatchResult = matcher.matches(jsonPathResult);
+
+            // if matcher is for integers and jsonPath returns a Long, do our best
+            if (!initialMatchResult && jsonPathResult instanceof Long) {
+                return matcher.matches(longToInt(jsonPathResult));
+            }
+
+            return initialMatchResult;
+
+        } catch (ParseException pe) {
+            // we weren't passed valid JSON, which can only happen if jsonNode.toString() produces bad JSON...
             return false;
+
+        } catch (ClassCastException cce) {
+
+            if (matcher.matches(longToInt(jsonPathResult))) {
+                return true;
+
+            } else {
+                throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
+
+            }
+
+
         }
 
+    }
+
+    private int longToInt(Object o) {
+
+        long l;
+
+        try {
+            l = (Long) o;
+        } catch (ClassCastException cce) {
+            throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
+        }
+
+
+        if (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) {
+            throw new RuntimeJsonTypeMismatchException("JSONpath returned a Long value which does not match the given Matcher."
+                    + "  You should use a Long in your matcher.");
+        }
+
+        return (int) l;
     }
 
     @Override
     public void describeTo(Description description) {
         description.appendText("a JSON object matching JSONpath \"" + jsonPath + "\" with ");
         matcher.describeTo(description);
-
-        String result;
-
-        try {
-            result = JsonPath.read(givenNode.toString(), jsonPath);
-
-        } catch (ParseException pe) {
-            result = "ParseException";
-        }
-
-        description.appendText(", got " + result);
     }
 }
