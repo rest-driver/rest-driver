@@ -15,11 +15,11 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
-import java.util.regex.Pattern;
-
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -29,18 +29,24 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.ClientDriverRule;
+import java.util.regex.Pattern;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class ClientDriverSuccessTest {
 
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void testJettyWorking200() throws Exception {
@@ -252,6 +258,40 @@ public class ClientDriverSuccessTest {
         assertThat(response.getStatusLine().getStatusCode(), is(204));
         assertThat(response.getHeaders("Cache-Control")[0].getValue(), equalTo("no-cache"));
 
+    }
+
+    @Test
+    public void matchingOnRequestHeader() throws Exception {
+
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                new ClientDriverRequest("/header").withMethod(Method.GET).withHeader("X-FOO", "bar"),
+                new ClientDriverResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/header");
+        get.addHeader(new BasicHeader("X-FOO", "bar"));
+        HttpResponse response = client.execute(get);
+
+        assertThat(response.getStatusLine().getStatusCode(), is(204));
+        assertThat(response.getHeaders("Cache-Control")[0].getValue(), equalTo("no-cache"));
+
+    }
+
+    @Test
+    public void failedMatchingOnRequestHeader() throws Exception {
+
+        thrown.expect(ClientDriverFailedExpectationException.class);
+
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                new ClientDriverRequest("/header").withMethod(Method.GET).withHeader("X-FOO", "bar"),
+                new ClientDriverResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/header");
+        get.addHeader(new BasicHeader("X-FOO", "baz"));
+        client.execute(get);
     }
 
 }
