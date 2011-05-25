@@ -36,9 +36,8 @@ public final class ClientDriver {
 
     /**
      * Constructor. This will find a free port, bind to it and start the server up before it returns.
-     * 
-     * @param handler
-     *            The {@link ClientDriverJettyHandler} to use.
+     *
+     * @param handler The {@link ClientDriverJettyHandler} to use.
      */
     public ClientDriver(ClientDriverJettyHandler handler) {
 
@@ -52,19 +51,40 @@ public final class ClientDriver {
 
         jettyServer = new Server(portNum);
 
+        startJetty();
+    }
+
+    /**
+     * Constructor. This will find a free port, bind to it and start the server up before it returns.
+     *
+     * @param handler The {@link ClientDriverJettyHandler} to use.
+     * @param port    The port to listen on.  Expect startup errors if this port is not free.
+     */
+    public ClientDriver(ClientDriverJettyHandler handler, int port) {
+
+        this.portNum = port;
+        this.handler = handler;
+
+        jettyServer = new Server(portNum);
+
+        startJetty();
+    }
+
+    private void startJetty() {
+
         try {
             jettyServer.setHandler(handler.getJettyHandler());
             jettyServer.start();
 
         } catch (Exception e) {
-            throw new ClientDriverSetupException("Error starting jetty", e);
+            throw new ClientDriverSetupException("Error starting jetty on port " + portNum, e);
 
         }
     }
 
     /**
      * Get the base URL which the ClientDriver is running on.
-     * 
+     *
      * @return The base URL, which will be like "http://localhost:xxxxx". <br/>
      *         <b>There is no trailing slash on this</b>
      */
@@ -103,12 +123,9 @@ public final class ClientDriver {
 
     /**
      * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
-     * 
-     * @param request
-     *            The expected request
-     * @param response
-     *            The response to serve to that request
-     * 
+     *
+     * @param request  The expected request
+     * @param response The response to serve to that request
      */
     public void addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         handler.addExpectation(request, response);

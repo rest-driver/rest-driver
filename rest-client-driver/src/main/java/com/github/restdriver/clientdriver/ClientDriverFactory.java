@@ -35,4 +35,18 @@ public final class ClientDriverFactory {
 
     }
 
+    /**
+     * Factory method to create and start a {@link ClientDriver} on a specific port.
+     *
+     * @param port The port to listen on.  If this port is not available a runtime exception will be thrown.
+     *
+     * @return A new {@link ClientDriver}, which has found a free port, bound to it and started up.
+     */
+    public ClientDriver createClientDriver(int port) {
+
+        return new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()), port);
+
+    }
+
+
 }
