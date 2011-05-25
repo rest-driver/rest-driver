@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Class to help with building of URLs.
  */
-public final class Url {
+public class Url {
 
     private StrBuilder url;
     private List<QueryParam> queryParams;
@@ -51,7 +51,7 @@ public final class Url {
 
     /**
      * Setup a Url with a base path, like "http://localhost:8080".  You can also supply just "localhost" and the
-     * "http" will be
+     * "http" will be inferred.
      *
      * @param base the base Url.
      */
@@ -66,7 +66,7 @@ public final class Url {
      * @param path the path, eg "foo/bar"
      * @return The new Url object (for chaining calls)
      */
-    public Url withPath(String path) {
+    public final Url withPath(String path) {
 
         if (!(url.endsWith("/") || path.startsWith("/"))) {
             url.append("/");
@@ -87,7 +87,7 @@ public final class Url {
      * @param value The value for the query string.
      * @return The Url with the query string param added (for chaining calls)
      */
-    public Url withParam(String key, String value) {
+    public final Url withParam(String key, String value) {
         queryParams.add(new QueryParam(key, value));
         return this;
     }
@@ -97,7 +97,7 @@ public final class Url {
      *
      * @return The Url, correctly formatted.
      */
-    public String toString() {
+    public final String toString() {
 
         String[] baseParts;
 
