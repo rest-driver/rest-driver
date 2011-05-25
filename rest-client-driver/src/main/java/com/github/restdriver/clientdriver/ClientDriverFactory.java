@@ -35,4 +35,19 @@ public final class ClientDriverFactory {
 
     }
 
+    /**
+     * Factory method to create and start a {@link ClientDriver} on a specific port.  This is <em>absolutely</em> not the recommended
+     * way to use the client driver.  The no-arg method will choose a free port, use of this method will fail if the port is not free.
+     *
+     * @param port The port to listen on.  If this port is not available a runtime exception will be thrown.
+     *
+     * @return A new {@link ClientDriver}, which has found a free port, bound to it and started up.
+     */
+    public ClientDriver createClientDriver(int port) {
+
+        return new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()), port);
+
+    }
+
+
 }
