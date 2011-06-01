@@ -17,13 +17,18 @@ package com.github.restdriver.serverdriver;
 
 import static org.hamcrest.Matchers.*;
 
-import com.github.restdriver.serverdriver.matchers.*;
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
+import com.github.restdriver.serverdriver.matchers.HasHeader;
+import com.github.restdriver.serverdriver.matchers.HasHeaderWithValue;
+import com.github.restdriver.serverdriver.matchers.HasJsonPath;
+import com.github.restdriver.serverdriver.matchers.HasResponseBody;
+import com.github.restdriver.serverdriver.matchers.HasStatusCode;
+import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
 
 /**
  * Class to help easy & fluent use of our matchers.
@@ -139,6 +144,19 @@ public final class Matchers {
      */
     public static TypeSafeMatcher<Header> isRfc1123Compliant() {
         return new Rfc1123DateMatcher();
+    }
+
+    /**
+     * Checks whether the given JSON object matches the JSONpath.
+     * 
+     * No matcher is used on the matched value. It is based only on the existence of something at the given JSONpath.
+     * 
+     * @param jsonPath The JSONpath to match.
+     * @param <T> The type of the matcher.
+     * @return The new matcher.
+     */
+    public static <T> TypeSafeMatcher<JsonNode> hasJsonPath(String jsonPath) {
+        return new HasJsonPath<T>(jsonPath);
     }
 
     /**
