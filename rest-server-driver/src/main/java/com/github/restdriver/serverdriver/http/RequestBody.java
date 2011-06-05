@@ -28,7 +28,7 @@ import org.apache.http.entity.StringEntity;
  * Date: 21/04/11
  * Time: 14:32
  */
-public final class RequestBody implements RequestModifier {
+public final class RequestBody implements BodyableRequestModifier {
 
     private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
 
@@ -65,13 +65,15 @@ public final class RequestBody implements RequestModifier {
     }
 
     @Override
-    public void applyTo(HttpUriRequest request) {
+    public void applyTo(ServerDriverHttpUriRequest request) {
 
-        if (!(request instanceof HttpEntityEnclosingRequest)) {
+        HttpUriRequest internalRequest = request.getApacheRequest();
+        
+        if (!(internalRequest instanceof HttpEntityEnclosingRequest)) {
             return;
         }
 
-        HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) request;
+        HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) internalRequest;
 
         entityRequest.setHeader("Content-type", contentType);
 

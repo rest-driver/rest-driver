@@ -15,17 +15,17 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
+import javax.annotation.Generated;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.joda.time.DateTime;
 
-import javax.annotation.Generated;
+import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
 
 /**
  * Represents an HTTP header.
  */
-public final class Header implements RequestModifier {
+public final class Header implements AnyRequestModifier {
 
     private final String name;
     private final String value;
@@ -77,8 +77,8 @@ public final class Header implements RequestModifier {
     }
 
     @Override
-    public void applyTo(HttpUriRequest request) {
-        request.addHeader(name, value);
+    public void applyTo(ServerDriverHttpUriRequest request) {
+        request.getApacheRequest().addHeader(name, value);
     }
 
     @Override

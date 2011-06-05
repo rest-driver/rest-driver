@@ -15,18 +15,10 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import org.apache.http.client.methods.HttpUriRequest;
 
 /**
- * Common interface for classes which are intended to modify a request.
+ * Common interface for classes which are intended to modify any request.
  */
-public interface RequestModifier {
-
-    /**
-     * Apply this modifier to the given request.
-     * 
-     * @param request The request
-     */
-    void applyTo(HttpUriRequest request);
+public interface AnyRequestModifier extends BodyableRequestModifier {
 
 }
