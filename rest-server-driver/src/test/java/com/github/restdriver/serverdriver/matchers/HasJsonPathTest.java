@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class HasJsonPathTest {
 
-    private HasJsonPath hasJsonPath;
+    private HasJsonPath<?> hasJsonPath;
 
     @Test
     public void jsonMatchesString() {
