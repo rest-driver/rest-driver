@@ -35,6 +35,7 @@ import org.apache.http.params.HttpParams;
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
 import com.github.restdriver.serverdriver.http.BodyableRequestModifier;
 import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
 import com.github.restdriver.serverdriver.http.RequestBody;
 import com.github.restdriver.serverdriver.http.RequestProxy;
 import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
@@ -105,6 +106,15 @@ public final class RestServerDriver {
         return new RequestProxy(proxyHost, proxyPort);
     }
 
+    /**
+     * Do not use a proxy.  This is the default anyway, but allowed for clarity.
+     * 
+     * @return The new NoOpRequestProxy instance.
+     */
+    public static NoOpRequestProxy notUsingProxy() {
+        return new NoOpRequestProxy();
+    }
+    
     /* ****************************************************************************
      *                             HTTP OPTIONS methods                           *
      ******************************************************************************/

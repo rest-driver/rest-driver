@@ -16,6 +16,7 @@
 package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
+import static com.github.restdriver.serverdriver.RestServerDriver.notUsingProxy;
 import static com.github.restdriver.serverdriver.RestServerDriver.usingProxy;
 
 import org.eclipse.jetty.server.Server;
@@ -58,6 +59,27 @@ public class ProxyAcceptanceTest {
         stopLocalProxy();
     }
 
+    @Test
+    public void testWithNoProxyDoesntTryToUseAProxy() {
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        get(driver.getBaseUrl() + "/foo", notUsingProxy());
+    }
+
+    @Test
+    public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() {
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()), notUsingProxy());
+    }
+
+    @Test
+    public void whenMultipleProxiesAreSpecifiedLastOneWinsWithProxy() {
+        startLocalProxy();
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        get(driver.getBaseUrl() + "/foo", notUsingProxy(), usingProxy("localhost", proxyPort));
+        stopLocalProxy();
+    }
+
+    
     private void startLocalProxy() {
         try {
 
