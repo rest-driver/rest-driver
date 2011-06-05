@@ -18,24 +18,45 @@ package com.github.restdriver.serverdriver.http;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.HttpUriRequest;
 
-public class ServerDriverHttpUriRequest {
-    
+/**
+ * Wraps an {@link HttpUriRequest} with some other details which that class does not support.
+ */
+public final class ServerDriverHttpUriRequest {
+
     private final HttpUriRequest request;
-    
+
     private HttpHost proxyHost;
-    
-    public ServerDriverHttpUriRequest(HttpUriRequest request){
+
+    /**
+     * Constructor.
+     * 
+     * @param request The {@link HttpUriRequest} to wrap.
+     */
+    public ServerDriverHttpUriRequest(HttpUriRequest request) {
         this.request = request;
     }
 
-    public HttpUriRequest getApacheRequest() {
+    /**
+     * Get the wrapped {@link HttpUriRequest}.
+     * @return The wrapped {@link HttpUriRequest}.
+     */
+    public HttpUriRequest getHttpUriRequest() {
         return request;
     }
-    
+
+    /**
+     * Set the host details to use as a proxy.
+     * 
+     * @param proxyHost The {@link HttpHost} to use as a proxy.
+     */
     public void setProxyHost(HttpHost proxyHost) {
         this.proxyHost = proxyHost;
     }
-    
+
+    /**
+     * Getter.
+     * @return The {@link HttpHost} to be used as a proxy.
+     */
     public HttpHost getProxyHost() {
         return proxyHost;
     }

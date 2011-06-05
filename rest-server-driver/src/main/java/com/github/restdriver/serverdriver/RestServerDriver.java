@@ -387,7 +387,7 @@ public final class RestServerDriver {
 
         try {
             long startTime = System.currentTimeMillis();
-            response = httpClient.execute(request.getApacheRequest());
+            response = httpClient.execute(request.getHttpUriRequest());
             long endTime = System.currentTimeMillis();
 
             return new DefaultResponse(response, (endTime - startTime));

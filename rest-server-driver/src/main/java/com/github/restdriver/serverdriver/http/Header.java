@@ -78,7 +78,7 @@ public final class Header implements AnyRequestModifier {
 
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
-        request.getApacheRequest().addHeader(name, value);
+        request.getHttpUriRequest().addHeader(name, value);
     }
 
     @Override

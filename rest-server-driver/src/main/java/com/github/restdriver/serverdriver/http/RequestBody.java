@@ -67,7 +67,7 @@ public final class RequestBody implements BodyableRequestModifier {
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
 
-        HttpUriRequest internalRequest = request.getApacheRequest();
+        HttpUriRequest internalRequest = request.getHttpUriRequest();
         
         if (!(internalRequest instanceof HttpEntityEnclosingRequest)) {
             return;
