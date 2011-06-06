@@ -15,21 +15,22 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
+import static com.github.restdriver.serverdriver.Matchers.*;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.text.ParseException;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 import com.github.restdriver.serverdriver.matchers.RuntimeJsonTypeMismatchException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.text.ParseException;
-
-import static com.github.restdriver.serverdriver.Matchers.hasJsonPath;
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 
 public class JsonPathAcceptanceTest {
 
@@ -106,7 +107,6 @@ public class JsonPathAcceptanceTest {
         assertThat(response.asJson(), hasJsonPath("$.thing", greaterThan(5L)));
     }
 
-
     @Test
     public void moreComplexJsonPathCanBeRunOverJsonResponse() throws ParseException {
         String jsonContent = makeJson(" { 'thing' : { 'sub' : { 'subsub' : 'valutron' } } } ");
@@ -128,6 +128,16 @@ public class JsonPathAcceptanceTest {
         Response response = get(baseUrl);
 
         assertThat(response.asJson(), hasJsonPath("$.things.thing[?(@.c > 125)].a", hasItem(equalTo("two"))));
+    }
+
+    @Test
+    public void jsonPathWithoutMatcher() {
+        String jsonContent = makeJson("{'this':'thing','that':3}");
+
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        Response response = get(baseUrl);
+
+        assertThat(response.asJson(), hasJsonPath("$.that"));
     }
 
     private String makeJson(String fakeJson) {
