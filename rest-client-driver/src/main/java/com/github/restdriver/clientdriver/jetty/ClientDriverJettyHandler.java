@@ -17,6 +17,7 @@ package com.github.restdriver.clientdriver.jetty;
 
 import org.eclipse.jetty.server.Handler;
 
+import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 
@@ -32,9 +33,9 @@ public interface ClientDriverJettyHandler {
      *            The expected request
      * @param response
      *            The response to serve to that request
-     * 
+     * @return The added expectation
      */
-    void addExpectation(ClientDriverRequest request, ClientDriverResponse response);
+    ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response);
 
     /**
      * This method will throw a ClientDriverFailedExpectationException if there have been any unexpected requests.
