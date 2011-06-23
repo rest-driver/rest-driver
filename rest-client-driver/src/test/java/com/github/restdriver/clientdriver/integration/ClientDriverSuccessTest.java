@@ -298,9 +298,9 @@ public class ClientDriverSuccessTest {
     @Test
     public void testHttpHEADMatchesHttpGETExceptForEntity() throws Exception {
 
-        final String baseUrl = driver.getBaseUrl();
-	final String URL = baseUrl + "/blah2";
-	
+        String baseUrl = driver.getBaseUrl();
+        String URL = baseUrl + "/blah2";
+
         driver.addExpectation(
                 new ClientDriverRequest("/blah2").withMethod(Method.GET),
                 new ClientDriverResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
@@ -308,21 +308,21 @@ public class ClientDriverSuccessTest {
                 new ClientDriverRequest("/blah2").withMethod(Method.HEAD),
                 new ClientDriverResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
 
-        final HttpClient client = new DefaultHttpClient();
-        
-        final HttpHead headRequest = new HttpHead(URL);
-        final HttpResponse headResponse = client.execute(headRequest);
-        
-        final HttpGet getRequest = new HttpGet(URL);
-        final HttpResponse getResponse = client.execute(getRequest);
-        
+        HttpClient client = new DefaultHttpClient();
+
+        HttpHead headRequest = new HttpHead(URL);
+        HttpResponse headResponse = client.execute(headRequest);
+
+        HttpGet getRequest = new HttpGet(URL);
+        HttpResponse getResponse = client.execute(getRequest);
+
         assertThat(headResponse.getStatusLine().getStatusCode(), is(200));
         assertThat(headResponse.getHeaders("Allow")[0].getValue(), equalTo("GET, HEAD"));
         assertThat(headResponse.getAllHeaders().length, is(getResponse.getAllHeaders().length));
 
-        final String getEntityBody = EntityUtils.toString(getResponse.getEntity());        
+        String getEntityBody = EntityUtils.toString(getResponse.getEntity());
         assertThat(getEntityBody, is("something"));
-        
+
         assertThat(headResponse.getEntity(), nullValue());
-    }    
+    }
 }
