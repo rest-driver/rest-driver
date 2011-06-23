@@ -18,6 +18,8 @@ package com.github.restdriver.serverdriver.acceptance;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static com.github.restdriver.serverdriver.RestServerDriver.notUsingProxy;
 import static com.github.restdriver.serverdriver.RestServerDriver.usingProxy;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -33,10 +35,17 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import java.io.IOException;
+
 public class ProxyAcceptanceTest {
 
+    /* These are set when you call startLocalProxy() */
     private int proxyPort;
     private Server proxyServer;
+    private int proxyHits = 0; // increments every time the proxy is used
 
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
@@ -56,6 +65,7 @@ public class ProxyAcceptanceTest {
         startLocalProxy();
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", proxyPort));
+        assertThat(proxyHits, is(1));
         stopLocalProxy();
     }
 
@@ -63,12 +73,14 @@ public class ProxyAcceptanceTest {
     public void testWithNoProxyDoesntTryToUseAProxy() {
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", notUsingProxy());
+        assertThat(proxyHits, is(0));
     }
 
     @Test
     public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() {
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()), notUsingProxy());
+        assertThat(proxyHits, is(0));
     }
 
     @Test
@@ -76,6 +88,28 @@ public class ProxyAcceptanceTest {
         startLocalProxy();
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", notUsingProxy(), usingProxy("localhost", proxyPort));
+        stopLocalProxy();
+        assertThat(proxyHits, is(1));
+    }
+
+    @Test
+    public void twoCallsWithOnlyOneProxiedOnlyUsesProxyOnce() {
+
+        startLocalProxy();
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+
+        get(driver.getBaseUrl() + "/foo");
+        assertThat(proxyHits, is(0));
+
+        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", proxyPort));
+        assertThat(proxyHits, is(1));
+
+        get(driver.getBaseUrl() + "/foo", notUsingProxy());
+        assertThat(proxyHits, is(1));
+
+
         stopLocalProxy();
     }
 
@@ -89,13 +123,21 @@ public class ProxyAcceptanceTest {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             proxyServer.setHandler(context);
-            context.addServlet(new ServletHolder(new ProxyServlet()), "/*");
+            context.addServlet(new ServletHolder(new ReportingProxyServlet()), "/*");
             proxyServer.start();
 
             proxyPort = port;
 
         } catch (Exception e) {
             throw new RuntimeException("Proxy setup oops", e);
+        }
+    }
+
+    private class ReportingProxyServlet extends ProxyServlet{
+        @Override
+        public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
+            proxyHits++;
+            super.service(req, res);
         }
     }
 
