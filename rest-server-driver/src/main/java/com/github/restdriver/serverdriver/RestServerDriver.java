@@ -125,8 +125,6 @@ public final class RestServerDriver {
         String proxyHost = System.getProperty("http.proxyHost");
         int proxyPort = getSystemProxyPort();
 
-        System.out.println(proxyHost + ":" + proxyPort);
-
         if (proxyHost.isEmpty()) {
             return new NoOpRequestProxy();
         }
