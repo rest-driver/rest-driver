@@ -15,14 +15,15 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.Json;
-import org.codehaus.jackson.JsonNode;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.text.ParseException;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import org.codehaus.jackson.JsonNode;
+import org.junit.Test;
+
+import com.github.restdriver.serverdriver.Json;
 
 /**
  * User: mjg
@@ -81,7 +82,6 @@ public class HasJsonPathTest {
         hasJsonPath.matchesSafely(json);
     }
 
-
     @Test
     public void testTypeIsTotallyWrong() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
@@ -112,6 +112,22 @@ public class HasJsonPathTest {
 
         hasJsonPath = new HasJsonPath<Object>("$.foo", is(nullValue()));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
+    }
+
+    @Test
+    public void matcherMatchesPresentFieldValue() {
+        JsonNode json = Json.asJson(makeJson("{'foo': 23}"));
+
+        hasJsonPath = new HasJsonPath<Object>("$.foo");
+        assertThat(hasJsonPath.matchesSafely(json), is(true));
+    }
+
+    @Test
+    public void matcherDoesntMatchMissingFieldValue() {
+        JsonNode json = Json.asJson(makeJson("{'bar': 23}"));
+
+        hasJsonPath = new HasJsonPath<Object>("$.foo");
+        assertThat(hasJsonPath.matchesSafely(json), is(false));
     }
 
     private String makeJson(String fakeJson) {

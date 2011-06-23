@@ -15,13 +15,14 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.jayway.jsonpath.JsonPath;
+import java.text.ParseException;
+
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import java.text.ParseException;
+import com.jayway.jsonpath.JsonPath;
 
 /**
  * Matcher to enable assertions on JSON objects using JSONpath.
@@ -32,6 +33,15 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
     private final String jsonPath;
     private final Matcher<T> matcher;
+
+    /**
+     * Constructor.
+     * 
+     * @param jsonPath The JSONpath to use.
+     */
+    public HasJsonPath(String jsonPath) {
+        this(jsonPath, null);
+    }
 
     /**
      * Constructor.
@@ -52,6 +62,10 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
         try {
 
             jsonPathResult = JsonPath.read(jsonNode.toString(), jsonPath);
+
+            if (matcher == null) {
+                return jsonPathResult != null;
+            }
 
             boolean initialMatchResult = matcher.matches(jsonPathResult);
 
@@ -76,7 +90,6 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
             }
 
-
         }
 
     }
@@ -90,7 +103,6 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
         } catch (ClassCastException cce) {
             throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
         }
-
 
         if (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) {
             throw new RuntimeJsonTypeMismatchException("JSONpath returned a Long value which does not match the given Matcher."
