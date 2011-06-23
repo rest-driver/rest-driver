@@ -15,9 +15,7 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static com.github.restdriver.serverdriver.RestServerDriver.notUsingProxy;
-import static com.github.restdriver.serverdriver.RestServerDriver.usingProxy;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
@@ -95,10 +93,10 @@ public class ProxyAcceptanceTest {
     @Test
     public void twoCallsWithOnlyOneProxiedOnlyUsesProxyOnce() {
 
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         startLocalProxy();
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
 
         get(driver.getBaseUrl() + "/foo");
         assertThat(proxyHits, is(0));
@@ -109,11 +107,46 @@ public class ProxyAcceptanceTest {
         get(driver.getBaseUrl() + "/foo", notUsingProxy());
         assertThat(proxyHits, is(1));
 
+        stopLocalProxy();
+    }
+
+
+    @Test
+    public void systemProxyUsesSystemProperties() {
+
+        startLocalProxy();
+
+        System.setProperty("http.proxyHost", "localhost");
+        System.setProperty("http.proxyPort", "" + proxyPort);
+
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+
+        get(driver.getBaseUrl() + "/foo", usingSystemProxy());
+        assertThat(proxyHits, is(1));
+
+    }
+
+    @Test
+
+    public void systemProxyUsesNoProxyIfNoSystemPropertiesSet(){
+
+        startLocalProxy();
+
+        System.setProperty("http.proxyHost", "");
+        System.setProperty("http.proxyPort", "");
+
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));        
+
+        get(driver.getBaseUrl() + "/foo", usingSystemProxy());
+        assertThat(proxyHits, is(0));
 
         stopLocalProxy();
     }
 
-    
+    ////////////////////
+    // Proxy helper stuff
+    ////////////////////
+
     private void startLocalProxy() {
         try {
 
@@ -133,7 +166,7 @@ public class ProxyAcceptanceTest {
         }
     }
 
-    private class ReportingProxyServlet extends ProxyServlet{
+    private class ReportingProxyServlet extends ProxyServlet {
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
             proxyHits++;

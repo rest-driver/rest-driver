@@ -114,7 +114,40 @@ public final class RestServerDriver {
     public static NoOpRequestProxy notUsingProxy() {
         return new NoOpRequestProxy();
     }
-    
+
+    /**
+     * Use the system proxy.  These can be set with -Dhttp.proxyHost and -Dhttp.proxyPort.
+     * This does not respect environment variables like HTTP_PROXY & friends.
+     *
+     * @return The RequestProxy instance.
+     */
+    public static AnyRequestModifier usingSystemProxy() {
+
+        String proxyHost = System.getProperty("http.proxyHost");
+        int proxyPort = getSystemProxyPort();
+
+        System.out.println(proxyHost + ":" + proxyPort);
+
+        if ( proxyHost.isEmpty() ){
+            return new NoOpRequestProxy();
+        }
+
+        return new RequestProxy(proxyHost, proxyPort);
+    }
+
+    /**
+     * Defaults to 80 as per UrlConnection
+     * @return The proxy port
+     */
+    private static int getSystemProxyPort() {
+        try{
+            return Integer.parseInt(System.getProperty("http.proxyPort"));
+        } catch ( NumberFormatException nfe ){
+            return 80;
+        }
+    }
+
+
     /* ****************************************************************************
      *                             HTTP OPTIONS methods                           *
      ******************************************************************************/
