@@ -32,8 +32,7 @@ import com.github.restdriver.serverdriver.Json;
  */
 public class HasJsonPathTest {
 
-    @SuppressWarnings("rawtypes")
-    private HasJsonPath hasJsonPath;
+    private HasJsonPath<?> hasJsonPath;
 
     @Test
     public void jsonMatchesString() {

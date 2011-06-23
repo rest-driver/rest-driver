@@ -30,7 +30,7 @@ public class RequestBodyTest {
     public void bodyAppliesItselfToRequest() throws Exception {
         HttpPost request = new HttpPost();
         RequestBody body = new RequestBody("content", "contentType");
-        body.applyTo(request);
+        body.applyTo(new ServerDriverHttpUriRequest(request));
         assertThat(IOUtils.toString(request.getEntity().getContent()), is("content"));
         assertThat(request.getEntity().getContentType().getValue(), is("contentType; charset=UTF-8"));
         assertThat(request.getFirstHeader("Content-type").getValue(), is("contentType"));
@@ -40,7 +40,7 @@ public class RequestBodyTest {
     public void applyToHandlesRequestWhichCannotHaveBody() {
         HttpUriRequest request = new HttpGet();
         RequestBody body = new RequestBody("content", "contentType");
-        body.applyTo(request);
+        body.applyTo(new ServerDriverHttpUriRequest(request));
     }
 
 }
