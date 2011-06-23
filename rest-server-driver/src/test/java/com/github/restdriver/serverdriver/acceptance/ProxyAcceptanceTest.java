@@ -156,7 +156,7 @@ public class ProxyAcceptanceTest {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             proxyServer.setHandler(context);
-            context.addServlet(new ServletHolder(new ReportingProxyServlet()), "/*");
+            context.addServlet(new ServletHolder(new CountingProxyServlet()), "/*");
             proxyServer.start();
 
             proxyPort = port;
@@ -166,7 +166,7 @@ public class ProxyAcceptanceTest {
         }
     }
 
-    private class ReportingProxyServlet extends ProxyServlet {
+    private class CountingProxyServlet extends ProxyServlet {
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
             proxyHits++;
