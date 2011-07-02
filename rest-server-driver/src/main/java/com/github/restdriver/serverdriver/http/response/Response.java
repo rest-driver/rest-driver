@@ -47,6 +47,13 @@ public interface Response {
     String getContent();
 
     /**
+     * What was the content of the response?
+     *
+     * @return The response body content as a string
+     */
+    String asText();
+
+    /**
      * What headers did the server send?
      *
      * @return A list of headers
