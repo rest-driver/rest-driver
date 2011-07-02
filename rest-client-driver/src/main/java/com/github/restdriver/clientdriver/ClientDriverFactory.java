@@ -18,14 +18,12 @@ package com.github.restdriver.clientdriver;
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
 /**
- * Main entry point to the Rest Client Driver. Just call
- * <code>new {@link ClientDriverFactory}().{@link #createClientDriver()}</code> to get a {@link ClientDriver} running on a
- * free port. You cannot specify which port, one will be chosen for you.
+ * Main entry point to the Rest Client Driver.
  */
 public final class ClientDriverFactory {
 
     /**
-     * Factory method to create and start a {@link ClientDriver}.
+     * Factory method to create and start a {@link ClientDriver}.  A port will be chosen automatically.
      * 
      * @return A new {@link ClientDriver}, which has found a free port, bound to it and started up.
      */

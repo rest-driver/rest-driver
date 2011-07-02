@@ -73,6 +73,11 @@ public final class DefaultResponse implements Response {
     }
 
     @Override
+    public String asText() {
+        return content;
+    }
+
+    @Override
     public List<Header> getHeaders() {
         return headers;
     }

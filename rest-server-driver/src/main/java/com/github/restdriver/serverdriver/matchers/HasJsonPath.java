@@ -36,7 +36,7 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param jsonPath The JSONpath to use.
      */
     public HasJsonPath(String jsonPath) {
@@ -114,7 +114,12 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("a JSON object matching JSONpath \"" + jsonPath + "\" with ");
-        matcher.describeTo(description);
+        description.appendText("a JSON object matching JSONpath \"" + jsonPath + "\"");
+
+        if (matcher != null) {
+            description.appendText(" with ");
+            matcher.describeTo(description);
+        }
+
     }
 }

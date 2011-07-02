@@ -15,13 +15,11 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-
-import java.io.IOException;
-import java.net.ServerSocket;
+import static com.github.restdriver.serverdriver.RestServerDriver.get;
 
 import org.junit.Test;
 
+import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 
@@ -44,22 +42,7 @@ public class HttpProblemsAcceptanceTest {
 
     @Test(expected = RuntimeHttpHostConnectException.class)
     public void noServerListeningThrowsException() {
-        get("http://localhost:" + getFreePort());
-    }
-
-    /**
-     * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
-     */
-    private int getFreePort() {
-        try {
-            ServerSocket server = new ServerSocket(0);
-            int port = server.getLocalPort();
-            server.close();
-            return port;
-
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe);
-        }
+        get("http://localhost:" + ClientDriver.getFreePort());
     }
 
 }

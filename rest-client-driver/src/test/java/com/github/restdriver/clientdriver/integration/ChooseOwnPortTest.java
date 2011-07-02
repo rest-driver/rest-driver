@@ -15,11 +15,13 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import com.github.restdriver.clientdriver.ClientDriver;
-import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
+import java.io.IOException;
+import java.net.BindException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -27,13 +29,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.ServerSocket;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.clientdriver.ClientDriverFactory;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
 
 /**
  * User: mjg
@@ -45,7 +45,7 @@ public class ChooseOwnPortTest {
     @Test
     public void userCanChooseOwnPort() throws IOException {
 
-        int portNum = getFreePort();
+        int portNum = ClientDriver.getFreePort();
 
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
         driver.addExpectation(
@@ -64,7 +64,7 @@ public class ChooseOwnPortTest {
     @Test
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
 
-        int portNum = getFreePort();
+        int portNum = ClientDriver.getFreePort();
 
         try{
             // one of these must throw an exception.
@@ -79,10 +79,4 @@ public class ChooseOwnPortTest {
 
     }
 
-    private int getFreePort() throws IOException {
-        ServerSocket server = new ServerSocket(0);
-        int port = server.getLocalPort();
-        server.close();
-        return port;
-    }
 }

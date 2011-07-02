@@ -25,11 +25,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
+import org.apache.http.util.EntityUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -37,8 +39,7 @@ import org.junit.rules.ExpectedException;
 import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class ClientDriverSuccessTest {
 
@@ -294,4 +295,34 @@ public class ClientDriverSuccessTest {
         client.execute(get);
     }
 
+    @Test
+    public void testHttpHEADMatchesHttpGETExceptForEntity() throws Exception {
+
+        String baseUrl = driver.getBaseUrl();
+        String URL = baseUrl + "/blah2";
+
+        driver.addExpectation(
+                new ClientDriverRequest("/blah2").withMethod(Method.GET),
+                new ClientDriverResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
+        driver.addExpectation(
+                new ClientDriverRequest("/blah2").withMethod(Method.HEAD),
+                new ClientDriverResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
+
+        HttpClient client = new DefaultHttpClient();
+
+        HttpHead headRequest = new HttpHead(URL);
+        HttpResponse headResponse = client.execute(headRequest);
+
+        HttpGet getRequest = new HttpGet(URL);
+        HttpResponse getResponse = client.execute(getRequest);
+
+        assertThat(headResponse.getStatusLine().getStatusCode(), is(200));
+        assertThat(headResponse.getHeaders("Allow")[0].getValue(), equalTo("GET, HEAD"));
+        assertThat(headResponse.getAllHeaders().length, is(getResponse.getAllHeaders().length));
+
+        String getEntityBody = EntityUtils.toString(getResponse.getEntity());
+        assertThat(getEntityBody, is("something"));
+
+        assertThat(headResponse.getEntity(), nullValue());
+    }
 }

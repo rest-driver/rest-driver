@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ "x`which curl`" = "x" ]; then
+  echo "You need to install curl"
+  exit
+fi
+
 WORKING_DIRECTORY=$1
 VERSION=$2
 

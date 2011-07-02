@@ -137,7 +137,7 @@ public class HeaderTest {
     public void headerAppliesItselfToRequest() {
         HttpUriRequest request = new HttpGet();
         Header header = new Header("name", "value");
-        header.applyTo(request);
+        header.applyTo(new ServerDriverHttpUriRequest(request));
         assertThat(request.getFirstHeader("name").getValue(), is("value"));
     }
 

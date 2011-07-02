@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import java.text.ParseException;
 
 import org.codehaus.jackson.JsonNode;
+import org.hamcrest.StringDescription;
 import org.junit.Test;
 
 import com.github.restdriver.serverdriver.Json;
@@ -32,8 +33,7 @@ import com.github.restdriver.serverdriver.Json;
  */
 public class HasJsonPathTest {
 
-    @SuppressWarnings("rawtypes")
-    private HasJsonPath hasJsonPath;
+    private HasJsonPath<?> hasJsonPath;
 
     @Test
     public void jsonMatchesString() {
@@ -129,6 +129,18 @@ public class HasJsonPathTest {
 
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         assertThat(hasJsonPath.matchesSafely(json), is(false));
+    }
+
+    @Test
+    public void describeToDoesntThrowNPE(){
+        // bugfix for issue #47
+
+        hasJsonPath = new HasJsonPath<Object>("$.foo");
+        StringDescription sd = new StringDescription();
+        hasJsonPath.describeTo(sd);
+
+        assertThat(sd.toString(), is("a JSON object matching JSONpath \"$.foo\""));
+
     }
 
     private String makeJson(String fakeJson) {

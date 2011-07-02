@@ -15,18 +15,17 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import org.apache.http.client.methods.HttpUriRequest;
-
 /**
- * Common interface for classes which are intended to modify a request.
+ * This class instructs the server-driver to use no proxy.  This is the default
+ * behaviour anyway, but can be specified explicitly.
  */
-public interface RequestModifier {
+public final class NoOpRequestProxy implements AnyRequestModifier {
 
-    /**
-     * Apply this modifier to the given request.
-     * 
-     * @param request The request
-     */
-    void applyTo(HttpUriRequest request);
+    @Override
+    public void applyTo(ServerDriverHttpUriRequest request) {
+        request.setProxyHost(null);
+    }
 
+    
+    
 }

@@ -35,30 +35,28 @@ public final class ClientDriver {
     private final ClientDriverJettyHandler handler;
 
     /**
-     * Constructor. This will find a free port, bind to it and start the server up before it returns.
-     *
-     * @param handler The {@link ClientDriverJettyHandler} to use.
+     * Constructor. This will find a free port, bind to it and start the server
+     * up before it returns.
+     * 
+     * @param handler
+     *            The {@link ClientDriverJettyHandler} to use.
      */
     public ClientDriver(ClientDriverJettyHandler handler) {
-
         this.handler = handler;
-
-        try {
-            portNum = getFreePort();
-        } catch (IOException ioe) {
-            throw new ClientDriverSetupException("Error finding free port for webserver", ioe);
-        }
-
+        portNum = getFreePort();
         jettyServer = new Server(portNum);
-
         startJetty();
     }
 
     /**
-     * Constructor. This will find a free port, bind to it and start the server up before it returns.
-     *
-     * @param handler The {@link ClientDriverJettyHandler} to use.
-     * @param port    The port to listen on.  Expect startup errors if this port is not free.
+     * Constructor. This will find a free port, bind to it and start the server
+     * up before it returns.
+     * 
+     * @param handler
+     *            The {@link ClientDriverJettyHandler} to use.
+     * @param port
+     *            The port to listen on. Expect startup errors if this port is
+     *            not free.
      */
     public ClientDriver(ClientDriverJettyHandler handler, int port) {
 
@@ -77,14 +75,15 @@ public final class ClientDriver {
             jettyServer.start();
 
         } catch (Exception e) {
-            throw new ClientDriverSetupException("Error starting jetty on port " + portNum, e);
+            throw new ClientDriverSetupException(
+                    "Error starting jetty on port " + portNum, e);
 
         }
     }
 
     /**
      * Get the base URL which the ClientDriver is running on.
-     *
+     * 
      * @return The base URL, which will be like "http://localhost:xxxxx". <br/>
      *         <b>There is no trailing slash on this</b>
      */
@@ -93,19 +92,32 @@ public final class ClientDriver {
     }
 
     /**
+     * Gets a free port on localhost for binding to.
+     * 
      * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
+     * 
+     * @return The port number.
      */
-    private int getFreePort() throws IOException {
-        ServerSocket server = new ServerSocket(0);
-        int port = server.getLocalPort();
-        server.close();
-        return port;
+    public static int getFreePort() {
+
+        try {
+            ServerSocket server = new ServerSocket(0);
+            int port = server.getLocalPort();
+            server.close();
+            return port;
+
+        } catch (IOException ioe) {
+            throw new ClientDriverSetupException(
+                    "IOException finding free port", ioe);
+        }
     }
 
     /**
-     * Shutdown the server. This also verifies that all expectations have been met and nothing unexpected has been
-     * requested. If the verification fails, a {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException} is thrown with plenty of
-     * detail, and your test will fail!
+     * Shutdown the server. This also verifies that all expectations have been
+     * met and nothing unexpected has been requested. If the verification fails,
+     * a
+     * {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException}
+     * is thrown with plenty of detail, and your test will fail!
      */
     public void shutdown() {
 
@@ -113,7 +125,8 @@ public final class ClientDriver {
             jettyServer.stop();
 
         } catch (Exception e) {
-            throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
+            throw new ClientDriverFailedExpectationException(
+                    "Error shutting down jetty", e);
 
         }
 
@@ -122,13 +135,18 @@ public final class ClientDriver {
     }
 
     /**
-     * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
-     *
-     * @param request  The expected request
-     * @param response The response to serve to that request
-     * @return The added expectation
+     * Add in an expected {@link ClientDriverRequest}/
+     * {@link ClientDriverResponse} pair.
+     * 
+     * @param request
+     *            The expected request
+     * @param response
+     *            The response to serve to that request
+     *            
+     * @return The newly added expectation.
      */
-    public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
+    public ClientDriverExpectation addExpectation(ClientDriverRequest request,
+            ClientDriverResponse response) {
         return handler.addExpectation(request, response);
     }
 

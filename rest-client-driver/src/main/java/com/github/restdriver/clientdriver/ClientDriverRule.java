@@ -44,7 +44,7 @@ public final class ClientDriverRule implements MethodRule {
     /**
      * The base URL of the underlying ClientDriver.
      * 
-     * @return The base URL String
+     * @return The base URL String <b>There is no trailing slash on this</b>.
      */
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
