@@ -53,7 +53,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             return false;
         }
         // same base path?
-        if (!isStringOrPattternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
+        if (!isStringOrPatternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
             return false;
         }
 
@@ -74,7 +74,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
             Object expectedParamValue = expectedParams.get(expectedKey);
 
-            if (!isStringOrPattternMatch(actualParamValue, expectedParamValue)) {
+            if (!isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
                 return false;
             }
 
@@ -97,7 +97,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
             while (actualHeaderValues.hasMoreElements()) {
                 String value = actualHeaderValues.nextElement();
-                if (isStringOrPattternMatch(value, expectedHeaderValue)) {
+                if (isStringOrPatternMatch(value, expectedHeaderValue)) {
                     matched = true;
                     break;
                 }
@@ -120,13 +120,13 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
 
             // same type?
-            if (!isStringOrPattternMatch(actualContentType, expectedRequest.getBodyContentType())) {
+            if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
                 return false;
             }
 
             // same content?
             try {
-                if (!isStringOrPattternMatch(IOUtils.toString(actualRequest.getReader()), expectedRequest
+                if (!isStringOrPatternMatch(IOUtils.toString(actualRequest.getReader()), expectedRequest
                         .getBodyContent())) {
                     return false;
                 }
@@ -140,7 +140,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
     }
 
-    private boolean isStringOrPattternMatch(String actual, Object expected) {
+    private boolean isStringOrPatternMatch(String actual, Object expected) {
         if (expected instanceof String) {
 
             return actual.equals(expected);
