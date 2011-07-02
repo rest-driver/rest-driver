@@ -28,6 +28,7 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
@@ -41,7 +42,7 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  */
 public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
 
-    private final List<ClientDriverRequestResponsePair> expectedResponses;
+    private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
     private String unexpectedRequest;
@@ -54,7 +55,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      */
     public DefaultClientDriverJettyHandler(RequestMatcher matcher) {
 
-        expectedResponses = new ArrayList<ClientDriverRequestResponsePair>();
+        expectations = new ArrayList<ClientDriverExpectation>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
 
         this.matcher = matcher;
@@ -91,18 +92,20 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
 
         int index = 0;
 
-        ClientDriverRequestResponsePair matchedPair = null;
-        for (index = 0; index < expectedResponses.size(); index++) {
-            ClientDriverRequestResponsePair thisPair = expectedResponses.get(index);
+        ClientDriverExpectation matchedExpectation = null;
+        for (index = 0; index < expectations.size(); index++) {
+            ClientDriverExpectation thisExpectation = expectations.get(index);
+            ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
             if (matcher.isMatch(request, thisPair.getRequest())) {
-                if (matchedPair == null) {
-                    matchedPair = thisPair;
+                thisExpectation.match();
+                if (matchedExpectation == null) {
+                    matchedExpectation = thisExpectation;
                     break;
                 }
             }
         }
 
-        if (matchedPair == null) {
+        if (matchedExpectation == null) {
             unexpectedRequest = request.getPathInfo();
 
             String reqQuery = request.getQueryString();
@@ -113,9 +116,11 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             throw new ClientDriverInternalException("Unexpected request: " + unexpectedRequest, null);
         }
 
-        expectedResponses.remove(index);
+        if (matchedExpectation.isSatisfied()) {
+            expectations.remove(index);
+        }
 
-        return matchedPair;
+        return matchedExpectation.getPair();
     }
 
     /**
@@ -136,9 +141,17 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     @Override
     public void checkForUnmatchedExpectations() {
 
-        if (!expectedResponses.isEmpty()) {
-            throw new ClientDriverFailedExpectationException(expectedResponses.size() + " unmatched expectation(s), first is: "
-                    + expectedResponses.get(0).getRequest(), null);
+        if (expectations.isEmpty()) {
+            return;
+        }
+
+        for (ClientDriverExpectation expectation : expectations) {
+            if (expectation.shouldMatchAnyTimes()) {
+                continue;
+            }
+
+            throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
+                    + expectation.getPair().getRequest() + expectation.getStatusString(), null);
         }
 
     }
@@ -150,11 +163,14 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      *            The expected request
      * @param response
      *            The response to serve to that request
-     * 
+     * @return The added expectation
      */
     @Override
-    public void addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
-        expectedResponses.add(new ClientDriverRequestResponsePair(request, response));
+    public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
+        ClientDriverRequestResponsePair pair = new ClientDriverRequestResponsePair(request, response);
+        ClientDriverExpectation expectation = new ClientDriverExpectation(pair);
+        expectations.add(expectation);
+        return expectation;
     }
 
     /**

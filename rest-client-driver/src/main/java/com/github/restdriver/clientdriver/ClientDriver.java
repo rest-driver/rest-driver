@@ -142,10 +142,12 @@ public final class ClientDriver {
      *            The expected request
      * @param response
      *            The response to serve to that request
+     *            
+     * @return The newly added expectation.
      */
-    public void addExpectation(ClientDriverRequest request,
+    public ClientDriverExpectation addExpectation(ClientDriverRequest request,
             ClientDriverResponse response) {
-        handler.addExpectation(request, response);
+        return handler.addExpectation(request, response);
     }
 
     private void verify() {

@@ -71,7 +71,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET /blah; "));
+            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET /blah; expected: 1, actual: 0"));
         }
 
     }
