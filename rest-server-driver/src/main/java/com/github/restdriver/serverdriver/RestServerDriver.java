@@ -22,6 +22,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -371,6 +372,56 @@ public final class RestServerDriver {
         return delete(url, modifiers);
     }
 
+    /* ****************************************************************************
+     *                               HTTP HEAD methods                             *
+     ******************************************************************************/
+
+    /**
+     * Perform an HTTP HEAD on a resource.
+     *
+     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param modifiers Optional HTTP headers to put on the request.
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response head(Object url, AnyRequestModifier... modifiers) {
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpHead(url.toString()));
+        applyModifiersToRequest(modifiers, request);
+        return doHttpRequest(request);
+    }
+
+    /**
+     * Synonym for {@link #head(Object, AnyRequestModifier...)}.
+     *
+     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param modifiers Optional HTTP headers to put on the request.
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response headOf(Object url, AnyRequestModifier... modifiers) {
+        return get(url, modifiers);
+    }
+
+    /**
+     * Synonym for {@link #head(Object, AnyRequestModifier...)}.
+     *
+     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param modifiers Optional HTTP headers to put on the request.
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response doHeadOf(Object url, AnyRequestModifier... modifiers) {
+        return get(url, modifiers);
+    }
+
+    /**
+     * Synonym for {@link #head(Object, AnyRequestModifier...)}.
+     *
+     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * @param modifiers Optional HTTP headers to put on the request.
+     * @return A Response encapsulating the server's reply.
+     */
+    public static Response heading(Object url, AnyRequestModifier... modifiers) {
+        return get(url, modifiers);
+    }
+    
     /*
      * Internal methods for creating requests and responses
      */
