@@ -15,19 +15,18 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.serverdriver.http.response.Response;
-import org.apache.commons.lang.SystemUtils;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * User: mjg
