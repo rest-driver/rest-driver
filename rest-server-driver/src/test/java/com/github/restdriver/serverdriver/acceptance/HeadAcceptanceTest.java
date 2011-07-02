@@ -61,7 +61,7 @@ public class HeadAcceptanceTest {
         	new ClientDriverRequest("/").withMethod(Method.HEAD),
         	new ClientDriverResponse("some content"));
 
-        Response response = head(baseUrl);
+        Response response = headOf(baseUrl);
 
         assertThat(response.getContent(), nullValue());
     }
@@ -72,7 +72,7 @@ public class HeadAcceptanceTest {
         driver.addExpectation(
         	new ClientDriverRequest("/").withMethod(Method.HEAD),
         	new ClientDriverResponse("Content"));
-        Response headResponse = head(baseUrl);
+        Response headResponse = doHeadOf(baseUrl);
         
         assertThat(headResponse, hasStatusCode(200));
         

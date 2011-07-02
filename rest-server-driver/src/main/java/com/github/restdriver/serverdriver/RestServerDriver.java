@@ -273,7 +273,7 @@ public final class RestServerDriver {
     }
 
     /* ****************************************************************************
-     *                              HTTP POST methods                             *
+     *                              HTTP PUT methods                              *
      ******************************************************************************/
 
     /**
@@ -397,7 +397,7 @@ public final class RestServerDriver {
      * @return A Response encapsulating the server's reply.
      */
     public static Response headOf(Object url, AnyRequestModifier... modifiers) {
-        return get(url, modifiers);
+        return head(url, modifiers);
     }
 
     /**
@@ -408,20 +408,9 @@ public final class RestServerDriver {
      * @return A Response encapsulating the server's reply.
      */
     public static Response doHeadOf(Object url, AnyRequestModifier... modifiers) {
-        return get(url, modifiers);
+        return head(url, modifiers);
     }
 
-    /**
-     * Synonym for {@link #head(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
-     * @param modifiers Optional HTTP headers to put on the request.
-     * @return A Response encapsulating the server's reply.
-     */
-    public static Response heading(Object url, AnyRequestModifier... modifiers) {
-        return get(url, modifiers);
-    }
-    
     /*
      * Internal methods for creating requests and responses
      */
