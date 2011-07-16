@@ -15,6 +15,8 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -23,8 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
@@ -42,8 +42,8 @@ public class ClientDriverRuleTest {
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
 
-        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
-        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -56,7 +56,7 @@ public class ClientDriverRuleTest {
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
 
-        driver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("").withStatus(404));
 
         HttpClient client = new DefaultHttpClient();
 

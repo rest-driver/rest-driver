@@ -15,6 +15,8 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,8 +26,6 @@ import org.junit.rules.ExpectedException;
 
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class SpecifyExpectationNumberTest {
@@ -36,11 +36,8 @@ public class SpecifyExpectationNumberTest {
     @Test
     public void notSpecifyingExpectationNumberDefaultsToOnce() throws Exception {
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response);
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse());
 
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
@@ -53,11 +50,8 @@ public class SpecifyExpectationNumberTest {
     @Test
     public void specifyingNumberOfTimesForExpectationExpectsItThatNumberOfTimes() throws Exception {
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response).times(2);
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
 
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
@@ -72,11 +66,8 @@ public class SpecifyExpectationNumberTest {
 
         thrown.expect(ClientDriverFailedExpectationException.class);
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response).times(2);
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
 
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
@@ -93,11 +84,8 @@ public class SpecifyExpectationNumberTest {
         thrown.expect(ClientDriverFailedExpectationException.class);
         thrown.expectMessage("1 unmatched expectation(s), first is: ClientDriverRequest: GET /request; expected: 2, actual: 1");
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response).times(2);
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
 
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
@@ -109,11 +97,8 @@ public class SpecifyExpectationNumberTest {
     @Test
     public void specifyingAnyTimesForExpectationWorks() throws Exception {
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response).anyTimes();
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).anyTimes();
 
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
@@ -127,11 +112,8 @@ public class SpecifyExpectationNumberTest {
     @Test
     public void specifyingAnyTimesForExpectationAnyNotCallingItWorks() throws Exception {
 
-        ClientDriverRequest request = new ClientDriverRequest("/request");
-        ClientDriverResponse response = new ClientDriverResponse();
-
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
-        driver.addExpectation(request, response).anyTimes();
+        driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).anyTimes();
 
         driver.shutdown();
 
