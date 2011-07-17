@@ -22,7 +22,9 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -75,15 +77,17 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {{
-            add(new BasicHeader("headerA", "valueA"));
-        }}.toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>() {
+            {
+                add(new BasicHeader("headerA", "valueA"));
+            }
+        }.toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
         Response response = new DefaultResponse(mockResponse, 12345);
 
-        assertThat(response.getHeaders(), Matchers.<Object>hasSize(1));
+        assertThat(response.getHeaders(), Matchers.<Object> hasSize(1));
         assertThat(response.getHeaders().get(0), equalTo(header("headerA", "valueA")));
     }
 
@@ -92,7 +96,7 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>().toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>().toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -107,9 +111,11 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {{
-            add(new BasicHeader("myheader", "myValue"));
-        }}.toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>() {
+            {
+                add(new BasicHeader("myheader", "myValue"));
+            }
+        }.toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -127,10 +133,12 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {{
-            add(new BasicHeader("myheader", "myValue"));
-            add(new BasicHeader("myheader", "myOtherValue"));
-        }}.toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>() {
+            {
+                add(new BasicHeader("myheader", "myValue"));
+                add(new BasicHeader("myheader", "myOtherValue"));
+            }
+        }.toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -143,10 +151,12 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {{
-            add(new BasicHeader("myheader", "myValue"));
-            add(new BasicHeader("myheader", "myOtherValue"));
-        }}.toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>() {
+            {
+                add(new BasicHeader("myheader", "myValue"));
+                add(new BasicHeader("myheader", "myOtherValue"));
+            }
+        }.toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -160,9 +170,11 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {{
-            add(new BasicHeader("MYHEADER", "myValue"));
-        }}.toArray(new Header[]{});
+        Header[] mockedHeaders = new ArrayList<Header>() {
+            {
+                add(new BasicHeader("MYHEADER", "myValue"));
+            }
+        }.toArray(new Header[] {});
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -173,6 +185,45 @@ public class DefaultResponseTest {
 
         assertThat(response.getHeader("myheader"), equalTo(expectedHeader));
         assertThat(response.getHeaders("myheader").size(), equalTo(1));
+    }
+
+    @Test
+    public void noContentEncodingOnResponseIsTreatedAsUTF8() throws Exception {
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContentEncoding()).thenReturn(null);
+        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは", "UTF-8"));
+
+        Header[] mockedHeaders = new Header[0];
+
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        setMockStatusCode(mockResponse, 200);
+        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
+        when(mockResponse.getEntity()).thenReturn(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.getContent(), is("こんにちは"));
+    }
+
+    @Test
+    public void contentEncodingOnResponseIsReadUsingThatEncoding() throws Exception {
+        Header mockContentEncodingHeader = mock(Header.class);
+        when(mockContentEncodingHeader.getValue()).thenReturn("ISO-8859-1");
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContentEncoding()).thenReturn(mockContentEncodingHeader);
+        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは"));
+
+        Header[] mockedHeaders = new Header[0];
+
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        setMockStatusCode(mockResponse, 200);
+        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
+        when(mockResponse.getEntity()).thenReturn(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.getContent(), is(not("こんにちは")));
     }
 
 }
