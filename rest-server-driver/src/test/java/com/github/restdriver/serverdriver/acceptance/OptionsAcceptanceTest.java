@@ -50,7 +50,7 @@ public class OptionsAcceptanceTest {
 
         Response response = options(baseUrl);
 
-        assertThat(response, hasStatusCode(200));
+        assertThat(response, hasStatusCode(204));
         assertThat(response, hasHeaderWithValue("Allow", containsString("GET")));
         assertThat(response, hasHeaderWithValue("Allow", containsString("DELETE")));
         assertThat(response, hasHeaderWithValue("Allow", containsString("OPTIONS")));

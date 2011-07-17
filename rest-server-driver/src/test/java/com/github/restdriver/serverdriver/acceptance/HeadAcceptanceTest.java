@@ -17,7 +17,7 @@ package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
@@ -27,9 +27,9 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -47,55 +47,55 @@ public class HeadAcceptanceTest {
     @Test
     public void simpleHeadRetrievesStatus() {
         driver.addExpectation(
-        	new ClientDriverRequest("/").withMethod(Method.HEAD),
-        	new ClientDriverResponse());
+                new ClientDriverRequest("/").withMethod(Method.HEAD),
+                new ClientDriverResponse());
 
         Response response = head(baseUrl);
 
-        assertThat(response, hasStatusCode(200));
+        assertThat(response, hasStatusCode(204));
     }
 
     @Test
     public void headIgnoresEntity() {
         driver.addExpectation(
-        	new ClientDriverRequest("/").withMethod(Method.HEAD),
-        	new ClientDriverResponse("some content"));
+                new ClientDriverRequest("/").withMethod(Method.HEAD),
+                new ClientDriverResponse("some content"));
 
         Response response = headOf(baseUrl);
 
         assertThat(response.getContent(), nullValue());
     }
-    
+
     @Test
     public void getOnSameResourceAsHeadRequestRetrievesSameHeadersButWithAnEntity() {
 
         driver.addExpectation(
-        	new ClientDriverRequest("/").withMethod(Method.HEAD),
-        	new ClientDriverResponse("Content"));
+                new ClientDriverRequest("/").withMethod(Method.HEAD),
+                new ClientDriverResponse("Content"));
         Response headResponse = doHeadOf(baseUrl);
-        
+
         assertThat(headResponse, hasStatusCode(200));
-        
+
         driver.addExpectation(
-        	new ClientDriverRequest("/").withMethod(Method.GET),
-        	new ClientDriverResponse("Content"));
+                new ClientDriverRequest("/").withMethod(Method.GET),
+                new ClientDriverResponse("Content"));
         Response getResponse = get(baseUrl);
-        
+
         assertThat(getResponse, hasStatusCode(200));
         assertThat(getResponse.getContent(), not(nullValue()));
 
         List<Header> getHeaders = getResponse.getHeaders();
         List<Header> headHeaders = headResponse.getHeaders();
-        
+
         for (Header getHeader : getHeaders) {
             assertThat("The GET request had a header that the HEAD headers did not.", headHeaders, hasItem(getHeader));
         }
-        
+
         for (Header headHeader : headHeaders) {
             assertThat("The HEAD request had a header that the GET headers did not.", getHeaders, hasItem(headHeader));
         }
     }
-    
+
     @Test
     public void headRetrievesHeaders() {
         driver.addExpectation(
@@ -124,8 +124,8 @@ public class HeadAcceptanceTest {
     public void headSendsHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/")
-                	.withMethod(Method.HEAD)
-                	.withHeader("Accept", "Nothing"),
+                        .withMethod(Method.HEAD)
+                        .withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Hello"));
 
         Response response = head(baseUrl, header("Accept: Nothing"));

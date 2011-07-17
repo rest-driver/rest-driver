@@ -24,6 +24,8 @@ import java.util.Map;
 public final class ClientDriverResponse {
 
     private static final int DEFAULT_STATUS_CODE = 200;
+    private static final int EMPTY_RESPONSE_CODE = 204;
+    private static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
     private int status;
     private final String content;
@@ -31,22 +33,32 @@ public final class ClientDriverResponse {
     private final Map<String, String> headers;
 
     /**
-     * Creates a new response with an empty body, a status code of 200 and a Content-Type of 'text/plain'.
+     * Creates a new response with an empty body, a status code of 204 and a Content-Type of 'text/plain'.
      */
     public ClientDriverResponse() {
         this("");
     }
 
     /**
-     * Creates a new response with the given body, a status code of 200 and a Content-Type of 'text/plain'.
+     * Creates a new response with the given body, a suitable default status code and a Content-Type of 'text/plain'.
+     * 
+     * If the content given is null or empty a 204 status code is given, otherwise 200.
      * 
      * @param content The content of the response
      */
     public ClientDriverResponse(String content) {
         this.content = content;
-        status = DEFAULT_STATUS_CODE;
-        contentType = "text/plain";
+        this.status = statusCodeForContent(content);
+        this.contentType = DEFAULT_CONTENT_TYPE;
         headers = new HashMap<String, String>();
+    }
+
+    private static int statusCodeForContent(String content) {
+        if (content == null || content.isEmpty()) {
+            return EMPTY_RESPONSE_CODE;
+        } else {
+            return DEFAULT_STATUS_CODE;
+        }
     }
 
     /**
