@@ -36,13 +36,13 @@ public final class ClientDriverResponse {
      * Creates a new response with an empty body, a status code of 204 and a Content-Type of 'text/plain'.
      */
     public ClientDriverResponse() {
-        this("");
+        this(null);
     }
 
     /**
      * Creates a new response with the given body, a suitable default status code and a Content-Type of 'text/plain'.
      * 
-     * If the content given is null or empty a 204 status code is given, otherwise 200.
+     * If the content given is null a 204 status code is given, otherwise 200.
      * 
      * @param content The content of the response
      */
@@ -54,7 +54,7 @@ public final class ClientDriverResponse {
     }
 
     private static int statusCodeForContent(String content) {
-        if (content == null || content.isEmpty()) {
+        if (content == null) {
             return EMPTY_RESPONSE_CODE;
         } else {
             return DEFAULT_STATUS_CODE;

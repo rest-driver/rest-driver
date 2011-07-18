@@ -39,10 +39,10 @@ public class ClientDriverResponseTest {
     }
 
     @Test
-    public void creatingResponseWithEmptyStringContentGives204Status() {
+    public void creatingResponseWithEmptyStringContentGives200Status() {
         ClientDriverResponse response = new ClientDriverResponse("");
 
-        assertThat(response.getStatus(), is(204));
+        assertThat(response.getStatus(), is(200));
     }
 
 }
