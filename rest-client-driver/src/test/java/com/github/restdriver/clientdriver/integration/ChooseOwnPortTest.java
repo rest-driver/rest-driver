@@ -15,9 +15,9 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -31,8 +31,6 @@ import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
 
 /**
@@ -48,9 +46,7 @@ public class ChooseOwnPortTest {
         int portNum = ClientDriver.getFreePort();
 
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
-        driver.addExpectation(
-                new ClientDriverRequest("/url"),
-                new ClientDriverResponse("hello"));
+        driver.addExpectation(onRequestTo("/url"), giveResponse("hello"));
 
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet("http://localhost:" + portNum + "/url");
@@ -66,12 +62,12 @@ public class ChooseOwnPortTest {
 
         int portNum = ClientDriver.getFreePort();
 
-        try{
+        try {
             // one of these must throw an exception.
             new ClientDriverFactory().createClientDriver(portNum);
             new ClientDriverFactory().createClientDriver(portNum);
 
-        } catch (ClientDriverSetupException cdse){
+        } catch (ClientDriverSetupException cdse) {
 
             assertThat(cdse.getCause(), instanceOf(BindException.class));
 

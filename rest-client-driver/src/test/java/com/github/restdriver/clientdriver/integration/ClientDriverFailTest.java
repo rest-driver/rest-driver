@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -29,9 +30,7 @@ import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class ClientDriverFailTest {
@@ -62,8 +61,8 @@ public class ClientDriverFailTest {
     public void testUnmatchedExpectation() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
 
-        clientDriver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(200));
-        clientDriver.addExpectation(new ClientDriverRequest("/blah"), new ClientDriverResponse("OUCH!!").withStatus(404));
+        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
+        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
 
         // no requests made
 
@@ -80,9 +79,8 @@ public class ClientDriverFailTest {
     public void testJettyWorkingWithMethodButIncorrectParams() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
 
-        clientDriver.addExpectation(new ClientDriverRequest("/blah").withMethod(Method.POST).withParam("gang", "green"),
-                new ClientDriverResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
-                        "TestServer"));
+        clientDriver.addExpectation(onRequestTo("/blah").withMethod(Method.POST).withParam("gang", "green"),
+                giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -104,8 +102,8 @@ public class ClientDriverFailTest {
     public void testJettyWorkingWithMethodButIncorrectParamsPattern() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
 
-        clientDriver.addExpectation(new ClientDriverRequest(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
-                "gang", Pattern.compile("r")), new ClientDriverResponse("OUCH!!").withStatus(200)
+        clientDriver.addExpectation(onRequestTo(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
+                "gang", Pattern.compile("r")), giveResponse("OUCH!!").withStatus(200)
                 .withContentType("text/plain").withHeader("Server", "TestServer"));
 
         HttpClient client = new DefaultHttpClient();
@@ -128,8 +126,8 @@ public class ClientDriverFailTest {
     public void testJettyWorkingWithIncorrectHeaderString() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
 
-        clientDriver.addExpectation(new ClientDriverRequest("/test").withHeader("Content-Length", "1234"),
-                new ClientDriverResponse().withStatus(204).withHeader("Content-Type", "abcd"));
+        clientDriver.addExpectation(onRequestTo("/test").withHeader("Content-Length", "1234"),
+                giveEmptyResponse().withStatus(204).withHeader("Content-Type", "abcd"));
 
         HttpClient client = new DefaultHttpClient();
 
@@ -151,8 +149,8 @@ public class ClientDriverFailTest {
     public void testJettyWorkingWithIncorrectHeaderPattern() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
 
-        clientDriver.addExpectation(new ClientDriverRequest("/test").withHeader("Content-Length", Pattern.compile("\\d+")),
-                new ClientDriverResponse().withStatus(204).withHeader("Content-Type", "abcd"));
+        clientDriver.addExpectation(onRequestTo("/test").withHeader("Content-Length", Pattern.compile("\\d+")),
+                giveEmptyResponse().withStatus(204).withHeader("Content-Type", "abcd"));
 
         HttpClient client = new DefaultHttpClient();
 

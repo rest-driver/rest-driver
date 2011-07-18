@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.clientdriver.unit;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
@@ -67,7 +68,7 @@ public class ClientDriverHandlerTest {
     @Test
     public void testUnmetExpectation() {
 
-        sut.addExpectation(new ClientDriverRequest("hmm"), new ClientDriverResponse("mmm"));
+        sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm"));
 
         sut.checkForUnexpectedRequests();
 
