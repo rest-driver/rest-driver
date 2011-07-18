@@ -40,6 +40,8 @@ import com.github.restdriver.serverdriver.http.Header;
  */
 public final class DefaultResponse implements Response {
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
     private final String protocolVersion;
     private final int statusCode;
     private final String statusMessage;
@@ -161,8 +163,7 @@ public final class DefaultResponse implements Response {
                 content = null;
             } else {
                 stream = response.getEntity().getContent();
-                content = IOUtils.toString(stream, "UTF-8");
-                // TODO: Examine HTTP headers in case of different encoding.
+                content = readWithEncoding(stream, response.getEntity().getContentEncoding());
             }
         } catch (IOException e) {
             throw new RuntimeException("Error getting response entity", e);
@@ -182,6 +183,14 @@ public final class DefaultResponse implements Response {
         }
 
         return headers;
+    }
+
+    private static String readWithEncoding(InputStream stream, org.apache.http.Header contentEncoding) throws IOException {
+        if (contentEncoding == null) {
+            return IOUtils.toString(stream, DEFAULT_ENCODING);
+        } else {
+            return IOUtils.toString(stream, contentEncoding.getValue());
+        }
     }
 
 }
