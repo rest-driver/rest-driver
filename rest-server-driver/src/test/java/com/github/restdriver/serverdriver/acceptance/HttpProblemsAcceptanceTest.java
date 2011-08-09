@@ -15,11 +15,12 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
 
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 
@@ -35,7 +36,7 @@ public class HttpProblemsAcceptanceTest {
         get("http://no-such-host");
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = RuntimeClientProtocolException.class)
     public void getWithInvalidProtocolThrowsException() {
         get("xyzzz://no-such-host");
     }

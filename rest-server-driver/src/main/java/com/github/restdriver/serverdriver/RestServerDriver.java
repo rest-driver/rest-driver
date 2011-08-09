@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -40,6 +41,7 @@ import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
 import com.github.restdriver.serverdriver.http.RequestBody;
 import com.github.restdriver.serverdriver.http.RequestProxy;
 import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
+import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
@@ -145,7 +147,6 @@ public final class RestServerDriver {
             return DEFAULT_HTTP_PROXY_PORT;
         }
     }
-
 
     /* ****************************************************************************
      *                             HTTP OPTIONS methods                           *
@@ -448,6 +449,9 @@ public final class RestServerDriver {
             long endTime = System.currentTimeMillis();
 
             return new DefaultResponse(response, (endTime - startTime));
+
+        } catch (ClientProtocolException cpe) {
+            throw new RuntimeClientProtocolException(cpe);
 
         } catch (UnknownHostException uhe) {
             throw new RuntimeUnknownHostException(uhe);
