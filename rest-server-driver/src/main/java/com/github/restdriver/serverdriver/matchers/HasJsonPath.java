@@ -69,9 +69,9 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
             boolean initialMatchResult = matcher.matches(jsonPathResult);
 
-            // if matcher is for integers and jsonPath returns a Long, do our best
-            if (!initialMatchResult && jsonPathResult instanceof Long) {
-                return matcher.matches(longToInt(jsonPathResult));
+            // if matcher is for longs and jsonPath returns an integer, do our best
+            if (!initialMatchResult && jsonPathResult instanceof Integer) {
+                return matcher.matches(intToLong(jsonPathResult));
             }
 
             return initialMatchResult;
@@ -82,7 +82,7 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
         } catch (ClassCastException cce) {
 
-            if (matcher.matches(longToInt(jsonPathResult))) {
+            if (matcher.matches(intToLong(jsonPathResult))) {
                 return true;
 
             } else {
@@ -94,22 +94,18 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
 
     }
 
-    private int longToInt(Object o) {
+    private long intToLong(Object o) {
 
-        long l;
+        int i;
 
         try {
-            l = (Long) o;
+            i = (Integer) o;
         } catch (ClassCastException cce) {
             throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
         }
 
-        if (l > Integer.MAX_VALUE || l < Integer.MIN_VALUE) {
-            throw new RuntimeJsonTypeMismatchException("JSONpath returned a Long value which does not match the given Matcher."
-                    + "  You should use a Long in your matcher.");
-        }
+        return i;
 
-        return (int) l;
     }
 
     @Override

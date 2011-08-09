@@ -167,7 +167,7 @@
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
                 <artifactId>json-path</artifactId>
-                <version>0.5.3</version>
+                <version>0.5.5</version>
             </dependency>
 
             <dependency>
