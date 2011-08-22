@@ -52,9 +52,11 @@ public final class ClientDriverRule implements MethodRule {
      * 
      * @param request The request to expect
      * @param response The response to expect
+     * 
+     * @return The newly added expectation.
      */
-    public void addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
-        clientDriver.addExpectation(request, response);
+    public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
+        return clientDriver.addExpectation(request, response);
     }
 
     /**
