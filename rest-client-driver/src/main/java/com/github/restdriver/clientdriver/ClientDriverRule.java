@@ -24,7 +24,23 @@ import org.junit.runners.model.Statement;
  */
 public final class ClientDriverRule implements MethodRule {
 
-    private final ClientDriver clientDriver = new ClientDriverFactory().createClientDriver();
+    private final ClientDriver clientDriver;
+    
+    /**
+     * Creates a new rule with a driver running on a free port.
+     */
+    public ClientDriverRule() {
+        clientDriver = new ClientDriverFactory().createClientDriver();
+    }
+    
+    /**
+     * Creates a new rule with a driver running on the specified port.
+     * 
+     * @param port The port on which the driver should listen
+     */
+    public ClientDriverRule(int port) {
+        clientDriver = new ClientDriverFactory().createClientDriver(port);
+    }
 
     @Override
     public Statement apply(Statement base, FrameworkMethod method, Object target) {

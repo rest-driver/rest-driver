@@ -30,7 +30,7 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 public final class ClientDriver {
 
     private final Server jettyServer;
-    private final int portNum;
+    private final int port;
 
     private final ClientDriverJettyHandler handler;
 
@@ -42,10 +42,7 @@ public final class ClientDriver {
      *            The {@link ClientDriverJettyHandler} to use.
      */
     public ClientDriver(ClientDriverJettyHandler handler) {
-        this.handler = handler;
-        portNum = getFreePort();
-        jettyServer = new Server(portNum);
-        startJetty();
+        this(handler, getFreePort());
     }
 
     /**
@@ -60,10 +57,10 @@ public final class ClientDriver {
      */
     public ClientDriver(ClientDriverJettyHandler handler, int port) {
 
-        this.portNum = port;
+        this.port = port;
         this.handler = handler;
 
-        jettyServer = new Server(portNum);
+        jettyServer = new Server(port);
 
         startJetty();
     }
@@ -76,7 +73,7 @@ public final class ClientDriver {
 
         } catch (Exception e) {
             throw new ClientDriverSetupException(
-                    "Error starting jetty on port " + portNum, e);
+                    "Error starting jetty on port " + port, e);
 
         }
     }
@@ -88,7 +85,7 @@ public final class ClientDriver {
      *         <b>There is no trailing slash on this</b>
      */
     public String getBaseUrl() {
-        return "http://localhost:" + portNum;
+        return "http://localhost:" + port;
     }
 
     /**
