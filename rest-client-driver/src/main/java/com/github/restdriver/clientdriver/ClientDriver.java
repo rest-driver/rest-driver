@@ -110,25 +110,33 @@ public final class ClientDriver {
     }
 
     /**
-     * Shutdown the server. This also verifies that all expectations have been
-     * met and nothing unexpected has been requested. If the verification fails,
-     * a
-     * {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException}
+     * Verifies that all expectations have been met and nothing unexpected has been requested.
+     * 
+     * If the verification fails, a {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException}
      * is thrown with plenty of detail, and your test will fail!
      */
-    public void shutdown() {
-
+    public void verify() {
+        handler.checkForUnexpectedRequests();
+        handler.checkForUnmatchedExpectations();
+    }
+    
+    /**
+     * Shutdown the server without verifying expectations.
+     */
+    public void shutdownQuietly() {
         try {
             jettyServer.stop();
-
         } catch (Exception e) {
-            throw new ClientDriverFailedExpectationException(
-                    "Error shutting down jetty", e);
-
+            throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
         }
+    }
 
+    /**
+     * Shutdown the server and calls {@link #verify()}.
+     */
+    public void shutdown() {
+        shutdownQuietly();
         verify();
-
     }
 
     /**
@@ -145,11 +153,5 @@ public final class ClientDriver {
     public ClientDriverExpectation addExpectation(ClientDriverRequest request,
             ClientDriverResponse response) {
         return handler.addExpectation(request, response);
-    }
-
-    private void verify() {
-        handler.checkForUnexpectedRequests();
-        handler.checkForUnmatchedExpectations();
-
     }
 }

@@ -81,8 +81,12 @@ public final class ClientDriverRule implements MethodRule {
 
         @Override
         public void evaluate() throws Throwable {
-            statement.evaluate();
-            clientDriver.shutdown();
+            try {
+                statement.evaluate();
+                clientDriver.verify();
+            } finally {
+                clientDriver.shutdownQuietly();
+            }
         }
 
     }
