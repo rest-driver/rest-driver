@@ -325,4 +325,22 @@ public class ClientDriverSuccessTest {
 
         assertThat(headResponse.getEntity(), nullValue());
     }
+    
+    @Test
+    public void testMatchingOnMultipleParameters() throws Exception {
+        String url = driver.getBaseUrl() + "/testing?key=value1&key=value2";
+
+        driver.addExpectation(
+                onRequestTo("/testing").withMethod(Method.GET).withParam("key", "value1").withParam("key", "value2"),
+                giveResponse("something").withStatus(200));
+
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet getRequest = new HttpGet(url);
+        HttpResponse getResponse = client.execute(getRequest);
+
+        String getEntityBody = EntityUtils.toString(getResponse.getEntity());
+        assertThat(getEntityBody, is("something"));
+    }
+    
 }

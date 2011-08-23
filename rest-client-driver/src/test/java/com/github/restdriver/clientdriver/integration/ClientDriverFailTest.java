@@ -167,5 +167,29 @@ public class ClientDriverFailTest {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /test"));
         }
     }
+    
+    @Test
+    public void testFailedMatchOnMultipleParameters() throws Exception {
+        clientDriver = new ClientDriverFactory().createClientDriver();
+        
+        String url = clientDriver.getBaseUrl() + "/testing?key=value3&key=value2";
+
+        clientDriver.addExpectation(
+                onRequestTo("/testing").withMethod(Method.GET).withParam("key", "value1").withParam("key", "value2"),
+                giveResponse("something").withStatus(200));
+
+        HttpClient client = new DefaultHttpClient();
+
+        HttpGet getRequest = new HttpGet(url);
+        client.execute(getRequest);
+        
+        try {
+            clientDriver.shutdown();
+            Assert.fail();
+        } catch (ClientDriverFailedExpectationException bre) {
+            assertThat(bre.getMessage(), equalTo("Unexpected request: /testing?key=value3&key=value2"));
+        }
+
+    }
 
 }

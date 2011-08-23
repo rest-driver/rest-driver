@@ -38,6 +38,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
 
+
 public class DefaultRequestMatcherTest {
 
     private DefaultRequestMatcher sut;
@@ -87,9 +88,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
-        when(aReq.getParameter("kk")).thenReturn("vv");
-        when(aReq.getParameter("k2")).thenReturn("v2");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv"), "k2", asStringArray("v2")));
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
 
@@ -104,9 +103,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
-        when(aReq.getParameter("kk")).thenReturn("vv");
-        when(aReq.getParameter("k2")).thenReturn("v2");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv"), "k2", asStringArray("v2")));
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
 
@@ -120,8 +117,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
-        when(aReq.getParameter("kk")).thenReturn("not vv");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("not vv")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
@@ -136,8 +132,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
-        when(aReq.getParameter("kk")).thenReturn("xx");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("xx")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
@@ -151,20 +146,10 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
-        when(aReq.getParameter("kk")).thenReturn(null);
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray((String[]) null)));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Map getMapOfSize(int size) {
-        Map mockMap = new HashMap();
-        for (int i = 0; i < size; i++) {
-            mockMap.put("k" + i, "v" + i);
-        }
-        return mockMap;
     }
 
     @Test
@@ -179,7 +164,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(1));
+        when(aReq.getParameterMap()).thenReturn(asMap("k1", asStringArray("v1")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
@@ -193,7 +178,91 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(2));
+        when(aReq.getParameterMap()).thenReturn(asMap("k1", asStringArray("v1"), "k2", asStringArray("v2")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+
+    }
+    
+    @Test
+    public void testSuccessfulMatchWithMultipleIdenticalParams() {
+        
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
+        aReq = mock(HttpServletRequest.class);
+        
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv", "vvv")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(true));
+        
+    }
+    
+    @Test
+    public void testSuccessfulMatchWithMultipleIdenticalParamsInDifferentOrder() {
+        
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
+        aReq = mock(HttpServletRequest.class);
+        
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that", "this")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(true));
+        
+    }
+    
+    @Test
+    public void testFailedMatchWithMultipleIdenticalParams() {
+        
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
+        aReq = mock(HttpServletRequest.class);
+        
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv", "v2")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+        
+    }
+    
+    @Test
+    public void testFailedMatchWithMultipleIdenticalParamsInDifferentOrder() {
+        
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "tha");
+        aReq = mock(HttpServletRequest.class);
+        
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that", "this")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+        
+    }
+    
+    @Test
+    public void testFailedMatchWithWrongNumberOfIdenticalParams() {
+        
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
+        aReq = mock(HttpServletRequest.class);
+        
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that")));
+
+        assertThat(sut.isMatch(aReq, bReq), is(false));
+        
+    }
+
+    @Test
+    public void testFailedMatchWithOneWrongParamPattern() {
+
+        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", Pattern.compile("[v]{2}"));
+        aReq = mock(HttpServletRequest.class);
+
+        when(aReq.getPathInfo()).thenReturn("aaaaa");
+        when(aReq.getMethod()).thenReturn("GET");
+        when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("v1", "v2")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
@@ -245,7 +314,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/junk");
 
@@ -265,7 +334,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/junk");
 
@@ -284,7 +353,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/jnkular");
 
@@ -301,7 +370,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/jnkular");
 
@@ -317,7 +386,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/junk");
 
@@ -337,7 +406,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getContentType()).thenReturn("text/junk");
 
@@ -356,7 +425,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Cache-Control")).thenReturn(enumerationFrom("no-cache"));
 
@@ -372,7 +441,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Some-Header")).thenReturn(enumerationFrom("foo", "bar"));
 
@@ -388,7 +457,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Cache-Control")).thenReturn(enumerationFrom("cache-please!"));
 
@@ -404,7 +473,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Cache-Control")).thenReturn(null);
 
@@ -420,7 +489,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Content-Length")).thenReturn(enumerationFrom("1234"));
 
@@ -436,7 +505,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Content-Length")).thenReturn(enumerationFrom("invalid"));
 
@@ -452,7 +521,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(getMapOfSize(0));
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         when(aReq.getHeaders("Content-Length")).thenReturn(null);
 
@@ -462,6 +531,31 @@ public class DefaultRequestMatcherTest {
 
     private <T> Enumeration<T> enumerationFrom(T... items) {
         return Collections.enumeration(Arrays.asList(items));
+    }
+    
+    private String[] asStringArray(String... strings) {
+        return strings;
+    }
+    
+    private static Map<Object, Object> asMap(Object... objects) {
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        
+        if (objects.length % 2 != 0) {
+            throw new RuntimeException("There should be an even number of objects given");
+        }
+        
+        Object previous = null;
+        
+        for (Object object : objects) {
+            if (previous == null) {
+                previous = object;
+            } else {
+                map.put(previous, object);
+                previous = null;
+            }
+        }
+        
+        return map;
     }
 
 }

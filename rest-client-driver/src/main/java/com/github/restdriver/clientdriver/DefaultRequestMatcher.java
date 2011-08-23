@@ -16,6 +16,7 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -43,6 +44,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
      *            The expected {@link ClientDriverRequest}
      * @return True if there is a match, falsetto otherwise.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public boolean isMatch(HttpServletRequest actualRequest, ClientDriverRequest expectedRequest) {
 
@@ -56,26 +58,43 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         if (!isStringOrPatternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
             return false;
         }
+        
+        Map<String, String[]> actualParams = (Map<String, String[]>) actualRequest.getParameterMap();
 
         // same number of query-string parameters?
-        if (actualRequest.getParameterMap().size() != expectedRequest.getParams().size()) {
+        if (actualParams.size() != expectedRequest.getParams().size()) {
             return false;
         }
 
         // same keys/values in query-string parameter map?
-        Map<String, Object> expectedParams = expectedRequest.getParams();
+        Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         for (String expectedKey : expectedParams.keySet()) {
 
-            String actualParamValue = actualRequest.getParameter(expectedKey);
+            String[] actualParamValues = actualParams.get(expectedKey);
 
-            if (actualParamValue == null) {
+            if (actualParamValues == null || actualParamValues.length == 0) {
                 return false;
             }
-
-            Object expectedParamValue = expectedParams.get(expectedKey);
-
-            if (!isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
+            
+            Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
+            
+            if (expectedParamValues.size() != actualParamValues.length) {
                 return false;
+            }
+            
+            for (String actualParamValue : actualParamValues) {
+                
+                boolean matched = false;
+                
+                for (Object expectedParamValue : expectedParamValues) {
+                    if (isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
+                        matched = true;
+                    }
+                }
+                
+                if (!matched) {
+                    return false;
+                }
             }
 
         }
@@ -84,7 +103,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
         for (String expectedHeaderName : expectedHeaders.keySet()) {
 
-            @SuppressWarnings("unchecked")
             Enumeration<String> actualHeaderValues = actualRequest.getHeaders(expectedHeaderName);
 
             if (actualHeaderValues == null) {

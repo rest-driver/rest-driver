@@ -15,9 +15,13 @@
  */
 package com.github.restdriver.clientdriver;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Class for encapsulating an HTTP request.
@@ -32,7 +36,7 @@ public final class ClientDriverRequest {
     }
 
     private final Object path;
-    private final Map<String, Object> params;
+    private final Multimap<String, Object> params;
     private final Map<String, Object> headers;
 
     private Method method;
@@ -48,7 +52,7 @@ public final class ClientDriverRequest {
     public ClientDriverRequest(String path) {
         this.path = path;
         method = Method.GET;
-        params = new HashMap<String, Object>();
+        params = HashMultimap.create();
         headers = new HashMap<String, Object>();
     }
 
@@ -61,7 +65,7 @@ public final class ClientDriverRequest {
     public ClientDriverRequest(Pattern path) {
         this.path = path;
         method = Method.GET;
-        params = new HashMap<String, Object>();
+        params = HashMultimap.create();
         headers = new HashMap<String, Object>();
     }
 
@@ -122,8 +126,8 @@ public final class ClientDriverRequest {
     /**
      * @return the params
      */
-    public Map<String, Object> getParams() {
-        return params;
+    public Map<String, Collection<Object>> getParams() {
+        return params.asMap();
     }
 
     /**
