@@ -25,6 +25,7 @@ public final class ClientDriverResponse {
 
     private static final int DEFAULT_STATUS_CODE = 200;
     private static final int EMPTY_RESPONSE_CODE = 204;
+    private static final String CONTENT_TYPE = "Content-Type";
     private static final String DEFAULT_CONTENT_TYPE = "text/plain";
 
     private int status;
@@ -116,7 +117,11 @@ public final class ClientDriverResponse {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverResponse withHeader(String name, String value) {
-        headers.put(name, value);
+        if (CONTENT_TYPE.equalsIgnoreCase(name)) {
+            contentType = value;
+        } else {
+            headers.put(name, value);
+        }
         return this;
     }
 

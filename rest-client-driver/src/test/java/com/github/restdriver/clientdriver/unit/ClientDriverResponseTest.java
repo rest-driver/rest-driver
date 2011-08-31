@@ -44,5 +44,27 @@ public class ClientDriverResponseTest {
 
         assertThat(response.getStatus(), is(200));
     }
+    
+    @Test
+    public void usingHeaderCanOverrideContentType() {
+        ClientDriverResponse response = new ClientDriverResponse("hello").withContentType("text/plain");
+        
+        assertThat(response.getContentType(), is("text/plain"));
+        
+        response.withHeader("Content-Type", "text/xml");
+        
+        assertThat(response.getContentType(), is("text/xml"));
+    }
+    
+    @Test
+    public void usingHeaderCanOverrideContentTypeIgnoringCase() {
+        ClientDriverResponse response = new ClientDriverResponse("hello").withContentType("text/plain");
+        
+        assertThat(response.getContentType(), is("text/plain"));
+        
+        response.withHeader("content-type", "text/xml");
+        
+        assertThat(response.getContentType(), is("text/xml"));
+    }
 
 }
