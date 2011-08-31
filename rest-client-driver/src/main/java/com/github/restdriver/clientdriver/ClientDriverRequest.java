@@ -27,6 +27,8 @@ import com.google.common.collect.Multimap;
  * Class for encapsulating an HTTP request.
  */
 public final class ClientDriverRequest {
+    
+    private static final String CONTENT_TYPE = "Content-Type";
 
     /**
      * HTTP method enum for specifying which method you expect to be called with.
@@ -228,7 +230,11 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls
      */
     public ClientDriverRequest withHeader(String withHeaderName, String withHeaderValue) {
-        headers.put(withHeaderName, withHeaderValue);
+        if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
+            bodyContentType = withHeaderValue;
+        } else {
+            headers.put(withHeaderName, withHeaderValue);
+        }
         return this;
     }
 
@@ -242,7 +248,11 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls
      */
     public ClientDriverRequest withHeader(String withHeaderName, Pattern withHeaderValue) {
-        headers.put(withHeaderName, withHeaderValue);
+        if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
+            bodyContentType = withHeaderValue;
+        } else {
+            headers.put(withHeaderName, withHeaderValue);
+        }
         return this;
     }
 
