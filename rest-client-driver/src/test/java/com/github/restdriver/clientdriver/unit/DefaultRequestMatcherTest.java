@@ -38,7 +38,8 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
 
-
+// suppressed to allow inline definition of maps with asMap()
+@SuppressWarnings("unchecked")
 public class DefaultRequestMatcherTest {
 
     private DefaultRequestMatcher sut;
@@ -57,7 +58,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
     }
@@ -70,7 +71,7 @@ public class DefaultRequestMatcherTest {
 
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
-        when(aReq.getParameterMap()).thenReturn(new HashMap<Object, Object>());
+        when(aReq.getParameterMap()).thenReturn(asMap());
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
 
@@ -537,8 +538,8 @@ public class DefaultRequestMatcherTest {
         return strings;
     }
     
-    private static Map<Object, Object> asMap(Object... objects) {
-        Map<Object, Object> map = new HashMap<Object, Object>();
+    private static Map asMap(Object... objects) {
+        Map map = new HashMap();
         
         if (objects.length % 2 != 0) {
             throw new RuntimeException("There should be an even number of objects given");
