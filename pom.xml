@@ -52,6 +52,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jetty.version>8.0.0.v20110901</jetty.version>
+        <slf4j.version>1.6.2</slf4j.version>
     </properties>
 
     <build>
@@ -197,7 +199,7 @@
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit-dep</artifactId>
-                <version>4.8.2</version>
+                <version>4.9</version>
             </dependency>
 
             <dependency>
@@ -222,19 +224,19 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-server</artifactId>
-                <version>7.4.5.v20110725</version>
+                <version>${jetty.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-servlet</artifactId>
-                <version>7.4.5.v20110725</version>
+                <version>${jetty.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-servlets</artifactId>
-                <version>7.4.5.v20110725</version>
+                <version>${jetty.version}</version>
             </dependency>
 
             <dependency>
@@ -276,13 +278,13 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.6.1</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-nop</artifactId>
-                <version>1.6.1</version>
+                <version>${slf4j.version}</version>
             </dependency>
 
         </dependencies>
