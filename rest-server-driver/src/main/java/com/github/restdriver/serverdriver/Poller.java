@@ -3,41 +3,78 @@ package com.github.restdriver.serverdriver;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Matthew Gilliard
- * Date: 07/09/11
- * Time: 21:18
+ * For making asynchronous assertions.
+ *
+ * <p>
+ * For typical use, create an anonymous subclass inline, and implement the {@link #poll()} method:
+ *
+ * <pre>{@code
+       new Poller() {
+            public void poll() {
+                assertThat(someMethodCall(), is("Success"));
+            }
+        };
+ * }</pre>
+ *
+ * This assertion will be called a number of times (configurable by using the different constructors).  The first poll is tried
+ * immediately, so if you specify 3 attempts with 1 second pause, the total execution time will be about 2 seconds.
+ * </p>
+ *
+ * <p>
+ *     This class catches any {@link AssertionError} thrown in the first <em>n-1</em> attempts.
+ *     If any other kind of Exception is encountered, or an AssertionError is thrown at the last attempt
+ *     then it will be thrown immediately and your test will fail.  All AssertionErrors except the last are swallowed.
+ * </p>
  */
 public abstract class Poller {
 
+    /**
+     * Creates a new Poller set to repeat the {@link #poll()} once per second for ten seconds.
+     */
     public Poller() {
         doPolling(10, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Creates a new Poller set to repeat the {@link #poll()} once per second for the specified number of times.
+     *
+     * @param times The number of times to poll.
+     */
     public Poller(int times) {
         doPolling(times, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Creates a new Poller set to repeat the {@link #poll()} once per <em>sleepSeconds</em> for the specified number of times.
+     *
+     * @param times The number of times to try.
+     * @param sleepSeconds The number of seconds to sleep between each poll.
+     */
     public Poller(int times, long sleepSeconds) {
         doPolling(times, sleepSeconds, TimeUnit.SECONDS);
     }
 
-    public Poller(int times, long sleepDuration, TimeUnit timeUnit) {
-        doPolling(times, sleepDuration, TimeUnit.SECONDS);
+    /**
+     * Creates a new Poller set to repeat the {@link #poll()} once every <em>sleepDuration</em> <em>timeUnits</em> for the specified number of times.
+     *
+     * @param times The number of times to try.
+     * @param sleepDuration The number of time-units to sleep between each poll.
+     * @param timeUnits the TimeUnit to use.
+     */
+    public Poller(int times, long sleepDuration, TimeUnit timeUnits) {
+        doPolling(times, sleepDuration, timeUnits);
     }
 
-    protected void doPolling(int times, long sleepDuration, TimeUnit timeUnit) {
+    private void doPolling(int times, long sleepDuration, TimeUnit timeUnit) {
 
-        AssertionError caughtError = null;
+        for (int remainingAttempts = times - 1; remainingAttempts >= 0; remainingAttempts--) {
 
-        for (int i = times - 1; i >= 0; i--) {
-
-            if (i == 0) {
-                this.action();
+            if (remainingAttempts == 0) {
+                this.poll();
 
             } else {
-
                 try {
-                    this.action();
+                    this.poll();
                     return;
 
                 } catch (AssertionError actualError) {
@@ -45,10 +82,7 @@ public abstract class Poller {
                 }
 
                 sleepSoundly(sleepDuration, timeUnit);
-
             }
-
-
         }
     }
 
@@ -60,5 +94,10 @@ public abstract class Poller {
         }
     }
 
-    public abstract void action();
+    /**
+     * Override this method with some kind of assertion that will be re-run according to the polling schedule.
+     * Any {@link AssertionError} thrown will be swallowed unless this is the last attempt.  Any other
+     * kind of Exception will be thrown immediately.
+     */
+    public abstract void poll();
 }

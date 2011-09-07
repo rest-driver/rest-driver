@@ -41,7 +41,6 @@ public class PollingAcceptanceTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-
     private String baseUrl;
 
     @Before
@@ -58,9 +57,8 @@ public class PollingAcceptanceTest {
 
     @Test
     public void pollerReturnsSuccessEventually() {
-
         new Poller() {
-            public void action() {
+            public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
         };
@@ -68,11 +66,10 @@ public class PollingAcceptanceTest {
 
     @Test
     public void pollerTriesCorrectNumberOfTimes() {
-
         expectedException.expect(AssertionError.class);
 
         new Poller(4) { // not enough times!
-            public void action() {
+            public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
         };
