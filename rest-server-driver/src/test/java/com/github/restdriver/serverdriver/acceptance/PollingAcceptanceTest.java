@@ -19,15 +19,11 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.Poller;
-import com.github.restdriver.serverdriver.http.response.Response;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static com.github.restdriver.serverdriver.RestServerDriver.header;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -59,6 +55,7 @@ public class PollingAcceptanceTest {
     public void pollerReturnsSuccessEventually() {
         new Poller() {
             public void poll() {
+                loudly();
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
         };

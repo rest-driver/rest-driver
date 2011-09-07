@@ -28,11 +28,16 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class Poller {
 
+    private static final int DEFAULT_ATTEMPTS = 10;
+    private static final int DEFAULT_SLEEP = 1;
+
+    private boolean noisy = false;
+
     /**
      * Creates a new Poller set to repeat the {@link #poll()} once per second for ten seconds.
      */
     public Poller() {
-        doPolling(10, 1, TimeUnit.SECONDS);
+        doPolling(DEFAULT_ATTEMPTS, DEFAULT_SLEEP, TimeUnit.SECONDS);
     }
 
     /**
@@ -41,7 +46,7 @@ public abstract class Poller {
      * @param times The number of times to poll.
      */
     public Poller(int times) {
-        doPolling(times, 1, TimeUnit.SECONDS);
+        doPolling(times, DEFAULT_SLEEP, TimeUnit.SECONDS);
     }
 
     /**
@@ -78,7 +83,11 @@ public abstract class Poller {
                     return;
 
                 } catch (AssertionError actualError) {
-                    // ignore this time.
+
+                    if (noisy) {
+                        System.out.println("remainingAttempts=" + remainingAttempts + ", caught AssertionError: " + actualError.getMessage());
+                    }
+
                 }
 
                 sleepSoundly(sleepDuration, timeUnit);
@@ -95,9 +104,19 @@ public abstract class Poller {
     }
 
     /**
+     * Call this method in your {@link #poll()} implementation (before any assertions)
+     * to enable logging of intermediate assertions to sysout.
+     */
+    protected final void loudly() {
+        this.noisy = true;
+    }
+
+    /**
      * Override this method with some kind of assertion that will be re-run according to the polling schedule.
      * Any {@link AssertionError} thrown will be swallowed unless this is the last attempt.  Any other
      * kind of Exception will be thrown immediately.
+     * <br/>
+     * For debugging, intermediate AssertionErrors can be logged to sysout by calling {@link #loudly} in this method.
      */
     public abstract void poll();
 }
