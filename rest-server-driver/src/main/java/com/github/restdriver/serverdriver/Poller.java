@@ -46,7 +46,7 @@ public abstract class Poller {
     private static final int DEFAULT_ATTEMPTS = 10;
     private static final int DEFAULT_SLEEP = 1;
 
-    private boolean noisy = false;
+    private boolean loud = false;
 
     /**
      * Creates a new Poller set to repeat the {@link #poll()} once per second for ten seconds.
@@ -97,10 +97,10 @@ public abstract class Poller {
                     this.poll();
                     return;
 
-                } catch (AssertionError actualError) {
+                } catch (AssertionError intermediateError) {
 
-                    if (noisy) {
-                        System.out.println("remainingAttempts=" + remainingAttempts + ", caught AssertionError: " + actualError.getMessage());
+                    if (loud) {
+                        System.out.println("remainingAttempts=" + remainingAttempts + ", caught AssertionError: " + intermediateError.getMessage());
                     }
 
                 }
@@ -123,7 +123,7 @@ public abstract class Poller {
      * to enable logging of intermediate assertions to sysout.
      */
     protected final void loudly() {
-        this.noisy = true;
+        this.loud = true;
     }
 
     /**
