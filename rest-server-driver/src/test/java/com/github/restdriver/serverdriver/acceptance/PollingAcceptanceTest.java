@@ -18,10 +18,14 @@ package com.github.restdriver.serverdriver.acceptance;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.Poller;
 import com.github.restdriver.serverdriver.http.response.Response;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import java.util.concurrent.TimeUnit;
 
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
@@ -34,21 +38,44 @@ public class PollingAcceptanceTest {
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
+
     private String baseUrl;
 
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
+        
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
+
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOW!"));
     }
 
     @Test
-    public void simpleGetRetrievesStatusAndContent() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content1"));
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content2"));
+    public void pollerReturnsSuccessEventually() {
 
-        System.out.println(get(baseUrl));
-        System.out.println(get(baseUrl));
+        new Poller() {
+            public void action() {
+                assertThat(get(baseUrl).asText(), is("NOW!"));
+            }
+        };
+    }
 
+    @Test
+    public void pollerTriesCorrectNumberOfTimes() {
+
+        expectedException.expect(AssertionError.class);
+
+        new Poller(4) { // not enough times!
+            public void action() {
+                assertThat(get(baseUrl).asText(), is("NOW!"));
+            }
+        };
     }
 
 }
