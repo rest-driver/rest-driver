@@ -24,6 +24,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.util.concurrent.TimeUnit;
+
 import static com.github.restdriver.serverdriver.RestServerDriver.get;
 import static com.github.restdriver.serverdriver.RestServerDriver.header;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -45,8 +47,6 @@ public class PollingAcceptanceTest {
         
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
 
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOW!"));
     }
@@ -65,7 +65,7 @@ public class PollingAcceptanceTest {
     public void pollerTriesCorrectNumberOfTimes() {
         expectedException.expect(AssertionError.class);
 
-        new Poller(4) { // not enough times!
+        new Poller(2, 100, TimeUnit.MILLISECONDS) { // not enough times!
             public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
