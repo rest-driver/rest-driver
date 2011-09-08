@@ -18,6 +18,7 @@ package com.github.restdriver.clientdriver;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.HashMultimap;
@@ -125,6 +126,20 @@ public final class ClientDriverRequest {
         return this;
     }
 
+    /**
+     * Setter for expecting multiple query-string parameters on the end of the url
+     * 
+     * @param params
+     *            The map of key value pairs from ?key=value
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParams(Map<String,Object> params) {
+    	for (Entry<String,Object> entry : params.entrySet()) {
+    		this.params.put(entry.getKey(), entry.getValue());
+    	}
+    	return this;
+    }
+    
     /**
      * @return the params
      */
