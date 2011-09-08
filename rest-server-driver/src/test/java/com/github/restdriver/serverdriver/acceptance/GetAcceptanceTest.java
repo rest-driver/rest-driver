@@ -17,9 +17,11 @@ package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.github.restdriver.serverdriver.http.Url;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,6 +100,19 @@ public class GetAcceptanceTest {
 
         assertThat(response, hasStatusCode(303));
         assertThat(response, hasHeader("Location", "http://foobar"));
+    }
+
+    @Test
+    public void getAllowsUrlObjects() {
+        driver.addExpectation(
+                onRequestTo("/").withParam("a", "b"),
+                giveResponse("yooo").withStatus(404));
+
+        Url url = url(baseUrl).withParam("a", "b");
+
+        Response response = get(url);
+
+        assertThat(response, hasStatusCode(404));
     }
 
 }
