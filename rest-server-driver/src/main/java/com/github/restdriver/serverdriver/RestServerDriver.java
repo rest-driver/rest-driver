@@ -18,6 +18,7 @@ package com.github.restdriver.serverdriver;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
+import com.github.restdriver.serverdriver.http.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -34,13 +35,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.github.restdriver.serverdriver.http.AnyRequestModifier;
-import com.github.restdriver.serverdriver.http.BodyableRequestModifier;
-import com.github.restdriver.serverdriver.http.Header;
-import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
-import com.github.restdriver.serverdriver.http.RequestBody;
-import com.github.restdriver.serverdriver.http.RequestProxy;
-import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
@@ -146,6 +140,17 @@ public final class RestServerDriver {
         } catch (NumberFormatException nfe) {
             return DEFAULT_HTTP_PROXY_PORT;
         }
+    }
+
+    /**
+     * Creates a new {@link Url} object.
+     *
+     * @param base The base, like "http://localhost"
+     *
+     * @return The Url object
+     */
+    public static Url url(String base){
+        return new Url(base);
     }
 
     /* ****************************************************************************
