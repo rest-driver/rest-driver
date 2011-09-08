@@ -146,10 +146,9 @@ public final class RestServerDriver {
      * Creates a new {@link Url} object.
      *
      * @param base The base, like "http://localhost"
-     *
      * @return The Url object
      */
-    public static Url url(String base){
+    public static Url url(String base) {
         return new Url(base);
     }
 
