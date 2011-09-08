@@ -17,6 +17,7 @@ package com.github.restdriver.serverdriver.http.response;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public final class DefaultResponse implements Response {
     private final String content;
     private final List<Header> headers;
     private final long responseTime;
+    private final byte[] binaryContent;
 
     /**
      * Constructor from apache HttpResponse.
@@ -59,7 +61,8 @@ public final class DefaultResponse implements Response {
         this.protocolVersion = response.getStatusLine().getProtocolVersion().toString();
         this.statusCode = response.getStatusLine().getStatusCode();
         this.statusMessage = response.getStatusLine().getReasonPhrase();
-        this.content = contentFromResponse(response);
+        this.binaryContent = binaryContentFromResponse(response);
+        this.content = contentFromResponse(response, this.binaryContent);
         this.headers = headersFromResponse(response);
         this.responseTime = responseTime;
     }
@@ -153,39 +156,63 @@ public final class DefaultResponse implements Response {
         return "status=" + statusCode + "|content=" + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "|headers=[" + join(headers, ",") + "]";
     }
 
-    private static String contentFromResponse(HttpResponse response) {
+    @Override
+    public byte[] asBytes() {
+        return binaryContent;
+    }
+
+    private byte[] binaryContentFromResponse(HttpResponse response) {
+
         InputStream stream = null;
-        String content;
 
         try {
             HttpEntity entity = response.getEntity();
+
             if (entity == null) {
-                content = null;
-            } else {
-                stream = response.getEntity().getContent();
-                content = readWithEncoding(stream, response.getEntity().getContentEncoding());
+                return null;
             }
+
+            stream = entity.getContent();
+            return IOUtils.toByteArray(stream);
+
         } catch (IOException e) {
             throw new RuntimeException("Error getting response entity", e);
+
         } finally {
             IOUtils.closeQuietly(stream);
         }
-
-        return content;
     }
 
-    private static List<Header> headersFromResponse(HttpResponse response) {
-        List<Header> headers = new ArrayList<Header>();
+
+    private String contentFromResponse(HttpResponse response, byte[] bytes) {
+        // we have to take binary content as a param here because we can't read the inputstream twice.
+
+        if (bytes == null) {
+            return null;
+        }
+
+        InputStream stream = new ByteArrayInputStream(bytes);
+
+        try {
+            return readWithEncoding(stream, response.getEntity().getContentEncoding());
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting response entity to string", e);
+        }
+
+    }
+
+    private List<Header> headersFromResponse(HttpResponse response) {
+        List<Header> parsedHeaders = new ArrayList<Header>();
 
         for (org.apache.http.Header currentHeader : response.getAllHeaders()) {
             Header header = new Header(currentHeader.getName(), currentHeader.getValue());
-            headers.add(header);
+            parsedHeaders.add(header);
         }
 
-        return headers;
+        return parsedHeaders;
     }
 
-    private static String readWithEncoding(InputStream stream, org.apache.http.Header contentEncoding) throws IOException {
+    private String readWithEncoding(InputStream stream, org.apache.http.Header contentEncoding) throws IOException {
         if (contentEncoding == null) {
             return IOUtils.toString(stream, DEFAULT_ENCODING);
         } else {
