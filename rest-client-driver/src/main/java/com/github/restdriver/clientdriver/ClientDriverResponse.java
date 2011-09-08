@@ -17,6 +17,7 @@ package com.github.restdriver.clientdriver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class for encapsulating an HTTP response.
@@ -32,6 +33,9 @@ public final class ClientDriverResponse {
     private final String content;
     private String contentType;
     private final Map<String, String> headers;
+
+    private long delayTime = 0;
+    private TimeUnit delayTimeUnit = TimeUnit.SECONDS;
 
     /**
      * Creates a new response with an empty body, a status code of 204 and a Content-Type of 'text/plain'.
@@ -81,6 +85,26 @@ public final class ClientDriverResponse {
     public ClientDriverResponse withStatus(int withStatus) {
         status = withStatus;
         return this;
+    }
+
+    public ClientDriverResponse after(long delay, TimeUnit timeUnit ){
+        this.delayTime = delay;
+        this.delayTimeUnit = timeUnit;
+        return this;
+    }
+
+    /**
+     * @return the amout of time to delay the response
+     */
+    public long getDelayTime() {
+        return delayTime;
+    }
+
+    /**
+     * @return the unit of time for which we will delay the response
+     */
+    public TimeUnit getDelayTimeUnit() {
+        return delayTimeUnit;
     }
 
     /**
