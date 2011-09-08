@@ -184,32 +184,32 @@ public final class DefaultResponse implements Response {
     }
 
 
-    private String contentFromResponse(HttpResponse response, byte[] binaryContent) {
+    private String contentFromResponse(HttpResponse response, byte[] bytes) {
         // we have to take binary content as a param here because we can't read the inputstream twice.
 
-        if (binaryContent == null) {
+        if (bytes == null) {
             return null;
         }
 
-        InputStream stream = new ByteArrayInputStream(binaryContent);
+        InputStream stream = new ByteArrayInputStream(bytes);
 
-        try{
+        try {
             return readWithEncoding(stream, response.getEntity().getContentEncoding());
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("Error converting response entity to string", e);
         }
 
     }
 
     private List<Header> headersFromResponse(HttpResponse response) {
-        List<Header> headers = new ArrayList<Header>();
+        List<Header> parsedHeaders = new ArrayList<Header>();
 
         for (org.apache.http.Header currentHeader : response.getAllHeaders()) {
             Header header = new Header(currentHeader.getName(), currentHeader.getValue());
-            headers.add(header);
+            parsedHeaders.add(header);
         }
 
-        return headers;
+        return parsedHeaders;
     }
 
     private String readWithEncoding(InputStream stream, org.apache.http.Header contentEncoding) throws IOException {

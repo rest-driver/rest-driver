@@ -55,7 +55,9 @@ public interface Response {
 
     /**
      * The body of the response as a byte array, for dealing with binary data or
-     * troubleshooting encoding issues
+     * troubleshooting encoding issues.
+     *
+     * @return The body of the HTTP response as a byte array
      */
     byte[] asBytes();
 
