@@ -92,7 +92,7 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>().toArray(new Header[]{});
+        Header[] mockedHeaders = new Header[]{};
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -208,6 +208,25 @@ public class DefaultResponseTest {
         Response response = new DefaultResponse(mockResponse, 12345);
 
         assertThat(response.getContent(), is(not("こんにちは")));
+    }
+
+    @Test
+    public void asBytes() throws Exception {
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContentEncoding()).thenReturn(null);
+        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは", "UTF-8"));
+
+        Header[] mockedHeaders = new Header[0];
+
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        setMockStatusCode(mockResponse, 200);
+        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
+        when(mockResponse.getEntity()).thenReturn(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.getContent(), is("こんにちは"));
     }
 
 }
