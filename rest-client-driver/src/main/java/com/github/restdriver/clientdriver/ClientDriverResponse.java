@@ -46,9 +46,9 @@ public final class ClientDriverResponse {
 
     /**
      * Creates a new response with the given body, a suitable default status code and a Content-Type of 'text/plain'.
-     * 
+     * <p/>
      * If the content given is null a 204 status code is given, otherwise 200.
-     * 
+     *
      * @param content The content of the response
      */
     public ClientDriverResponse(String content) {
@@ -78,8 +78,7 @@ public final class ClientDriverResponse {
     }
 
     /**
-     * @param withStatus
-     *            the status to set
+     * @param withStatus the status to set
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverResponse withStatus(int withStatus) {
@@ -87,7 +86,17 @@ public final class ClientDriverResponse {
         return this;
     }
 
-    public ClientDriverResponse after(long delay, TimeUnit timeUnit ){
+    /**
+     * Modifies a ClientDriverRequest to specify some time to wait before responding.  This
+     * enables you to simulate slow services or networks, eg for testing timeout behaviour of your
+     * clients.
+     *
+     * @param delay How long to delay for.
+     * @param timeUnit The time unit to use when counting the delay.
+     * 
+     * @return The modified ClientDriverRequest.
+     */
+    public ClientDriverResponse after(long delay, TimeUnit timeUnit) {
         this.delayTime = delay;
         this.delayTimeUnit = timeUnit;
         return this;
@@ -122,8 +131,7 @@ public final class ClientDriverResponse {
     }
 
     /**
-     * @param withContentType
-     *            the contentType to set
+     * @param withContentType the contentType to set
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverResponse withContentType(String withContentType) {
@@ -133,11 +141,9 @@ public final class ClientDriverResponse {
 
     /**
      * Set headers on the response.
-     * 
-     * @param name
-     *            The header name
-     * @param value
-     *            The header value
+     *
+     * @param name  The header name
+     * @param value The header value
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverResponse withHeader(String name, String value) {
