@@ -153,6 +153,11 @@ public final class DefaultResponse implements Response {
         return "status=" + statusCode + "|content=" + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "|headers=[" + join(headers, ",") + "]";
     }
 
+    @Override
+    public byte[] asBytes(){
+        return null;
+    }
+
     private static String contentFromResponse(HttpResponse response) {
         InputStream stream = null;
         String content;

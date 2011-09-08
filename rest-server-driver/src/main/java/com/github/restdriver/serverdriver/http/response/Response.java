@@ -54,6 +54,12 @@ public interface Response {
     String asText();
 
     /**
+     * The body of the response as a byte array, for dealing with binary data or
+     * troubleshooting encoding issues
+     */
+    byte[] asBytes();
+
+    /**
      * What headers did the server send?
      *
      * @return A list of headers
