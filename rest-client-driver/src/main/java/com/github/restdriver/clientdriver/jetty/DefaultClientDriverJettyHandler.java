@@ -84,7 +84,23 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
         }
 
+        delayIfNecessary( matchingPair.getResponse() );
+
         baseRequest.setHandled(true);
+    }
+
+    private void delayIfNecessary(ClientDriverResponse response){
+
+        if (response.getDelayTime() > 0){
+
+            try{
+                response.getDelayTimeUnit().sleep(response.getDelayTime());
+
+            } catch (InterruptedException ie){
+                throw new ClientDriverInternalException("Requested delay was interrupted", ie);
+            }
+
+        }
 
     }
 
