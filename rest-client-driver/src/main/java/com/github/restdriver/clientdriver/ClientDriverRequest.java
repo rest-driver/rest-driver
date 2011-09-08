@@ -258,7 +258,6 @@ public final class ClientDriverRequest {
 
     /**
      * @return the headers
-     * @return
      */
     public Map<String, Object> getHeaders() {
         return headers;
