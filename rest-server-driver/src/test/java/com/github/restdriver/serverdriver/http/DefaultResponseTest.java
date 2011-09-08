@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
@@ -197,13 +198,7 @@ public class DefaultResponseTest {
         HttpEntity mockEntity = mock(HttpEntity.class);
         when(mockEntity.getContentEncoding()).thenReturn(mockContentEncodingHeader);
         when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは"));
-
-        Header[] mockedHeaders = new Header[0];
-
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        setMockStatusCode(mockResponse, 200);
-        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
-        when(mockResponse.getEntity()).thenReturn(mockEntity);
+        HttpResponse mockResponse = createMockResponse(mockEntity);
 
         Response response = new DefaultResponse(mockResponse, 12345);
 
@@ -211,22 +206,45 @@ public class DefaultResponseTest {
     }
 
     @Test
-    public void asBytes() throws Exception {
+    public void asBytesReturnsCorrectByteArray() throws Exception {
+
+        byte[] bytes = new byte[]{1, 2, 3, 4};
 
         HttpEntity mockEntity = mock(HttpEntity.class);
-        when(mockEntity.getContentEncoding()).thenReturn(null);
-        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは", "UTF-8"));
-
-        Header[] mockedHeaders = new Header[0];
-
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        setMockStatusCode(mockResponse, 200);
-        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
-        when(mockResponse.getEntity()).thenReturn(mockEntity);
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(bytes));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
 
         Response response = new DefaultResponse(mockResponse, 12345);
 
-        assertThat(response.getContent(), is("こんにちは"));
+        assertThat(response.asBytes(), is(bytes));
+    }
+
+
+    @Test
+    public void stringAndBytesWorkTogether() throws Exception {
+
+        byte[] bytes = new byte[]{74, 101, 102, 102};
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(bytes));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.asBytes(), is(bytes));
+        assertThat(response.asText(), is("Jeff"));
+    }
+
+
+
+
+
+    private HttpResponse createMockResponse(HttpEntity mockEntity) {
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        setMockStatusCode(mockResponse, 200);
+        when(mockResponse.getAllHeaders()).thenReturn(new Header[0]);
+        when(mockResponse.getEntity()).thenReturn(mockEntity);
+        return mockResponse;
     }
 
 }
