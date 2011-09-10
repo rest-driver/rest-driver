@@ -49,9 +49,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
 
     /**
      * Constructor which accepts a {@link RequestMatcher}.
-     * 
-     * @param matcher
-     *            The {@link RequestMatcher} to use.
+     *
+     * @param matcher The {@link RequestMatcher} to use.
      */
     public DefaultClientDriverJettyHandler(RequestMatcher matcher) {
 
@@ -64,7 +63,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
 
     /**
      * {@inheritDoc}
-     * 
+     * <p/>
      * This implementation uses the expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pairs to serve its requests. If
      * an unexpected request comes in, a {@link com.github.restdriver.clientdriver.exception.ClientDriverInternalException} is thrown
      */
@@ -84,7 +83,23 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
         }
 
+        delayIfNecessary(matchingPair.getResponse());
+
         baseRequest.setHandled(true);
+    }
+
+    private void delayIfNecessary(ClientDriverResponse response) {
+
+        if (response.getDelayTime() > 0) {
+
+            try {
+                response.getDelayTimeUnit().sleep(response.getDelayTime());
+
+            } catch (InterruptedException ie) {
+                throw new ClientDriverInternalException("Requested delay was interrupted", ie);
+            }
+
+        }
 
     }
 
@@ -158,11 +173,9 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
 
     /**
      * Add in a {@link ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
-     * 
-     * @param request
-     *            The expected request
-     * @param response
-     *            The response to serve to that request
+     *
+     * @param request  The expected request
+     * @param response The response to serve to that request
      * @return The added expectation
      */
     @Override
@@ -175,7 +188,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
 
     /**
      * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
-     * 
+     *
      * @return "this"
      */
     @Override

@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 
 import org.apache.commons.io.IOUtils;
@@ -77,17 +78,13 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {
-            {
-                add(new BasicHeader("headerA", "valueA"));
-            }
-        }.toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{new BasicHeader("headerA", "valueA")};
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
         Response response = new DefaultResponse(mockResponse, 12345);
 
-        assertThat(response.getHeaders(), Matchers.<Object> hasSize(1));
+        assertThat(response.getHeaders(), Matchers.<Object>hasSize(1));
         assertThat(response.getHeaders().get(0), equalTo(header("headerA", "valueA")));
     }
 
@@ -96,7 +93,7 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>().toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{};
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -111,11 +108,7 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {
-            {
-                add(new BasicHeader("myheader", "myValue"));
-            }
-        }.toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{new BasicHeader("myheader", "myValue")};
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -133,12 +126,10 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {
-            {
-                add(new BasicHeader("myheader", "myValue"));
-                add(new BasicHeader("myheader", "myOtherValue"));
-            }
-        }.toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{
+                new BasicHeader("myheader", "myValue"),
+                new BasicHeader("myheader", "myOtherValue")
+        };
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -151,12 +142,10 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {
-            {
-                add(new BasicHeader("myheader", "myValue"));
-                add(new BasicHeader("myheader", "myOtherValue"));
-            }
-        }.toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{
+                new BasicHeader("myheader", "myValue"),
+                new BasicHeader("myheader", "myOtherValue")
+        };
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -170,11 +159,7 @@ public class DefaultResponseTest {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 456);
 
-        Header[] mockedHeaders = new ArrayList<Header>() {
-            {
-                add(new BasicHeader("MYHEADER", "myValue"));
-            }
-        }.toArray(new Header[] {});
+        Header[] mockedHeaders = new Header[]{new BasicHeader("MYHEADER", "myValue")};
 
         when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
 
@@ -213,17 +198,53 @@ public class DefaultResponseTest {
         HttpEntity mockEntity = mock(HttpEntity.class);
         when(mockEntity.getContentEncoding()).thenReturn(mockContentEncodingHeader);
         when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("こんにちは"));
-
-        Header[] mockedHeaders = new Header[0];
-
-        HttpResponse mockResponse = mock(HttpResponse.class);
-        setMockStatusCode(mockResponse, 200);
-        when(mockResponse.getAllHeaders()).thenReturn(mockedHeaders);
-        when(mockResponse.getEntity()).thenReturn(mockEntity);
+        HttpResponse mockResponse = createMockResponse(mockEntity);
 
         Response response = new DefaultResponse(mockResponse, 12345);
 
         assertThat(response.getContent(), is(not("こんにちは")));
+    }
+
+    @Test
+    public void asBytesReturnsCorrectByteArray() throws Exception {
+
+        byte[] bytes = new byte[]{1, 2, 3, 4};
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(bytes));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.asBytes(), is(bytes));
+    }
+
+
+    @Test
+    public void stringAndBytesWorkTogether() throws Exception {
+
+        byte[] bytes = new byte[]{74, 101, 102, 102};
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContent()).thenReturn(new ByteArrayInputStream(bytes));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
+
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        assertThat(response.asBytes(), is(bytes));
+        assertThat(response.asText(), is("Jeff"));
+    }
+
+
+
+
+
+    private HttpResponse createMockResponse(HttpEntity mockEntity) {
+        HttpResponse mockResponse = mock(HttpResponse.class);
+        setMockStatusCode(mockResponse, 200);
+        when(mockResponse.getAllHeaders()).thenReturn(new Header[0]);
+        when(mockResponse.getEntity()).thenReturn(mockEntity);
+        return mockResponse;
     }
 
 }
