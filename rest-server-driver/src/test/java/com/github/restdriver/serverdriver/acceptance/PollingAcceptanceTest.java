@@ -18,7 +18,8 @@ package com.github.restdriver.serverdriver.acceptance;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.serverdriver.Poller;
+import com.github.restdriver.serverdriver.polling.Poller;
+import com.github.restdriver.serverdriver.polling.TimeDuration;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,8 +27,8 @@ import org.junit.rules.ExpectedException;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.get;
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.serverdriver.polling.Poller.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -65,7 +66,18 @@ public class PollingAcceptanceTest {
     public void pollerTriesCorrectNumberOfTimes() {
         expectedException.expect(AssertionError.class);
 
-        new Poller(2, 100, TimeUnit.MILLISECONDS) { // not enough times!
+        new Poller(times(2)) { // not enough times!
+            public void poll() {
+                assertThat(get(baseUrl).asText(), is("NOW!"));
+            }
+        };
+    }
+
+    @Test
+    public void pollerTriesCorrectNumberOfTimesWithDurationSpecified() {
+        expectedException.expect(AssertionError.class);
+
+        new Poller(times(2), every(100, TimeUnit.MILLISECONDS)) { // not enough times!
             public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
