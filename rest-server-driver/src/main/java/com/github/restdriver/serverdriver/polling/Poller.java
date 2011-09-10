@@ -28,10 +28,10 @@ import static java.util.concurrent.TimeUnit.*;
  * For typical use, create an anonymous subclass inline, and implement the {@link #poll()} method:
  * <p/>
  * <pre>{@code
- * new Poller() {
- * public void poll() {
- * assertThat(someMethodCall(), is("Success"));
- * }
+ * new Poller( times(10), every(100, MILLISECONDS) ) {
+ *     public void poll() {
+ *         assertThat(someMethodCall(), is("Success"));
+ *     }
  * };
  * }</pre>
  * <p/>
@@ -133,11 +133,27 @@ public abstract class Poller {
      */
     public abstract void poll();
 
-    public static int times(int count){
+    /**
+     * For helping you define your fluent interface.  This method simply returns its argument but allows
+     * calls like {@code new Poller( times(4) )} then it is clear what the 4 refers to, rather than just saying
+     * {@code new Poller(4)} which is ambiguous.  4 what?  elephants?
+     *
+     * @param count a number
+     * @return count
+     */
+    public static int times(int count) {
         return count;
     }
 
-    public static TimeDuration every(long duration, TimeUnit unit){
+    /**
+     * For helping your fluent interface, this simply creates a {@link TimeDuration} object in a more natural way.
+     * For an example of usage, see the documentation for {@link Poller}.
+     *
+     * @param duration the duration
+     * @param unit the TimeUnit
+     * @return the new {@link TimeDuration}.
+     */
+    public static TimeDuration every(long duration, TimeUnit unit) {
         return new TimeDuration(duration, unit);
     }
 }
