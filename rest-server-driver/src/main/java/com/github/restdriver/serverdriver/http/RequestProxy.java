@@ -23,10 +23,10 @@ import org.apache.http.HttpHost;
 public final class RequestProxy implements AnyRequestModifier {
 
     private final HttpHost proxyHost;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param proxyHost The proxy host.
      * @param proxyPort The proxy port.
      */
@@ -36,9 +36,6 @@ public final class RequestProxy implements AnyRequestModifier {
 
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
-        // TODO: I don't think this works.  Documentation is SHIT
-        // but I think this has to be set on the client, not the request.
-        // Stupid untyped bag of parameters pattern.
         request.setProxyHost(proxyHost);
     }
 
