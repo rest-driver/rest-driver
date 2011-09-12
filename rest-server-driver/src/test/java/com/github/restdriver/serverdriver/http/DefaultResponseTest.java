@@ -255,6 +255,26 @@ public class DefaultResponseTest {
 
     }
 
+    @Test
+    public void asXmlErrorGivesClearMessage() throws IOException {
+        // fix for issue #63
+
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("This is not really xml, is it?", "utf-8"));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
+        Response response = new DefaultResponse(mockResponse, 12345);
+
+        try {
+            response.asXml();
+            Assert.fail();
+
+        } catch (RuntimeMappingException rme) {
+            assertThat(rme.getMessage(), is("Can't parse XML.  Bad content >> This is not real..."));
+
+        }
+
+    }
+
     private HttpResponse createMockResponse(HttpEntity mockEntity) {
         HttpResponse mockResponse = mock(HttpResponse.class);
         setMockStatusCode(mockResponse, 200);

@@ -15,26 +15,20 @@
  */
 package com.github.restdriver.serverdriver;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.serverdriver.http.response.Response;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
-import com.github.restdriver.serverdriver.http.response.Response;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 /**
  * Provides static helper methods for XML representations.
- * 
+ *
  * @author mjg
  */
 public final class Xml {
@@ -44,7 +38,7 @@ public final class Xml {
 
     /**
      * Converts the body of the given Response to an XML element.
-     * 
+     *
      * @param response The response to be converted
      * @return The converted element
      */
@@ -54,7 +48,7 @@ public final class Xml {
 
     /**
      * Converts the given string to an XML element.
-     * 
+     *
      * @param xml The XML string to be converted
      * @return The converted element
      */
@@ -65,13 +59,13 @@ public final class Xml {
             return document;
 
         } catch (IOException e) {
-            throw new RuntimeMappingException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
 
         } catch (SAXException e) {
-            throw new RuntimeMappingException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
 
         } catch (ParserConfigurationException e) {
-            throw new RuntimeMappingException("Failed to create XML document", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
         }
 
     }
@@ -79,12 +73,11 @@ public final class Xml {
     /**
      * Extracts an XPath value from an XML element and returns the result as a string.
      *
-     * @deprecated  - for assertions, better use <code>assertThat(response.asXml(),.hasXPath())</code>.  This will definitely
-     * be removed in the next major version.
-     *
      * @param expression The XPath expression to use for extraction
-     * @param element The element to use the XPath expression on
+     * @param element    The element to use the XPath expression on
      * @return The result of evaluating the XPath expression on the element
+     * @deprecated - for assertions, better use <code>assertThat(response.asXml(),.hasXPath())</code>.  This will definitely
+     *             be removed in the next major version.
      */
     @Deprecated
     public static String extractXPathValue(String expression, Element element) {
