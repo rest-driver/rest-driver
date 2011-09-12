@@ -30,6 +30,8 @@ import java.io.IOException;
  */
 public final class Json {
 
+    private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
+
     private Json() {
     }
 
@@ -55,7 +57,7 @@ public final class Json {
         try {
             return MAPPER.readTree(json);
         } catch (IOException e) {
-            throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + json.substring(0, 16) + "...", e);
+            throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + json.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
         }
     }
 

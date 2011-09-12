@@ -33,6 +33,8 @@ import java.io.IOException;
  */
 public final class Xml {
 
+    private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
+
     private Xml() {
     }
 
@@ -55,17 +57,16 @@ public final class Xml {
     public static Element asXml(String xml) {
 
         try {
-            Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
-            return document;
+            return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
 
         } catch (IOException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
 
         } catch (SAXException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
 
         } catch (ParserConfigurationException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, 16) + "...", e);
+            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
         }
 
     }
