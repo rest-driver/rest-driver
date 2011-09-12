@@ -15,25 +15,22 @@
  */
 package com.github.restdriver.serverdriver;
 
-import java.io.IOException;
-
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.serverdriver.http.response.Response;
+import com.github.restdriver.serverdriver.matchers.*;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.matchers.ContainingValue;
-import com.github.restdriver.serverdriver.matchers.HasJsonArray;
-import com.github.restdriver.serverdriver.matchers.HasJsonValue;
-import com.github.restdriver.serverdriver.matchers.WithSize;
-import com.github.restdriver.serverdriver.matchers.WithValueAt;
+import java.io.IOException;
 
 /**
  * Class supplying static methods to help with JSON representations.
  */
 public final class Json {
+
+    private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
 
     private Json() {
     }
@@ -42,9 +39,8 @@ public final class Json {
 
     /**
      * Converts the content of the response to a JSON node.
-     * 
-     * @param response
-     *            The response whose content is to be converted
+     *
+     * @param response The response whose content is to be converted
      * @return The converted JSON node
      */
     public static JsonNode asJson(Response response) {
@@ -53,26 +49,23 @@ public final class Json {
 
     /**
      * Converts the given string to a JSON node.
-     * 
-     * @param json
-     *            The string which is to be converted
+     *
+     * @param json The string which is to be converted
      * @return The converted JSON node
      */
     public static JsonNode asJson(String json) {
         try {
             return MAPPER.readTree(json);
         } catch (IOException e) {
-            throw new RuntimeMappingException("Failed to create JSON node", e);
+            throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + json.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
         }
     }
 
     /**
      * Creates a new instance of HasJsonValue.
-     * 
-     * @param fieldName
-     *            The name of the field in the JSON node which will be evaluated
-     * @param matcher
-     *            The matcher to use for evaluation
+     *
+     * @param fieldName The name of the field in the JSON node which will be evaluated
+     * @param matcher   The matcher to use for evaluation
      * @return The new matcher
      */
     public static TypeSafeMatcher<JsonNode> hasJsonValue(String fieldName, Matcher<?> matcher) {
@@ -81,11 +74,9 @@ public final class Json {
 
     /**
      * Creates a new instance of HasJsonArray.
-     * 
-     * @param fieldName
-     *            The name of the field in the JSON node which will be evaluated
-     * @param matcher
-     *            The matcher to use for evaluation
+     *
+     * @param fieldName The name of the field in the JSON node which will be evaluated
+     * @param matcher   The matcher to use for evaluation
      * @return The new matcher
      */
     public static TypeSafeMatcher<JsonNode> hasJsonArray(String fieldName, Matcher<?> matcher) {
@@ -94,9 +85,8 @@ public final class Json {
 
     /**
      * Creates a new instance of ContainingValue.
-     * 
-     * @param matcher
-     *            The matcher to use for evaluation
+     *
+     * @param matcher The matcher to use for evaluation
      * @return The new matcher
      */
     public static TypeSafeMatcher<JsonNode> containingValue(Matcher<?> matcher) {
@@ -105,11 +95,9 @@ public final class Json {
 
     /**
      * Creates a new instance of WithValueAt.
-     * 
-     * @param position
-     *            The position of the value to be evaluated
-     * @param matcher
-     *            The matcher to use for evaluation
+     *
+     * @param position The position of the value to be evaluated
+     * @param matcher  The matcher to use for evaluation
      * @return The new matcher
      */
     public static TypeSafeMatcher<JsonNode> withValueAt(int position, Matcher<?> matcher) {
@@ -118,9 +106,8 @@ public final class Json {
 
     /**
      * Creates a new instance of WithSize.
-     * 
-     * @param matcher
-     *            The matcher to use for evaluation
+     *
+     * @param matcher The matcher to use for evaluation
      * @return The new matcher
      */
     public static TypeSafeMatcher<JsonNode> withSize(Matcher<Integer> matcher) {
