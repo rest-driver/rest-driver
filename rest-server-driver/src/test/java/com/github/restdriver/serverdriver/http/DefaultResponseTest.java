@@ -15,26 +15,25 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.message.BasicHeader;
-import org.hamcrest.Matchers;
-import org.junit.Test;
-
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.serverdriver.http.response.Response;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.*;
+import org.apache.http.message.BasicHeader;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
+import static com.github.restdriver.serverdriver.RestServerDriver.header;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * User: mjg
@@ -236,8 +235,25 @@ public class DefaultResponseTest {
     }
 
 
+    @Test
+    public void asJsonErrorGivesClearMessage() throws IOException {
+        // fix for issue #63
 
+        HttpEntity mockEntity = mock(HttpEntity.class);
+        when(mockEntity.getContent()).thenReturn(IOUtils.toInputStream("This is not really json, is it?", "utf-8"));
+        HttpResponse mockResponse = createMockResponse(mockEntity);
+        Response response = new DefaultResponse(mockResponse, 12345);
 
+        try {
+            response.asJson();
+            Assert.fail();
+
+        } catch (RuntimeMappingException rme) {
+            assertThat(rme.getMessage(), is("Can't parse JSON.  Bad content >> This is not really..."));
+
+        }
+
+    }
 
     private HttpResponse createMockResponse(HttpEntity mockEntity) {
         HttpResponse mockResponse = mock(HttpResponse.class);
