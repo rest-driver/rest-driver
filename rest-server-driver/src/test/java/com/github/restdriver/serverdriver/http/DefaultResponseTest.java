@@ -249,7 +249,7 @@ public class DefaultResponseTest {
             Assert.fail();
 
         } catch (RuntimeMappingException rme) {
-            assertThat(rme.getMessage(), is("Can't parse JSON.  Bad content >> This is not really..."));
+            assertThat(rme.getMessage(), is("Can't parse JSON.  Bad content >> This is not real..."));
 
         }
 
