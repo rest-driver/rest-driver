@@ -184,75 +184,75 @@ public class DefaultRequestMatcherTest {
         assertThat(sut.isMatch(aReq, bReq), is(false));
 
     }
-    
+
     @Test
     public void testSuccessfulMatchWithMultipleIdenticalParams() {
-        
+
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
         aReq = mock(HttpServletRequest.class);
-        
+
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv", "vvv")));
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
-        
+
     }
-    
+
     @Test
     public void testSuccessfulMatchWithMultipleIdenticalParamsInDifferentOrder() {
-        
+
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
         aReq = mock(HttpServletRequest.class);
-        
+
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that", "this")));
 
         assertThat(sut.isMatch(aReq, bReq), is(true));
-        
+
     }
-    
+
     @Test
     public void testFailedMatchWithMultipleIdenticalParams() {
-        
+
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
         aReq = mock(HttpServletRequest.class);
-        
+
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(asMap("kk", asStringArray("vv", "v2")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
-        
+
     }
-    
+
     @Test
     public void testFailedMatchWithMultipleIdenticalParamsInDifferentOrder() {
-        
+
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "tha");
         aReq = mock(HttpServletRequest.class);
-        
+
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that", "this")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
-        
+
     }
-    
+
     @Test
     public void testFailedMatchWithWrongNumberOfIdenticalParams() {
-        
+
         ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
         aReq = mock(HttpServletRequest.class);
-        
+
         when(aReq.getPathInfo()).thenReturn("aaaaa");
         when(aReq.getMethod()).thenReturn("GET");
         when(aReq.getParameterMap()).thenReturn(asMap("key", asStringArray("that")));
 
         assertThat(sut.isMatch(aReq, bReq), is(false));
-        
+
     }
 
     @Test
@@ -533,20 +533,21 @@ public class DefaultRequestMatcherTest {
     private <T> Enumeration<T> enumerationFrom(T... items) {
         return Collections.enumeration(Arrays.asList(items));
     }
-    
+
     private String[] asStringArray(String... strings) {
         return strings;
     }
-    
+
+    @SuppressWarnings("rawtypes")
     private static Map asMap(Object... objects) {
         Map map = new HashMap();
-        
+
         if (objects.length % 2 != 0) {
             throw new RuntimeException("There should be an even number of objects given");
         }
-        
+
         Object previous = null;
-        
+
         for (Object object : objects) {
             if (previous == null) {
                 previous = object;
@@ -555,7 +556,7 @@ public class DefaultRequestMatcherTest {
                 previous = null;
             }
         }
-        
+
         return map;
     }
 

@@ -15,22 +15,22 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.serverdriver.polling.Poller;
-import com.github.restdriver.serverdriver.polling.TimeDuration;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static com.github.restdriver.serverdriver.polling.Poller.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.serverdriver.polling.Poller.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.polling.Poller;
 
 public class PollingAcceptanceTest {
 
@@ -45,7 +45,7 @@ public class PollingAcceptanceTest {
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
-        
+
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
 
@@ -55,6 +55,7 @@ public class PollingAcceptanceTest {
     @Test
     public void pollerReturnsSuccessEventually() {
         new Poller() {
+            @Override
             public void poll() {
                 loudly();
                 assertThat(get(baseUrl).asText(), is("NOW!"));
@@ -67,6 +68,7 @@ public class PollingAcceptanceTest {
         expectedException.expect(AssertionError.class);
 
         new Poller(times(2)) { // not enough times!
+            @Override
             public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }
@@ -78,6 +80,7 @@ public class PollingAcceptanceTest {
         expectedException.expect(AssertionError.class);
 
         new Poller(times(2), every(100, TimeUnit.MILLISECONDS)) { // not enough times!
+            @Override
             public void poll() {
                 assertThat(get(baseUrl).asText(), is("NOW!"));
             }

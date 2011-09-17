@@ -15,22 +15,16 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import com.github.restdriver.clientdriver.ClientDriver;
-import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static java.util.concurrent.TimeUnit.*;
+
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
-
-import static java.util.concurrent.TimeUnit.*;
+import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 public class SlowResponsesTest {
 

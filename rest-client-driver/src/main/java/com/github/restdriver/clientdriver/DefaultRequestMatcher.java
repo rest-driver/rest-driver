@@ -44,7 +44,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
      *            The expected {@link ClientDriverRequest}
      * @return True if there is a match, falsetto otherwise.
      */
-    @SuppressWarnings("unchecked")
     @Override
     public boolean isMatch(HttpServletRequest actualRequest, ClientDriverRequest expectedRequest) {
 
@@ -58,8 +57,8 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         if (!isStringOrPatternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
             return false;
         }
-        
-        Map<String, String[]> actualParams = (Map<String, String[]>) actualRequest.getParameterMap();
+
+        Map<String, String[]> actualParams = actualRequest.getParameterMap();
 
         // same number of query-string parameters?
         if (actualParams.size() != expectedRequest.getParams().size()) {
@@ -75,23 +74,23 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             if (actualParamValues == null || actualParamValues.length == 0) {
                 return false;
             }
-            
+
             Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
-            
+
             if (expectedParamValues.size() != actualParamValues.length) {
                 return false;
             }
-            
+
             for (String actualParamValue : actualParamValues) {
-                
+
                 boolean matched = false;
-                
+
                 for (Object expectedParamValue : expectedParamValues) {
                     if (isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
                         matched = true;
                     }
                 }
-                
+
                 if (!matched) {
                     return false;
                 }
