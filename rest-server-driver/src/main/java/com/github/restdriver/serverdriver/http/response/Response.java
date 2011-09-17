@@ -114,4 +114,35 @@ public interface Response {
      */
     String toCompactString();
 
+    /**
+     * Returns the response headers and body, truncating the body.
+     *
+     * @return The String
+     */
+    String toString();
+
+
+    /**
+     * Returns the response headers and body, without truncating the body.
+     *
+     * @return The String
+     */
+    String toBigString();
+
+
+    /**
+     * Prints the output of {@link #toCompactString()} to System.out.
+     */
+    void tinyDump();
+
+    /**
+     * Prints the output of {@link #toString()} to System.out.
+     */
+    void dump();
+
+    /**
+     * Prints the output of {@link #toString()} to System.out, but without truncating the response body.  This could be a very large dump.
+     */
+    void bigDump();
+
 }

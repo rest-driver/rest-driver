@@ -134,7 +134,15 @@ public final class DefaultResponse implements Response {
 
     @Override
     public String toString() {
+        return createSummaryString(Response.MAX_BODY_DISPLAY_LENGTH);
+    }
 
+    @Override
+    public String toBigString() {
+        return createSummaryString(this.content.length());
+    }
+
+    private String createSummaryString(int truncateLength) {
         StrBuilder httpString = new StrBuilder();
         httpString.append(protocolVersion).append(" ").append(statusCode).append(" ").append(statusMessage);
         httpString.appendNewLine();
@@ -144,16 +152,30 @@ public final class DefaultResponse implements Response {
         if (StringUtils.isNotEmpty(content)) {
             httpString.appendNewLine();
             httpString.appendNewLine();
-            httpString.append(StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH));
+            httpString.append(StringUtils.abbreviate(content, truncateLength));
         }
 
         return httpString.toString();
-
     }
 
     @Override
     public String toCompactString() {
         return "status=" + statusCode + "|content=" + StringUtils.abbreviate(content, Response.MAX_BODY_DISPLAY_LENGTH) + "|headers=[" + join(headers, ",") + "]";
+    }
+
+    @Override
+    public void tinyDump() {
+        System.out.println(this.toCompactString());
+    }
+
+    @Override
+    public void dump() {
+        System.out.println(this.toString());
+    }
+
+    @Override
+    public void bigDump() {
+        System.out.println(this.toBigString());
     }
 
     @Override
