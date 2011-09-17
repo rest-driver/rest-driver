@@ -19,16 +19,19 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -343,4 +346,18 @@ public class ClientDriverSuccessTest {
         assertThat(getEntityBody, is("something"));
     }
     
+    @Test
+    public void testHttpTRACE() throws ClientProtocolException, IOException {
+    	
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/blah2").withMethod(Method.TRACE),
+                giveResponse(null).withStatus(200));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpTrace trace = new HttpTrace(baseUrl + "/blah2");
+        HttpResponse response = client.execute(trace);
+
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+    }
 }
