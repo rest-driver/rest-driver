@@ -15,24 +15,24 @@
  */
 package com.github.restdriver.clientdriver;
 
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
  */
-public final class ClientDriverRule implements MethodRule {
+public final class ClientDriverRule implements TestRule {
 
     private final ClientDriver clientDriver;
-    
+
     /**
      * Creates a new rule with a driver running on a free port.
      */
     public ClientDriverRule() {
         clientDriver = new ClientDriverFactory().createClientDriver();
     }
-    
+
     /**
      * Creates a new rule with a driver running on the specified port.
      * 
@@ -43,7 +43,7 @@ public final class ClientDriverRule implements MethodRule {
     }
 
     @Override
-    public Statement apply(Statement base, FrameworkMethod method, Object target) {
+    public Statement apply(Statement base, Description description) {
         return new ClientDriverStatement(base);
     }
 
