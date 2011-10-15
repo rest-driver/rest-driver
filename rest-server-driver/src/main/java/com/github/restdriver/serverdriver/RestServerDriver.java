@@ -465,6 +465,8 @@ public final class RestServerDriver {
 
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);
+        } finally {
+            httpClient.getConnectionManager().shutdown();
         }
 
     }
