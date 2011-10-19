@@ -17,6 +17,8 @@ package com.github.restdriver.serverdriver.matchers;
 
 import java.text.ParseException;
 
+import net.minidev.json.JSONArray;
+
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -64,7 +66,14 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
             jsonPathResult = JsonPath.read(jsonNode.toString(), jsonPath);
 
             if (matcher == null) {
-                return jsonPathResult != null;
+            	
+                if (jsonPathResult != null) {
+                    final boolean resultIsEmptyJsonArray = (jsonPathResult instanceof JSONArray) && (((JSONArray) jsonPathResult).isEmpty());
+
+                    return !resultIsEmptyJsonArray;
+                } else {
+                    return false;                	
+                }
             }
 
             boolean initialMatchResult = matcher.matches(jsonPathResult);

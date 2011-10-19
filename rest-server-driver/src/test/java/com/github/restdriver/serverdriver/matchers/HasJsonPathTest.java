@@ -143,6 +143,18 @@ public class HasJsonPathTest {
 
     }
 
+    @Test
+    public void matcherFailsIfJsonPathMatchesNoItemsInArray() {
+
+    	hasJsonPath = new HasJsonPath<Object>("$.foo");
+    	
+    	final JsonNode matchingJson = Json.asJson(makeJson("[ { 'foo': 1 } ]"));
+    	final JsonNode nonMatchingJson = Json.asJson(makeJson("[ { 'bar': 1 } ]"));    	
+    	
+    	assertThat(hasJsonPath.matchesSafely(matchingJson), is(true));
+    	assertThat(hasJsonPath.matchesSafely(nonMatchingJson), is(false));    	
+    }
+    
     private String makeJson(String fakeJson) {
         return fakeJson.replace("'", "\"");
     }
