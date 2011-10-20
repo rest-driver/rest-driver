@@ -81,9 +81,19 @@ public final class ClientDriverRule implements TestRule {
 
         @Override
         public void evaluate() throws Throwable {
+            
+            AssertionError assertionError = null;
             try {
                 statement.evaluate();
+            } catch (AssertionError e) {
+                assertionError = e;
+            }
+            
+            try {
                 clientDriver.verify();
+                if (assertionError != null) {
+                    throw assertionError;
+                }
             } finally {
                 clientDriver.shutdownQuietly();
             }
