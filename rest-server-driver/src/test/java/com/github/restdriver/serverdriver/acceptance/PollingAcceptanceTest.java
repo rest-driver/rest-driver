@@ -30,6 +30,7 @@ import org.junit.rules.ExpectedException;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.serverdriver.polling.Poller;
 
 public class PollingAcceptanceTest {
@@ -65,7 +66,7 @@ public class PollingAcceptanceTest {
 
     @Test
     public void pollerTriesCorrectNumberOfTimes() {
-        expectedException.expect(AssertionError.class);
+        expectedException.expect(ClientDriverFailedExpectationException.class);
 
         new Poller(times(2)) { // not enough times!
             @Override
@@ -77,7 +78,7 @@ public class PollingAcceptanceTest {
 
     @Test
     public void pollerTriesCorrectNumberOfTimesWithDurationSpecified() {
-        expectedException.expect(AssertionError.class);
+        expectedException.expect(ClientDriverFailedExpectationException.class);
 
         new Poller(times(2), every(100, TimeUnit.MILLISECONDS)) { // not enough times!
             @Override
