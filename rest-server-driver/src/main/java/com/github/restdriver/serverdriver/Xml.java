@@ -77,10 +77,7 @@ public final class Xml {
      * @param expression The XPath expression to use for extraction
      * @param element    The element to use the XPath expression on
      * @return The result of evaluating the XPath expression on the element
-     * @deprecated - for assertions, better use <code>assertThat(response.asXml(),.hasXPath())</code>.  This will definitely
-     *             be removed in the next major version.
      */
-    @Deprecated
     public static String extractXPathValue(String expression, Element element) {
 
         XPath xPath = XPathFactory.newInstance().newXPath();
