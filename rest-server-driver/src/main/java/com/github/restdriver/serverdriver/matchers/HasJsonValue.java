@@ -57,6 +57,9 @@ public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
         if (node.isInt()) {
             return valueMatcher.matches(node.getIntValue());
 
+        } else if (node.isLong()) {
+            return valueMatcher.matches(node.getLongValue());
+            
         } else if (node.isTextual()) {
             return valueMatcher.matches(node.getTextValue());
 
@@ -65,12 +68,12 @@ public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
 
         } else if (node.isDouble()) {
             return valueMatcher.matches(node.getDoubleValue());
+            
+        } else if (node.isObject()) {
+            return valueMatcher.matches(node);
 
         } else if (node.isNull()) {
             return valueMatcher.matches(null);
-
-        } else if (node.isLong()) {
-            return valueMatcher.matches(node.getLongValue());
 
         } else {
             return false;

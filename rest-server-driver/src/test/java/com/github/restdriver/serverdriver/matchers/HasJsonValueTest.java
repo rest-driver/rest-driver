@@ -131,7 +131,19 @@ public class HasJsonValueTest {
         hasJsonValue = new HasJsonValue("foo", lessThan(12345678L));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
+    
+    @Test
+    public void jsonSuccessfullyMatchesNestedObject() {
+        JsonNode json = Json.asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
+        hasJsonValue = new HasJsonValue("address", new HasJsonValue("postcode", is("BS1 2PH")));
+        assertThat(hasJsonValue.matchesSafely(json), is(true));
+    }
+    
+    @Test
+    public void jsonFailsMatchOnNestedObject() {
+        JsonNode json = Json.asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
+        hasJsonValue = new HasJsonValue("address", new HasJsonValue("postcode", is("wrong")));
+        assertThat(hasJsonValue.matchesSafely(json), is(false));
+    }
 
 }
-
-
