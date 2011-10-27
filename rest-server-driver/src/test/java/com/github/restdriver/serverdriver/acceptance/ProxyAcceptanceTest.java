@@ -39,25 +39,25 @@ import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 public class ProxyAcceptanceTest {
-
+    
     /* These are set when you call startLocalProxy() */
     private int proxyPort;
     private Server proxyServer;
     private int proxyHits = 0; // increments every time the proxy is used
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
+    
     @Test
     public void testWithSpecifiedProxyFailsIfProxyIsNotAvailable() {
         thrown.expect(RuntimeHttpHostConnectException.class);
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()));
     }
-
+    
     @Test
     public void testWithSpecifiedProxyPassesIfProxyIsAvailable() {
         startLocalProxy();
@@ -66,21 +66,21 @@ public class ProxyAcceptanceTest {
         assertThat(proxyHits, is(1));
         stopLocalProxy();
     }
-
+    
     @Test
     public void testWithNoProxyDoesntTryToUseAProxy() {
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", notUsingProxy());
         assertThat(proxyHits, is(0));
     }
-
+    
     @Test
     public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() {
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()), notUsingProxy());
         assertThat(proxyHits, is(0));
     }
-
+    
     @Test
     public void whenMultipleProxiesAreSpecifiedLastOneWinsWithProxy() {
         startLocalProxy();
@@ -89,83 +89,81 @@ public class ProxyAcceptanceTest {
         stopLocalProxy();
         assertThat(proxyHits, is(1));
     }
-
+    
     @Test
     public void twoCallsWithOnlyOneProxiedOnlyUsesProxyOnce() {
-
+        
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
         startLocalProxy();
-
+        
         get(driver.getBaseUrl() + "/foo");
         assertThat(proxyHits, is(0));
-
+        
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", proxyPort));
         assertThat(proxyHits, is(1));
-
+        
         get(driver.getBaseUrl() + "/foo", notUsingProxy());
         assertThat(proxyHits, is(1));
-
+        
         stopLocalProxy();
     }
-
-
+    
     @Test
     public void systemProxyUsesSystemProperties() {
-
+        
         startLocalProxy();
-
+        
         System.setProperty("http.proxyHost", "localhost");
         System.setProperty("http.proxyPort", "" + proxyPort);
-
+        
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
-
+        
         get(driver.getBaseUrl() + "/foo", usingSystemProxy());
         assertThat(proxyHits, is(1));
-
+        
     }
-
+    
     @Test
-
-    public void systemProxyUsesNoProxyIfNoSystemPropertiesSet(){
-
+    public void systemProxyUsesNoProxyIfNoSystemPropertiesSet() {
+        
         startLocalProxy();
-
+        
         System.setProperty("http.proxyHost", "");
         System.setProperty("http.proxyPort", "");
-
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));        
-
+        
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        
         get(driver.getBaseUrl() + "/foo", usingSystemProxy());
         assertThat(proxyHits, is(0));
-
+        
         stopLocalProxy();
     }
-
-    ////////////////////
+    
+    // //////////////////
     // Proxy helper stuff
-    ////////////////////
-
+    // //////////////////
+    
     private void startLocalProxy() {
         try {
-
+            
             int port = ClientDriver.getFreePort();
-
+            
             proxyServer = new Server(port);
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             proxyServer.setHandler(context);
             context.addServlet(new ServletHolder(new CountingProxyServlet()), "/*");
             proxyServer.start();
-
+            
             proxyPort = port;
-
+            
         } catch (Exception e) {
             throw new RuntimeException("Proxy setup oops", e);
         }
     }
-
+    
     private class CountingProxyServlet extends ProxyServlet {
         @Override
         public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
@@ -173,7 +171,7 @@ public class ProxyAcceptanceTest {
             super.service(req, res);
         }
     }
-
+    
     public void stopLocalProxy() {
         try {
             proxyServer.stop();
@@ -181,5 +179,5 @@ public class ProxyAcceptanceTest {
             throw new RuntimeException("Problem stopping Jetty proxy", e);
         }
     }
-
+    
 }

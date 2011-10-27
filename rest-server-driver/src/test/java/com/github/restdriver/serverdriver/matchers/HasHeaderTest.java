@@ -32,48 +32,48 @@ import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class HasHeaderTest {
-
+    
     private HasHeader matcher;
-
+    
     @Before
     public void before() {
         matcher = new HasHeader("Header");
     }
-
+    
     @Test
     public void matcherShouldDescribeItselfCorrectly() {
         Description description = new StringDescription();
         matcher.describeTo(description);
-
+        
         assertThat(description.toString(), is("Response with header named 'Header'"));
     }
-
+    
     @Test
     public void matcherShouldFailWhenResponseHasNoHeaders() {
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(new ArrayList<Header>());
-
+        
         assertThat(matcher.matches(mockResponse), is(false));
     }
-
+    
     @Test
     public void matcherShouldMatchHeaderCaseInsensitively() {
         List<Header> headers = Arrays.asList(new Header("header: value"));
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(headers);
-
+        
         assertThat(matcher.matches(mockResponse), is(true));
     }
-
+    
     @Test
     public void matcherShouldDescribeMismatchCorrectlyWithNoHeaders() {
         Description description = new StringDescription();
         Response mockResponse = mock(Response.class);
         matcher.describeMismatchSafely(mockResponse, description);
-
+        
         assertThat(description.toString(), is("Response has no headers"));
     }
-
+    
     @Test
     public void matcherShouldDescribeMismatchCorrectlyWithHeaders() {
         List<Header> headers = Arrays.asList(new Header("This: that"), new Header("The: other"));
@@ -81,8 +81,8 @@ public class HasHeaderTest {
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(headers);
         matcher.describeMismatchSafely(mockResponse, description);
-
+        
         assertThat(description.toString(), is("Response has headers [This: that, The: other]"));
     }
-
+    
 }

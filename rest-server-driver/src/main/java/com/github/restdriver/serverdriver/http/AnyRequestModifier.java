@@ -15,10 +15,9 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-
 /**
  * Common interface for classes which are intended to modify any request.
  */
 public interface AnyRequestModifier extends BodyableRequestModifier {
-
+    
 }

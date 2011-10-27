@@ -35,48 +35,48 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Time: 21:29
  */
 public class ResponseToStringAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
     private final String n = SystemUtils.LINE_SEPARATOR;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void testToStringWithoutResponseBody() {
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("").withStatus(400));
-
+        
         Response response = get(baseUrl);
-
+        
         String expectedResponse = "HTTP/1.1 400 Bad Request" + n;
         expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
                 "Content-Length: 0" + n +
                 "Server: Jetty(8.0.3.v20111011)";
-
+        
         assertThat(response.toString(), is(equalTo(expectedResponse)));
-
+        
     }
-
+    
     @Test
     public void testToStringWithResponseBody() {
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("This is the content"));
-
+        
         Response response = get(baseUrl);
-
+        
         String expectedResponse = "HTTP/1.1 200 OK" + n;
         expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
                 "Content-Length: 19" + n +
                 "Server: Jetty(8.0.3.v20111011)" + n +
                 n +
                 "This is the content";
-
+        
         assertThat(response.toString(), is(equalTo(expectedResponse)));
-
+        
     }
-
+    
 }

@@ -32,62 +32,62 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GetAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void simpleGetRetrievesStatusAndContent() {
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
     }
-
+    
     @Test
     public void getRetrievesHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response, hasStatusCode(409));
         assertThat(response, hasHeaderWithValue("X-foo", equalTo("barrr")));
-
+        
     }
-
+    
     @Test
     public void getIncludesResponseTime() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("Hello"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response.getResponseTime(), greaterThanOrEqualTo(0L));
     }
-
+    
     @Test
     public void getSendsHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Hello"));
-
+        
         Response response = get(baseUrl, header("Accept: Nothing"));
-
+        
         assertThat(response.getResponseTime(), greaterThanOrEqualTo(0L));
     }
-
+    
     @Test
     public void getDoesntFollowRedirects() {
         driver.addExpectation(
@@ -95,24 +95,24 @@ public class GetAcceptanceTest {
                 new ClientDriverResponse("")
                         .withStatus(303)
                         .withHeader("Location", "http://foobar"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response, hasStatusCode(303));
         assertThat(response, hasHeader("Location", "http://foobar"));
     }
-
+    
     @Test
     public void getAllowsUrlObjects() {
         driver.addExpectation(
                 onRequestTo("/").withParam("a", "b"),
                 giveResponse("yooo").withStatus(404));
-
+        
         Url url = url(baseUrl).withParam("a", "b");
-
+        
         Response response = get(url);
-
+        
         assertThat(response, hasStatusCode(404));
     }
-
+    
 }

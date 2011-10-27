@@ -34,25 +34,25 @@ import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectatio
 import com.github.restdriver.serverdriver.polling.Poller;
 
 public class PollingAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOW!"));
     }
-
+    
     @Test
     public void pollerReturnsSuccessEventually() {
         new Poller() {
@@ -63,11 +63,11 @@ public class PollingAcceptanceTest {
             }
         };
     }
-
+    
     @Test
     public void pollerTriesCorrectNumberOfTimes() {
         expectedException.expect(ClientDriverFailedExpectationException.class);
-
+        
         new Poller(times(2)) { // not enough times!
             @Override
             public void poll() {
@@ -75,11 +75,11 @@ public class PollingAcceptanceTest {
             }
         };
     }
-
+    
     @Test
     public void pollerTriesCorrectNumberOfTimesWithDurationSpecified() {
         expectedException.expect(ClientDriverFailedExpectationException.class);
-
+        
         new Poller(times(2), every(100, TimeUnit.MILLISECONDS)) { // not enough times!
             @Override
             public void poll() {
@@ -87,5 +87,5 @@ public class PollingAcceptanceTest {
             }
         };
     }
-
+    
 }

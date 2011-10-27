@@ -35,41 +35,41 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Time: 13:52
  */
 public class PutAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void postEmptyBody() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT),
                 new ClientDriverResponse("Content"));
-
+        
         Response response = put(baseUrl);
-
+        
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
     }
-
+    
     @Test
     public void postWithTextPlainBody() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT).withBody("Your body", "text/plain"),
                 new ClientDriverResponse("Back at you").withStatus(202));
-
+        
         Response response = put(baseUrl, body("Your body", "text/plain"));
-
+        
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
     }
-
+    
     @Test
     public void postWithApplicationXmlBody() {
         driver.addExpectation(
@@ -77,13 +77,13 @@ public class PutAcceptanceTest {
                         .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
-
+        
         Response response = put(baseUrl, body("<yo/>", "application/xml"));
-
+        
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
     }
-
+    
     @Test
     public void postWithApplicationJsonBodyAndHeaders() {
         driver.addExpectation(
@@ -92,13 +92,13 @@ public class PutAcceptanceTest {
                         .withBody("<yo/>", "application/xml")
                         .withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Back at you").withStatus(202));
-
+        
         Response response = put(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
-
+        
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
     }
-
+    
     @Test
     public void putWithDuplicateBodyUsesLastOne() {
         driver.addExpectation(
@@ -106,11 +106,11 @@ public class PutAcceptanceTest {
                         .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
                 new ClientDriverResponse("Back at you").withStatus(202));
-
+        
         Response response = put(baseUrl + "/xml", body("{}", "application/json"), body("<yo/>", "application/xml"));
-
+        
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
     }
-
+    
 }

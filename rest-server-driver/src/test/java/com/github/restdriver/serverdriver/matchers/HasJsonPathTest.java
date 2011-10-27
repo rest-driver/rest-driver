@@ -32,119 +32,119 @@ import com.github.restdriver.serverdriver.Json;
  * Time: 22:21
  */
 public class HasJsonPathTest {
-
+    
     private HasJsonPath<?> hasJsonPath;
-
+    
     @Test
     public void jsonMatchesString() {
         JsonNode json = Json.asJson(makeJson("{'foo': 'bar'}"));
-
+        
         hasJsonPath = new HasJsonPath<String>("$.foo", is("bar"));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void jsonMatchesLong() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
-
+        
         hasJsonPath = new HasJsonPath<Long>("$.foo", greaterThan(4L));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void jsonMatchesInteger() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
-
+        
         hasJsonPath = new HasJsonPath<Integer>("$.foo", is(5));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void wrongClassIsCoercedCorrectly() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
-
+        
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4)); // jp returns Long
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void outOfIntegerRangeNumberThrowsException() throws ParseException {
         JsonNode json = Json.asJson(makeJson("{'foo': 4294967294 }")); // too big
-
+        
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4));
         hasJsonPath.matchesSafely(json);
     }
-
+    
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void matchingADoubleAndAnInt() throws ParseException {
         JsonNode json = Json.asJson(makeJson("{'foo': 5.5 }")); // too big
-
+        
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4));
         hasJsonPath.matchesSafely(json);
     }
-
+    
     @Test
     public void testTypeIsTotallyWrong() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
-
+        
         hasJsonPath = new HasJsonPath<String>("$.foo", containsString("no it doesn't"));
         assertThat(hasJsonPath.matchesSafely(json), is(false));
     }
-
+    
     @Test
     public void jsonMatchesFloat() {
         JsonNode json = Json.asJson(makeJson("{'foo': 5.5}"));
-
+        
         hasJsonPath = new HasJsonPath<Double>("$.foo", is(5.5));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void jsonMatchesBoolean() {
         JsonNode json = Json.asJson(makeJson("{'foo': false}"));
-
+        
         hasJsonPath = new HasJsonPath<Boolean>("$.foo", is(true));
         assertThat(hasJsonPath.matchesSafely(json), is(false));
     }
-
+    
     @Test
     public void jsonMatchesNull() {
         JsonNode json = Json.asJson(makeJson("{'foo': null}"));
-
+        
         hasJsonPath = new HasJsonPath<Object>("$.foo", is(nullValue()));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void matcherMatchesPresentFieldValue() {
         JsonNode json = Json.asJson(makeJson("{'foo': 23}"));
-
+        
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         assertThat(hasJsonPath.matchesSafely(json), is(true));
     }
-
+    
     @Test
     public void matcherDoesntMatchMissingFieldValue() {
         JsonNode json = Json.asJson(makeJson("{'bar': 23}"));
-
+        
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         assertThat(hasJsonPath.matchesSafely(json), is(false));
     }
-
+    
     @Test
-    public void describeToDoesntThrowNPE(){
+    public void describeToDoesntThrowNPE() {
         // bugfix for issue #47
-
+        
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         StringDescription sd = new StringDescription();
         hasJsonPath.describeTo(sd);
-
+        
         assertThat(sd.toString(), is("a JSON object matching JSONpath \"$.foo\""));
-
+        
     }
-
+    
     private String makeJson(String fakeJson) {
         return fakeJson.replace("'", "\"");
     }
-
+    
 }

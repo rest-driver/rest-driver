@@ -28,77 +28,77 @@ import java.io.IOException;
 
 /**
  * Provides static helper methods for XML representations.
- *
+ * 
  * @author mjg
  */
 public final class Xml {
-
+    
     private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
-
+    
     private Xml() {
     }
-
+    
     /**
      * Converts the body of the given Response to an XML element.
-     *
+     * 
      * @param response The response to be converted
      * @return The converted element
      */
     public static Element asXml(Response response) {
         return asXml(response.getContent());
     }
-
+    
     /**
      * Converts the given string to an XML element.
-     *
+     * 
      * @param xml The XML string to be converted
      * @return The converted element
      */
     public static Element asXml(String xml) {
-
+        
         try {
             return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
-
+            
         } catch (IOException e) {
             throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-
+            
         } catch (SAXException e) {
             throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-
+            
         } catch (ParserConfigurationException e) {
             throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
         }
-
+        
     }
-
+    
     /**
      * Extracts an XPath value from an XML element and returns the result as a string.
-     *
+     * 
      * @param expression The XPath expression to use for extraction
-     * @param element    The element to use the XPath expression on
+     * @param element The element to use the XPath expression on
      * @return The result of evaluating the XPath expression on the element
      */
     public static String extractXPathValue(String expression, Element element) {
-
+        
         XPath xPath = XPathFactory.newInstance().newXPath();
-
+        
         XPathExpression compiledXPath;
-
+        
         try {
             compiledXPath = xPath.compile(expression);
-
+            
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Failed to compile XPath '" + expression + "'", e);
-
+            
         }
-
+        
         try {
             return compiledXPath.evaluate(element, XPathConstants.STRING).toString();
-
+            
         } catch (XPathExpressionException e) {
             throw new RuntimeException("Failed to evaluate XPath '" + expression + "'", e);
         }
-
+        
     }
-
+    
 }

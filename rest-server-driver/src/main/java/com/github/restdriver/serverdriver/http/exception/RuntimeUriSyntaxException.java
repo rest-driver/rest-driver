@@ -19,16 +19,16 @@ import java.net.URISyntaxException;
 
 /**
  * RuntimeException wrapper for URISyntaxException.
- *
+ * 
  * User: mjg
  * Date: 08/05/11
  * Time: 14:59
  */
 public class RuntimeUriSyntaxException extends RuntimeException {
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param message The reason for the exception.
      * @param e The underlying URISyntaxException.
      */

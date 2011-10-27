@@ -30,20 +30,20 @@ import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostExcep
  * Time: 13:52
  */
 public class HttpProblemsAcceptanceTest {
-
+    
     @Test(expected = RuntimeUnknownHostException.class)
     public void getWithNoSuchHostThrowsException() {
         get("http://no-such-host");
     }
-
+    
     @Test(expected = RuntimeClientProtocolException.class)
     public void getWithInvalidProtocolThrowsException() {
         get("xyzzz://no-such-host");
     }
-
+    
     @Test(expected = RuntimeHttpHostConnectException.class)
     public void noServerListeningThrowsException() {
         get("http://localhost:" + ClientDriver.getFreePort());
     }
-
+    
 }

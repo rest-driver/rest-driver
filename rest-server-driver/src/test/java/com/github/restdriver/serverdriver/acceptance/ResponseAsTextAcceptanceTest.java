@@ -34,27 +34,27 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Time: 21:29
  */
 public class ResponseAsTextAcceptanceTest {
-
+    
     private static final String HEY_BUDDY = "Hey Buddy";
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void testToStringWithoutResponseBody() {
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(HEY_BUDDY).withStatus(400));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response.getContent(), is(equalTo(HEY_BUDDY)));
         assertThat(response.asText(), is(equalTo(HEY_BUDDY)));
-
+        
     }
-
+    
 }

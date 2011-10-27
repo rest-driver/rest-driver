@@ -31,67 +31,67 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class Rfc1123DatesInHeadersAcceptanceTest {
-
+    
     private final String compliantDate = "Mon, 09 May 2011 18:49:18 GMT";
     private final String unCompliantDate = "Junk, 09 May 2011 18:49:18 GMT";
     private final String compliantButInvalidDate = "Mon, 12 May 2011 18:49:18 GMT"; // was not a Monday
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     @Test
     public void assertOnValidDateHeader() {
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
         Response response = get(driver.getBaseUrl());
-
+        
         assertThat(response.getHeader("Date"), isValidDateHeader());
         assertThat(response.getHeader("Date"), isRfc1123Compliant());
-
+        
     }
-
+    
     @Test
     public void assertOnInvalidFormatDateHeader() {
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
         Response response = get(driver.getBaseUrl());
-
+        
         assertThat(response.getHeader("Date"), not(isValidDateHeader()));
         assertThat(response.getHeader("Date"), not(isRfc1123Compliant()));
-
+        
     }
-
+    
     @Test
     public void assertOnInvalidDateHeader() {
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantButInvalidDate));
         Response response = get(driver.getBaseUrl());
-
+        
         assertThat(response.getHeader("Date"), not(isValidDateHeader()));
         assertThat(response.getHeader("Date"), not(isRfc1123Compliant()));
-
+        
     }
-
+    
     @Test
     public void getHeaderAsDateTimeProvidesCorrectDate() {
-
+        
         String testDate = "Mon, 09 May 2011 18:49:18 GMT";
-
+        
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", testDate));
         Response response = get(driver.getBaseUrl());
-
+        
         DateTime headerDate = response.getHeader("Date").asDateTime();
-
+        
         assertThat(headerDate.getDayOfWeek(), is(DateTimeConstants.MONDAY));
-
+        
         assertThat(headerDate.getDayOfMonth(), is(9));
         assertThat(headerDate.getMonthOfYear(), is(DateTimeConstants.MAY));
         assertThat(headerDate.getYear(), is(2011));
-
+        
         assertThat(headerDate.getHourOfDay(), is(18));
         assertThat(headerDate.getMinuteOfHour(), is(49));
         assertThat(headerDate.getSecondOfMinute(), is(18));
-
+        
     }
-
+    
 }

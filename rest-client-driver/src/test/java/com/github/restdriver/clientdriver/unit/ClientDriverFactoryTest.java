@@ -24,7 +24,7 @@ import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 public class ClientDriverFactoryTest {
-
+    
     @Test
     public void simpleTest() {
         // Hopefully no exceptions here

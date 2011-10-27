@@ -30,38 +30,38 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class DeleteAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void simpleDeleteRetrievesStatusAndContent() {
-
+        
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE),
                 new ClientDriverResponse("Content"));
-
+        
         Response response = delete(baseUrl);
-
+        
         assertThat(response, hasStatusCode(200));
         assertThat(response.getContent(), is("Content"));
     }
-
+    
     @Test
     public void deleteSendsHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE).withHeader("Accept", "Nothing"),
                 new ClientDriverResponse("Hello"));
-
+        
         Response response = delete(baseUrl, header("Accept", "Nothing"));
         assertThat(response.getContent(), is("Hello"));
     }
-
+    
 }

@@ -26,123 +26,121 @@ import com.github.restdriver.serverdriver.http.Header;
  * Encapsulates a response from an HTTP server.
  */
 public interface Response {
-
+    
     /**
-     * The maximum number of response body characters to display. 
+     * The maximum number of response body characters to display.
      */
     int MAX_BODY_DISPLAY_LENGTH = 1024;
-
+    
     /**
      * What was the response code?
-     *
+     * 
      * @return the HTTP status code of the response
      */
     int getStatusCode();
-
+    
     /**
      * What was the content of the response?
-     *
+     * 
      * @return The response body content as a string
      */
     String getContent();
-
+    
     /**
      * What was the content of the response?
-     *
+     * 
      * @return The response body content as a string
      */
     String asText();
-
+    
     /**
      * The body of the response as a byte array, for dealing with binary data or
      * troubleshooting encoding issues.
-     *
+     * 
      * @return The body of the HTTP response as a byte array
      */
     byte[] asBytes();
-
+    
     /**
      * What headers did the server send?
-     *
+     * 
      * @return A list of headers
      */
     List<Header> getHeaders();
-
+    
     /**
      * Get the all headers with the specified name.
-     *
+     * 
      * @param headerName The name of the header
-     * @return The Headers associated with that name.  Possibly an empty list.
+     * @return The Headers associated with that name. Possibly an empty list.
      */
     List<Header> getHeaders(String headerName);
-
+    
     /**
-     * Get the value of an individual Header.  If there are multiple values for the same header, this
-     * method will return the first one found.  If you expect there to be multiple values for the same header
+     * Get the value of an individual Header. If there are multiple values for the same header, this
+     * method will return the first one found. If you expect there to be multiple values for the same header
      * then you should use {@link #getHeaders(String)}.
-     *
+     * 
      * @param headerName The name of the header
-     * @return The Header associated with that name.  Possibly null.
+     * @return The Header associated with that name. Possibly null.
      */
     Header getHeader(String headerName);
-
+    
     /**
      * How long did the response take?
-     *
+     * 
      * @return Round-trip response time in milliseconds
      */
     long getResponseTime();
-
+    
     /**
      * Returns the JSON response content as a JsonNode, or throws RuntimeMappingException.
-     *
+     * 
      * @return The JsonNode
      */
     JsonNode asJson();
-
+    
     /**
      * Returns the XML response content as an org.w3c.Element, or throws RuntimeMappingException.
-     *
+     * 
      * @return The Element
      */
     Element asXml();
-
+    
     /**
      * Returns the response as a compact single-line String.
      * 
      * @return The String
      */
     String toCompactString();
-
+    
     /**
      * Returns the response headers and body, truncating the body.
-     *
+     * 
      * @return The String
      */
     String toString();
-
-
+    
     /**
      * Returns the response headers and body, without truncating the body.
-     *
+     * 
      * @return The String
      */
     String toBigString();
-
-
+    
     /**
      * Prints the output of {@link #toCompactString()} to System.out.
      */
     void tinyDump();
-
+    
     /**
      * Prints the output of {@link #toString()} to System.out.
      */
     void dump();
-
+    
     /**
-     * Prints the output of {@link #toString()} to System.out, but without truncating the response body.  This could be a very large dump.
+     * Prints the output of {@link #toString()} to System.out, but without truncating the response body. This could be a very large dump.
      */
     void bigDump();
-
+    
 }

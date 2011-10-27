@@ -27,60 +27,60 @@ import org.junit.Test;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class HasStatusCodeTest {
-
+    
     private Response response;
     private HasStatusCode matcher;
-
+    
     @Before
     public void before() {
         response = mock(Response.class);
         matcher = new HasStatusCode(equalTo(200));
     }
-
+    
     @Test
     public void matchesCorrectly() {
-
+        
         when(response.getStatusCode()).thenReturn(200);
         assertThat(matcher.matches(response), is(true));
-
+        
         when(response.getStatusCode()).thenReturn(201);
         assertThat(matcher.matches(response), is(false));
-
+        
     }
-
+    
     @Test
     public void matcherUsesProvidedMatcher() {
-
+        
         matcher = new HasStatusCode(greaterThan(200));
-
+        
         when(response.getStatusCode()).thenReturn(206);
         assertThat(matcher.matches(response), is(true));
-
+        
     }
-
+    
     @Test
     public void descriptionIsSufficient() {
-
+        
         Description description = new StringDescription();
-
+        
         matcher.describeTo(description);
-
+        
         assertThat(description.toString(), is("Response with status code matching: <200>"));
-
+        
     }
-
+    
     @Test
     public void mismatchResponseDescribesCorrectly() {
-
+        
         when(response.getStatusCode()).thenReturn(200);
         when(response.getContent()).thenReturn(null);
-
+        
         Description description = new StringDescription();
-
+        
         matcher.describeMismatchSafely(response, description);
-
+        
         assertThat(description.toString(), is("Response has status code: 200"));
-
+        
     }
-
+    
 }

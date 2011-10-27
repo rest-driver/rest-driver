@@ -23,16 +23,16 @@ import org.junit.runners.model.Statement;
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
  */
 public final class ClientDriverRule implements TestRule {
-
+    
     private final ClientDriver clientDriver;
-
+    
     /**
      * Creates a new rule with a driver running on a free port.
      */
     public ClientDriverRule() {
         clientDriver = new ClientDriverFactory().createClientDriver();
     }
-
+    
     /**
      * Creates a new rule with a driver running on the specified port.
      * 
@@ -41,12 +41,12 @@ public final class ClientDriverRule implements TestRule {
     public ClientDriverRule(int port) {
         clientDriver = new ClientDriverFactory().createClientDriver(port);
     }
-
+    
     @Override
     public Statement apply(Statement base, Description description) {
         return new ClientDriverStatement(base);
     }
-
+    
     /**
      * Adds an expectation on the ClientDriver to expect the given request and response.
      * 
@@ -58,7 +58,7 @@ public final class ClientDriverRule implements TestRule {
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         return clientDriver.addExpectation(request, response);
     }
-
+    
     /**
      * The base URL of the underlying ClientDriver.
      * 
@@ -67,18 +67,18 @@ public final class ClientDriverRule implements TestRule {
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
     }
-
+    
     /**
      * Statement which evaluates the given Statement and shuts down the client after evaluation.
      */
     private class ClientDriverStatement extends Statement {
-
+        
         private final Statement statement;
-
+        
         public ClientDriverStatement(Statement statement) {
             this.statement = statement;
         }
-
+        
         @Override
         public void evaluate() throws Throwable {
             
@@ -98,7 +98,7 @@ public final class ClientDriverRule implements TestRule {
                 clientDriver.shutdownQuietly();
             }
         }
-
+        
     }
-
+    
 }

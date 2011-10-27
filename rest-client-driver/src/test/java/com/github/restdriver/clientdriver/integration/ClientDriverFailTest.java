@@ -34,109 +34,109 @@ import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class ClientDriverFailTest {
-
+    
     private ClientDriver clientDriver;
-
+    
     @Test
     public void testUnexpectedCall() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         // No expectations defined
-
+        
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(clientDriver.getBaseUrl() + "/blah?foo=bar");
-
+        
         client.execute(getter);
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?foo=bar"));
         }
-
+        
     }
-
+    
     @Test
     public void testUnmatchedExpectation() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
         clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
-
+        
         // no requests made
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET /blah; expected: 1, actual: 0"));
         }
-
+        
     }
-
+    
     @Test
     public void testJettyWorkingWithMethodButIncorrectParams() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         clientDriver.addExpectation(onRequestTo("/blah").withMethod(Method.POST).withParam("gang", "green"),
                 giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         String baseUrl = clientDriver.getBaseUrl();
         HttpPost poster = new HttpPost(baseUrl + "/blah?gang=groon");
-
+        
         client.execute(poster);
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=groon"));
         }
-
+        
     }
-
+    
     @Test
     public void testJettyWorkingWithMethodButIncorrectParamsPattern() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         clientDriver.addExpectation(onRequestTo(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
                 "gang", Pattern.compile("r")), giveResponse("OUCH!!").withStatus(200)
                 .withContentType("text/plain").withHeader("Server", "TestServer"));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         String baseUrl = clientDriver.getBaseUrl();
         HttpPost poster = new HttpPost(baseUrl + "/blah?gang=goon");
-
+        
         client.execute(poster);
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=goon"));
         }
-
+        
     }
-
+    
     @Test
     public void testJettyWorkingWithIncorrectHeaderString() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         clientDriver.addExpectation(onRequestTo("/test").withHeader("Content-Length", "1234"),
                 giveEmptyResponse().withStatus(204).withHeader("Content-Type", "abcd"));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         String baseUrl = clientDriver.getBaseUrl();
-
+        
         HttpGet getter = new HttpGet(baseUrl + "/test");
-
+        
         client.execute(getter);
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
@@ -144,22 +144,22 @@ public class ClientDriverFailTest {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /test"));
         }
     }
-
+    
     @Test
     public void testJettyWorkingWithIncorrectHeaderPattern() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         clientDriver.addExpectation(onRequestTo("/test").withHeader("Content-Length", Pattern.compile("\\d+")),
                 giveEmptyResponse().withStatus(204).withHeader("Content-Type", "abcd"));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         String baseUrl = clientDriver.getBaseUrl();
-
+        
         HttpGet getter = new HttpGet(baseUrl + "/test");
-
+        
         client.execute(getter);
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
@@ -173,13 +173,13 @@ public class ClientDriverFailTest {
         clientDriver = new ClientDriverFactory().createClientDriver();
         
         String url = clientDriver.getBaseUrl() + "/testing?key=value3&key=value2";
-
+        
         clientDriver.addExpectation(
                 onRequestTo("/testing").withMethod(Method.GET).withParam("key", "value1").withParam("key", "value2"),
                 giveResponse("something").withStatus(200));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         HttpGet getRequest = new HttpGet(url);
         client.execute(getRequest);
         
@@ -189,7 +189,7 @@ public class ClientDriverFailTest {
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: /testing?key=value3&key=value2"));
         }
-
+        
     }
-
+    
 }

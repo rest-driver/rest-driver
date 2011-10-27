@@ -25,9 +25,9 @@ import java.io.FileNotFoundException;
  * Time: 12:08
  */
 public class RuntimeFileNotFoundException extends RuntimeException {
-
+    
     private static final long serialVersionUID = 3651887477900227630L;
-
+    
     /**
      * Creates a new instance of the exception.
      * 
@@ -36,5 +36,5 @@ public class RuntimeFileNotFoundException extends RuntimeException {
     public RuntimeFileNotFoundException(FileNotFoundException fnfe) {
         super(fnfe);
     }
-
+    
 }

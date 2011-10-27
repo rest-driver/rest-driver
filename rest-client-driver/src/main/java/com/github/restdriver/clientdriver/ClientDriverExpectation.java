@@ -21,12 +21,12 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInvalidExpectati
  * An expectation made within the client driver.
  */
 public class ClientDriverExpectation {
-
+    
     private final ClientDriverRequestResponsePair pair;
     private int numberOfTimes = 1;
     private int numberOfMatches;
     private boolean matchAnyTimes;
-
+    
     /**
      * Creates a new expectation instance.
      * 
@@ -35,7 +35,7 @@ public class ClientDriverExpectation {
     public ClientDriverExpectation(ClientDriverRequestResponsePair pair) {
         this.pair = pair;
     }
-
+    
     /**
      * Gets the request/response pair this expectation covers.
      * 
@@ -44,7 +44,7 @@ public class ClientDriverExpectation {
     public final ClientDriverRequestResponsePair getPair() {
         return pair;
     }
-
+    
     /**
      * Indicate that this expectation should be matched a given number of times.
      * 
@@ -56,21 +56,21 @@ public class ClientDriverExpectation {
         }
         numberOfTimes = times;
     }
-
+    
     /**
      * Indicate that this expectation should be matched any number of times.
      */
     public final void anyTimes() {
         matchAnyTimes = true;
     }
-
+    
     /**
      * Indicate that this expectation has been matched.
      */
     public final void match() {
         numberOfMatches += 1;
     }
-
+    
     /**
      * Determine whether this expectation has been satisfied.
      * 
@@ -79,7 +79,7 @@ public class ClientDriverExpectation {
     public final boolean isSatisfied() {
         return !matchAnyTimes && numberOfTimes == numberOfMatches;
     }
-
+    
     /**
      * Whether this expectation should match any number of times.
      * 
@@ -88,24 +88,24 @@ public class ClientDriverExpectation {
     public final boolean shouldMatchAnyTimes() {
         return matchAnyTimes;
     }
-
+    
     /**
      * Gets a string giving the status of the expectation.
      * 
      * @return The status string
      */
     public final String getStatusString() {
-
+        
         String expectedString;
-
+        
         if (matchAnyTimes) {
             expectedString = "any";
         } else {
             expectedString = String.valueOf(numberOfTimes);
         }
-
+        
         return "expected: " + expectedString + ", actual: " + numberOfMatches;
-
+        
     }
-
+    
 }

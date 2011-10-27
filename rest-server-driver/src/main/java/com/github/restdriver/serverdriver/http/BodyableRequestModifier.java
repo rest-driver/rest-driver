@@ -15,18 +15,17 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-
 /**
- * Common interface for classes which are intended to 
+ * Common interface for classes which are intended to
  * modify any request which can take a request body (ie are "bodyable").
  */
 public interface BodyableRequestModifier {
-
+    
     /**
      * Apply this modifier to the given request.
      * 
      * @param request The request
      */
     void applyTo(ServerDriverHttpUriRequest request);
-
+    
 }

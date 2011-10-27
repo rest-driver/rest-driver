@@ -24,9 +24,9 @@ import org.hamcrest.TypeSafeMatcher;
  * Matcher to check the size of a Json array.
  */
 public final class WithSize extends TypeSafeMatcher<JsonNode> {
-
+    
     private final Matcher<Integer> matcher;
-
+    
     /**
      * Creates a new instance of this matcher.
      * 
@@ -35,22 +35,22 @@ public final class WithSize extends TypeSafeMatcher<JsonNode> {
     public WithSize(Matcher<Integer> matcher) {
         this.matcher = matcher;
     }
-
+    
     @Override
     public void describeTo(Description description) {
         description.appendText("A JSON array with size: ");
         matcher.describeTo(description);
     }
-
+    
     @Override
     public boolean matchesSafely(JsonNode node) {
-
+        
         if (!node.isArray()) {
             return false;
         }
-
+        
         return matcher.matches(node.size());
-
+        
     }
-
+    
 }

@@ -41,106 +41,106 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
 public class ClientDriverHandlerTest {
-
+    
     private DefaultClientDriverJettyHandler sut;
     private RequestMatcher mockRequestMatcher;
-
+    
     @Before
     public void before() {
         mockRequestMatcher = mock(RequestMatcher.class);
         sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
     }
-
+    
     /**
      * with no expectations set, and no requests made, the handler does not report any errors
      */
     @Test
     public void testMinimalHandler() {
-
+        
         sut.checkForUnexpectedRequests();
         sut.checkForUnmatchedExpectations();
-
+        
     }
-
+    
     /**
      * with expectations set, and no requests made, the handler throws an error upon verification
      */
     @Test
     public void testUnmetExpectation() {
-
+        
         sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm"));
-
+        
         sut.checkForUnexpectedRequests();
-
+        
         try {
             sut.checkForUnmatchedExpectations();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET hmm; expected: 1, actual: 0"));
         }
-
+        
     }
-
+    
     /**
      * with no expectations set, and a request made, the handler throws an error upon verification
      */
     @Test
     public void testUnexpectedRequest() throws IOException, ServletException {
-
+        
         Request mockRequest = mock(Request.class);
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
-
+        
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
-
+        
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
         } catch (ClientDriverInternalException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
         }
-
+        
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
         }
-
+        
     }
-
+    
     /**
      * with an expectation set, and a request made, the handler checks for a match and returns the match if one is found
      */
     @Test
     public void testExpectedRequest() throws IOException, ServletException {
-
+        
         Request mockRequest = mock(Request.class);
         HttpServletRequest mockHttpRequest = new Request();
         HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
-
+        
         ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withParam("gooo", "gredge");
         ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow")
                 .withHeader("hhh", "JJJ");
-
+        
         when(mockRequestMatcher.isMatch(mockHttpRequest, realRequest)).thenReturn(true);
-
+        
         mockHttpResponse.setContentType("fhieow");
         mockHttpResponse.setStatus(404);
-
+        
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintWriter printWriter = new PrintWriter(baos);
-
+        
         when(mockHttpResponse.getWriter()).thenReturn(printWriter);
         mockHttpResponse.setHeader("hhh", "JJJ");
-
+        
         sut.addExpectation(realRequest, realResponse);
-
+        
         sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
-
+        
         printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
-
+        
     }
 }

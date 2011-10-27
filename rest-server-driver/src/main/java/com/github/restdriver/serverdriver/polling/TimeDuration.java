@@ -22,13 +22,13 @@ import java.util.concurrent.TimeUnit;
  * Stores a duration amount and a {@link java.util.concurrent.TimeUnit}.
  */
 public final class TimeDuration {
-
+    
     private final long duration;
     private final TimeUnit timeUnit;
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param duration how many?
      * @param timeUnit how many what?
      */
@@ -36,14 +36,14 @@ public final class TimeDuration {
         this.duration = duration;
         this.timeUnit = timeUnit;
     }
-
+    
     /**
      * @return How long?
      */
     public long getDuration() {
         return duration;
     }
-
+    
     /**
      * @return The units which to interpret {@link #getDuration()}
      */

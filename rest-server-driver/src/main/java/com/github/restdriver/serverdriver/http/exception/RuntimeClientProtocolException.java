@@ -35,9 +35,9 @@ import org.apache.http.client.ClientProtocolException;
  * Runtime wrapper for {@link ClientProtocolException}.
  */
 public class RuntimeClientProtocolException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -8998669008887196143L;
-
+    
     /**
      * Create a new instance of the exception with a given cause.
      * 
@@ -46,5 +46,5 @@ public class RuntimeClientProtocolException extends RuntimeException {
     public RuntimeClientProtocolException(ClientProtocolException cpe) {
         super(cpe);
     }
-
+    
 }

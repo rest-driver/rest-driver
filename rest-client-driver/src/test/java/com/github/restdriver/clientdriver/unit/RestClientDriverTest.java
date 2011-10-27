@@ -24,25 +24,25 @@ import java.util.regex.Pattern;
 import org.junit.Test;
 
 public class RestClientDriverTest {
-
+    
     @Test
     public void onRequestToWithStringWorks() {
         String path = "/path";
         assertThat((String) onRequestTo(path).getPath(), is(path));
     }
-
+    
     @Test
     public void onRequestToWithPatternWorks() {
         Pattern path = Pattern.compile(".+");
         assertThat((Pattern) onRequestTo(path).getPath(), is(path));
     }
-
+    
     @Test
     public void giveResponseWorks() {
         String content = "some wonderful content";
         assertThat(giveResponse(content).getContent(), is(content));
     }
-
+    
     @Test
     public void giveEmptyResponseWorks() {
         assertThat(giveEmptyResponse().getContent(), is(""));

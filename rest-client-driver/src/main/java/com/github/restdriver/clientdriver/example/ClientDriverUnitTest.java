@@ -23,14 +23,14 @@ import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 /**
  * If you are using the Client Driver, you can have your unit tests extend this class which will setup a client driver & shut it down for you.
- *
+ * 
  * @deprecated As of version 1.0.7 replaced by {@link com.github.restdriver.clientdriver.ClientDriverRule}
  */
 @Deprecated
 public abstract class ClientDriverUnitTest {
-
+    
     private ClientDriver clientDriver;
-
+    
     /**
      * Starts the client driver. This will be called before your subclass' {@link Before}-annotated methods.
      */
@@ -38,7 +38,7 @@ public abstract class ClientDriverUnitTest {
     public final void startClientDriver() {
         clientDriver = new ClientDriverFactory().createClientDriver();
     }
-
+    
     /**
      * Shuts the client driver down, which will also verify that the expectations are correct. This will be called AFTER the {@link After}-annotated
      * methods in your subclass.
@@ -47,7 +47,7 @@ public abstract class ClientDriverUnitTest {
     public final void shutdownClientDriver() {
         clientDriver.shutdown();
     }
-
+    
     /**
      * Get the client driver which has been set up. This will be OK to refer to in your subclass' {@link Before} methods, as the superclass is called
      * first of all.
@@ -57,5 +57,5 @@ public abstract class ClientDriverUnitTest {
     public final ClientDriver getClientDriver() {
         return clientDriver;
     }
-
+    
 }

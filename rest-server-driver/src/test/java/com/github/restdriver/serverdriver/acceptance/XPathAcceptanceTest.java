@@ -30,28 +30,28 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class XPathAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void xPathCanBeRunOnXmlResponse() {
-
+        
         driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("<some><content type='awesome'/></some>"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response, hasStatusCode(200));
         assertThat(response.asXml(), hasXPath("/some/content/@type", is("awesome")));
     }
-
+    
 }

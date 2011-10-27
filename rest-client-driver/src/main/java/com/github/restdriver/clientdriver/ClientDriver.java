@@ -28,12 +28,12 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
  * The main class which acts as a facade for the Client Driver.
  */
 public final class ClientDriver {
-
+    
     private final Server jettyServer;
     private final int port;
-
+    
     private final ClientDriverJettyHandler handler;
-
+    
     /**
      * Constructor. This will find a free port, bind to it and start the server
      * up before it returns.
@@ -44,7 +44,7 @@ public final class ClientDriver {
     public ClientDriver(ClientDriverJettyHandler handler) {
         this(handler, getFreePort());
     }
-
+    
     /**
      * Constructor. This will find a free port, bind to it and start the server
      * up before it returns.
@@ -56,28 +56,28 @@ public final class ClientDriver {
      *            not free.
      */
     public ClientDriver(ClientDriverJettyHandler handler, int port) {
-
+        
         this.port = port;
         this.handler = handler;
-
+        
         jettyServer = new Server(port);
-
+        
         startJetty();
     }
-
+    
     private void startJetty() {
-
+        
         try {
             jettyServer.setHandler(handler.getJettyHandler());
             jettyServer.start();
-
+            
         } catch (Exception e) {
             throw new ClientDriverSetupException(
                     "Error starting jetty on port " + port, e);
-
+            
         }
     }
-
+    
     /**
      * Get the base URL which the ClientDriver is running on.
      * 
@@ -87,7 +87,7 @@ public final class ClientDriver {
     public String getBaseUrl() {
         return "http://localhost:" + port;
     }
-
+    
     /**
      * Gets a free port on localhost for binding to.
      * 
@@ -96,24 +96,23 @@ public final class ClientDriver {
      * @return The port number.
      */
     public static int getFreePort() {
-
+        
         try {
             ServerSocket server = new ServerSocket(0);
             int port = server.getLocalPort();
             server.close();
             return port;
-
+            
         } catch (IOException ioe) {
             throw new ClientDriverSetupException(
                     "IOException finding free port", ioe);
         }
     }
-
+    
     /**
      * Verifies that all expectations have been met and nothing unexpected has been requested.
      * 
-     * If the verification fails, a {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException}
-     * is thrown with plenty of detail, and your test will fail!
+     * If the verification fails, a {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException} is thrown with plenty of detail, and your test will fail!
      */
     public void verify() {
         handler.checkForUnexpectedRequests();
@@ -130,7 +129,7 @@ public final class ClientDriver {
             throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
         }
     }
-
+    
     /**
      * Shutdown the server and calls {@link #verify()}.
      */
@@ -138,16 +137,15 @@ public final class ClientDriver {
         shutdownQuietly();
         verify();
     }
-
+    
     /**
-     * Add in an expected {@link ClientDriverRequest}/
-     * {@link ClientDriverResponse} pair.
+     * Add in an expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pair.
      * 
      * @param request
      *            The expected request
      * @param response
      *            The response to serve to that request
-     *            
+     * 
      * @return The newly added expectation.
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request,

@@ -31,34 +31,34 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class OptionsAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void optionsRequestIsSuccessful() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.OPTIONS),
                 new ClientDriverResponse(null).withHeader("Allow", "GET, DELETE, OPTIONS"));
-
+        
         Response response = options(baseUrl);
-
+        
         assertThat(response, hasStatusCode(204));
         assertThat(response, hasHeaderWithValue("Allow", containsString("GET")));
         assertThat(response, hasHeaderWithValue("Allow", containsString("DELETE")));
         assertThat(response, hasHeaderWithValue("Allow", containsString("OPTIONS")));
-
+        
         assertThat(response, hasHeaderWithValue("Allow", not(containsString("PUT"))));
         assertThat(response, hasHeaderWithValue("Allow", not(containsString("POST"))));
         assertThat(response, hasHeaderWithValue("Allow", not(containsString("HEAD"))));
         assertThat(response, hasHeaderWithValue("Allow", not(containsString("TRACE"))));
-
+        
     }
 }

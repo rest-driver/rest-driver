@@ -26,83 +26,83 @@ import static org.hamcrest.Matchers.is;
  * Time: 23:44
  */
 public class UrlTest {
-
+    
     @Test
-    public void basicUrlMakesAString(){
+    public void basicUrlMakesAString() {
         String url = new Url("http://localhost").toString();
-        assertThat( url, is("http://localhost") );
+        assertThat(url, is("http://localhost"));
     }
-
+    
     @Test
-    public void urlWithPathMakesAString(){
+    public void urlWithPathMakesAString() {
         Url url = new Url("http://localhost").withPath("foo/bar");
-        assertThat( url.toString(), is("http://localhost/foo/bar") );
+        assertThat(url.toString(), is("http://localhost/foo/bar"));
     }
-
+    
     @Test
-    public void urlWithPathMakesAStringWithTrailingSlash(){
+    public void urlWithPathMakesAStringWithTrailingSlash() {
         Url url = new Url("http://localhost/").withPath("foo/bar");
-        assertThat( url.toString(), is("http://localhost/foo/bar") );
+        assertThat(url.toString(), is("http://localhost/foo/bar"));
     }
-
+    
     @Test
-    public void urlWithPathMakesAStringWithLeadingSlash(){
+    public void urlWithPathMakesAStringWithLeadingSlash() {
         Url url = new Url("http://localhost").withPath("/foo/bar");
-        assertThat( url.toString(), is("http://localhost/foo/bar") );
+        assertThat(url.toString(), is("http://localhost/foo/bar"));
     }
-
+    
     @Test
-    public void multiplePathsAreSlashedCorrectly(){
+    public void multiplePathsAreSlashedCorrectly() {
         Url url = new Url("http://localhost").withPath("a").withPath("/b/").withPath("/c");
-        assertThat( url.toString(), is("http://localhost/a/b/c") );
+        assertThat(url.toString(), is("http://localhost/a/b/c"));
     }
-
+    
     @Test
-    public void endingTrailingSlashIsKept(){
+    public void endingTrailingSlashIsKept() {
         Url url = new Url("http://localhost").withPath("a").withPath("/b/").withPath("/c/");
-        assertThat( url.toString(), is("http://localhost/a/b/c/") );
+        assertThat(url.toString(), is("http://localhost/a/b/c/"));
     }
-
+    
     @Test
-    public void singleParamIsAdded(){
+    public void singleParamIsAdded() {
         Url url = new Url("http://localhost").withParam("a", "b");
-        assertThat( url.toString(), is("http://localhost?a=b") );
+        assertThat(url.toString(), is("http://localhost?a=b"));
     }
-
+    
     @Test
-    public void multipleParamsAreAdded(){
+    public void multipleParamsAreAdded() {
         Url url = new Url("http://localhost").withParam("a", "b").withParam("c", "d");
-        assertThat( url.toString(), is("http://localhost?a=b&c=d") );
+        assertThat(url.toString(), is("http://localhost?a=b&c=d"));
     }
-
+    
     @Test
-    public void paramsAndPathsCanBeIntermixed(){
+    public void paramsAndPathsCanBeIntermixed() {
         // not sure how useful this actually is, but we might as well support it.
         Url url = new Url("http://localhost").withParam("a", "b").withPath("c/");
-        assertThat( url.toString(), is("http://localhost/c/?a=b") );
+        assertThat(url.toString(), is("http://localhost/c/?a=b"));
     }
-
+    
     @Test
-    public void pathsAreUrlEncoded(){
+    public void pathsAreUrlEncoded() {
         Url url = new Url("http://localhost").withPath("   ");
-        assertThat( url.toString(), is("http://localhost/%20%20%20") );
+        assertThat(url.toString(), is("http://localhost/%20%20%20"));
     }
-
+    
     @Test
-    public void multiSectionPathsAreUrlEncoded(){
+    public void multiSectionPathsAreUrlEncoded() {
         Url url = new Url("http://localhost").withPath("   /  ");
-        assertThat( url.toString(), is("http://localhost/%20%20%20/%20%20") );
+        assertThat(url.toString(), is("http://localhost/%20%20%20/%20%20"));
     }
-
+    
     @Test
-    public void paramsAreUrlEncoded(){
+    public void paramsAreUrlEncoded() {
         Url url = new Url("http://localhost").withParam("a%a", "b>b");
-        assertThat( url.toString(), is("http://localhost?a%25a=b%3Eb") );
+        assertThat(url.toString(), is("http://localhost?a%25a=b%3Eb"));
     }
-
+    
     @Test
-    public void assumesHttpAsScheme(){
-        assertThat( new Url("localhost/").toString(), is("http://localhost/"));
+    public void assumesHttpAsScheme() {
+        assertThat(new Url("localhost/").toString(), is("http://localhost/"));
     }
-
+    
 }

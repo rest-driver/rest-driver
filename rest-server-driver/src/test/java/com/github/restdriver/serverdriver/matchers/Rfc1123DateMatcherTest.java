@@ -29,26 +29,26 @@ import static org.hamcrest.Matchers.is;
  * Time: 20:02
  */
 public class Rfc1123DateMatcherTest {
-
+    
     private final Header compliantDate = new Header("Date", "Mon, 09 May 2011 18:49:18 GMT");
     private final Header unCompliantDate = new Header("Date", "Junk, 09 May 2011 18:49:18 GMT");
-
+    
     @Test
     public void testCorrectMatches() {
         assertThat(new Rfc1123DateMatcher().matches(compliantDate), is(true));
     }
-
+    
     @Test
     public void testIncorrectDoesntMatch() {
         assertThat(new Rfc1123DateMatcher().matches(unCompliantDate), is(false));
     }
-
+    
     @Test
-    public void testDescription(){
+    public void testDescription() {
         Description description = new StringDescription();
         new Rfc1123DateMatcher().describeTo(description);
-
+        
         assertThat(description.toString(), is("Rfc1123-compliant date in header, like 'Mon, 09 May 2011 18:49:18 GMT'"));
     }
-
+    
 }

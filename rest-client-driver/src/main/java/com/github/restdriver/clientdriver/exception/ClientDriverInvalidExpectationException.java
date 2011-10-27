@@ -19,7 +19,7 @@ package com.github.restdriver.clientdriver.exception;
  * Exception which is thrown when an expectation is invalid.
  */
 public class ClientDriverInvalidExpectationException extends RuntimeException {
-
+    
     /**
      * Creates a new instance of the exception.
      * 
@@ -28,5 +28,5 @@ public class ClientDriverInvalidExpectationException extends RuntimeException {
     public ClientDriverInvalidExpectationException(String message) {
         super(message);
     }
-
+    
 }

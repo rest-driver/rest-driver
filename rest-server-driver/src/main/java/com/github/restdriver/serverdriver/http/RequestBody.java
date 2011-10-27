@@ -29,12 +29,12 @@ import org.apache.http.entity.StringEntity;
  * Time: 14:32
  */
 public final class RequestBody implements BodyableRequestModifier {
-
+    
     private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
-
+    
     private final String content;
     private final String contentType;
-
+    
     /**
      * Creates a new request body instance.
      * 
@@ -45,7 +45,7 @@ public final class RequestBody implements BodyableRequestModifier {
         this.content = content;
         this.contentType = contentType;
     }
-
+    
     /**
      * Gets the content of this request body.
      * 
@@ -54,7 +54,7 @@ public final class RequestBody implements BodyableRequestModifier {
     public String getContent() {
         return content;
     }
-
+    
     /**
      * Gets the content-type of this request body.
      * 
@@ -63,25 +63,25 @@ public final class RequestBody implements BodyableRequestModifier {
     public String getContentType() {
         return contentType;
     }
-
+    
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
-
+        
         HttpUriRequest internalRequest = request.getHttpUriRequest();
         
         if (!(internalRequest instanceof HttpEntityEnclosingRequest)) {
             return;
         }
-
+        
         HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) internalRequest;
-
+        
         entityRequest.setHeader("Content-type", contentType);
-
+        
         try {
             entityRequest.setEntity(new StringEntity(content, contentType, DEFAULT_CONTENT_ENCODING));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Error setting entity of request", e);
         }
-
+        
     }
 }

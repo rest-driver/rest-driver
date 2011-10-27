@@ -43,57 +43,58 @@ import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * Provides static methods for performing HTTP requests against a resource.
- *
+ * 
  * @author mjg
  */
 public final class RestServerDriver {
-
+    
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
-
+    
     private RestServerDriver() {
     }
-
+    
     private static final int DEFAULT_HTTP_TIMEOUT_MS = 10000;
-
+    
     /* ****************************************************************************
-     *                      Helper methods to make value objects                  *
-     ******************************************************************************/
+     * Helper methods to make value objects *
+     * ****************************************************************************
+     */
 
     /**
      * Make a Header.
-     *
-     * @param name  The name for the header
+     * 
+     * @param name The name for the header
      * @param value The value for the header
      * @return The new header instance
      */
     public static Header header(String name, String value) {
         return new Header(name, value);
     }
-
+    
     /**
      * Make a Header.
-     *
+     * 
      * @param nameAndValue The name and value of the header in the form "name: value"
      * @return The new header instance
      */
     public static Header header(String nameAndValue) {
         return new Header(nameAndValue);
     }
-
+    
     /**
      * Make a RequestBody for PUT or POST.
-     *
-     * @param content     Request body content as String.
+     * 
+     * @param content Request body content as String.
      * @param contentType content-type eg text/plain.
      * @return The new request body instance.
      */
     public static RequestBody body(String content, String contentType) {
         return new RequestBody(content, contentType);
     }
-
+    
     /**
      * Use a user-specified proxy.
-     *
+     * 
      * @param proxyHost The host.
      * @param proxyPort The port.
      * @return The new RequestProxy instance.
@@ -101,37 +102,37 @@ public final class RestServerDriver {
     public static RequestProxy usingProxy(String proxyHost, int proxyPort) {
         return new RequestProxy(proxyHost, proxyPort);
     }
-
+    
     /**
-     * Do not use a proxy.  This is the default anyway, but allowed for clarity.
-     *
+     * Do not use a proxy. This is the default anyway, but allowed for clarity.
+     * 
      * @return The new NoOpRequestProxy instance.
      */
     public static NoOpRequestProxy notUsingProxy() {
         return new NoOpRequestProxy();
     }
-
+    
     /**
-     * Use the system proxy.  These can be set with -Dhttp.proxyHost and -Dhttp.proxyPort.
+     * Use the system proxy. These can be set with -Dhttp.proxyHost and -Dhttp.proxyPort.
      * This does not respect environment variables like HTTP_PROXY & friends.
-     *
+     * 
      * @return The RequestProxy instance.
      */
     public static AnyRequestModifier usingSystemProxy() {
-
+        
         String proxyHost = System.getProperty("http.proxyHost");
         int proxyPort = getSystemProxyPort();
-
+        
         if (proxyHost.isEmpty()) {
             return new NoOpRequestProxy();
         }
-
+        
         return new RequestProxy(proxyHost, proxyPort);
     }
-
+    
     /**
      * Defaults to 80 as per UrlConnection.
-     *
+     * 
      * @return The proxy port
      */
     private static int getSystemProxyPort() {
@@ -141,50 +142,52 @@ public final class RestServerDriver {
             return DEFAULT_HTTP_PROXY_PORT;
         }
     }
-
+    
     /**
      * Creates a new {@link Url} object.
-     *
+     * 
      * @param base The base, like "http://localhost"
      * @return The Url object
      */
     public static Url url(String base) {
         return new Url(base);
     }
-
+    
     /* ****************************************************************************
-     *                             HTTP OPTIONS methods                           *
-     ******************************************************************************/
+     * HTTP OPTIONS methods *
+     * ****************************************************************************
+     */
 
     /**
      * Perform an HTTP OPTIONS on a resource.
-     *
-     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @return A Response encapsulating the server's reply.
      */
     public static Response options(Object url) {
         ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpOptions(url.toString()));
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #options(Object)}.
-     *
-     * @param url The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @return A Response encapsulating the server's reply.
      */
     public static Response optionsOf(Object url) {
         return options(url);
     }
-
+    
     /* ****************************************************************************
-     *                               HTTP GET methods                             *
-     ******************************************************************************/
+     * HTTP GET methods *
+     * ****************************************************************************
+     */
 
     /**
      * Perform an HTTP GET on a resource.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
@@ -193,48 +196,49 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #get(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
     public static Response getOf(Object url, AnyRequestModifier... modifiers) {
         return get(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #get(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
     public static Response doGetOf(Object url, AnyRequestModifier... modifiers) {
         return get(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #get(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
     public static Response getting(Object url, AnyRequestModifier... modifiers) {
         return get(url, modifiers);
     }
-
+    
     /* ****************************************************************************
-     *                              HTTP POST methods                             *
-     ******************************************************************************/
+     * HTTP POST methods *
+     * ****************************************************************************
+     */
 
     /**
      * Perform an HTTP POST to the given URL.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
@@ -243,48 +247,49 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response postOf(Object url, BodyableRequestModifier... modifiers) {
         return post(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response doPostOf(Object url, BodyableRequestModifier... modifiers) {
         return post(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response posting(Object url, BodyableRequestModifier... modifiers) {
         return post(url, modifiers);
     }
-
+    
     /* ****************************************************************************
-     *                              HTTP PUT methods                              *
-     ******************************************************************************/
+     * HTTP PUT methods *
+     * ****************************************************************************
+     */
 
     /**
      * Perform an HTTP PUT to the given URL.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
@@ -293,48 +298,49 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response putOf(Object url, BodyableRequestModifier... modifiers) {
         return put(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response doPutOf(Object url, BodyableRequestModifier... modifiers) {
         return put(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
-     *
-     * @param url       The URL.  Any object may be passed, we will call .toString() on it.
+     * 
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
     public static Response putting(Object url, BodyableRequestModifier... modifiers) {
         return put(url, modifiers);
     }
-
+    
     /* ****************************************************************************
-     *                            HTTP DELETE methods                             *
-     ******************************************************************************/
+     * HTTP DELETE methods *
+     * ****************************************************************************
+     */
 
     /**
      * Send an HTTP delete.
-     *
-     * @param url       The resource to delete
+     * 
+     * @param url The resource to delete
      * @param modifiers Any http headers
      * @return Response encapsulating the server's reply
      */
@@ -343,48 +349,49 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #delete(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The resource to delete
+     * 
+     * @param url The resource to delete
      * @param modifiers Any http headers
      * @return Response encapsulating the server's reply
      */
     public static Response deleteOf(Object url, AnyRequestModifier... modifiers) {
         return delete(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #delete(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The resource to delete
+     * 
+     * @param url The resource to delete
      * @param modifiers Any http headers
      * @return Response encapsulating the server's reply
      */
     public static Response doDeleteOf(Object url, AnyRequestModifier... modifiers) {
         return delete(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #delete(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The resource to delete
+     * 
+     * @param url The resource to delete
      * @param modifiers Any http headers
      * @return Response encapsulating the server's reply
      */
     public static Response deleting(Object url, AnyRequestModifier... modifiers) {
         return delete(url, modifiers);
     }
-
+    
     /* ****************************************************************************
-     *                               HTTP HEAD methods                             *
-     ******************************************************************************/
+     * HTTP HEAD methods *
+     * ****************************************************************************
+     */
 
     /**
      * Perform an HTTP HEAD on a resource.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
@@ -393,29 +400,29 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #head(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
     public static Response headOf(Object url, AnyRequestModifier... modifiers) {
         return head(url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #head(Object, AnyRequestModifier...)}.
-     *
-     * @param url       The URL of a resource.  Accepts any Object and calls .toString() on it.
+     * 
+     * @param url The URL of a resource. Accepts any Object and calls .toString() on it.
      * @param modifiers Optional HTTP headers to put on the request.
      * @return A Response encapsulating the server's reply.
      */
     public static Response doHeadOf(Object url, AnyRequestModifier... modifiers) {
         return head(url, modifiers);
     }
-
+    
     /*
      * Internal methods for creating requests and responses
      */
@@ -423,51 +430,51 @@ public final class RestServerDriver {
         if (modifiers == null) {
             return;
         }
-
+        
         for (BodyableRequestModifier modifier : modifiers) {
             modifier.applyTo(request);
         }
     }
-
+    
     /*
      * This is the method which actually makes http requests over the wire.
      */
     private static Response doHttpRequest(ServerDriverHttpUriRequest request) {
-
+        
         HttpClient httpClient = new DefaultHttpClient();
-
+        
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_HTTP_TIMEOUT_MS);
         HttpConnectionParams.setSoTimeout(httpParams, 0);
         HttpClientParams.setRedirecting(httpParams, false);
-
+        
         if (request.getProxyHost() != null) {
             httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, request.getProxyHost());
         }
-
+        
         HttpResponse response;
-
+        
         try {
             long startTime = System.currentTimeMillis();
             response = httpClient.execute(request.getHttpUriRequest());
             long endTime = System.currentTimeMillis();
-
+            
             return new DefaultResponse(response, (endTime - startTime));
-
+            
         } catch (ClientProtocolException cpe) {
             throw new RuntimeClientProtocolException(cpe);
-
+            
         } catch (UnknownHostException uhe) {
             throw new RuntimeUnknownHostException(uhe);
-
+            
         } catch (HttpHostConnectException hhce) {
             throw new RuntimeHttpHostConnectException(hhce);
-
+            
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);
         } finally {
             httpClient.getConnectionManager().shutdown();
         }
-
+        
     }
 }

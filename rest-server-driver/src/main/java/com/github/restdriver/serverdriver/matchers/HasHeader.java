@@ -28,9 +28,9 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Matcher to assert on the headers in an HTTP response.
  */
 public final class HasHeader extends TypeSafeMatcher<Response> {
-
+    
     private final String name;
-
+    
     /**
      * Creates an instance of this matcher.
      * 
@@ -39,34 +39,34 @@ public final class HasHeader extends TypeSafeMatcher<Response> {
     public HasHeader(String name) {
         this.name = name;
     }
-
+    
     @Override
     protected boolean matchesSafely(Response response) {
-
+        
         for (Header header : response.getHeaders()) {
             if (StringUtils.equalsIgnoreCase(header.getName(), name)) {
                 return true;
             }
         }
-
+        
         return false;
-
+        
     }
-
+    
     @Override
     public void describeTo(Description description) {
         description.appendText("Response with header named '" + name + "'");
     }
-
+    
     @Override
     protected void describeMismatchSafely(Response response, Description mismatchDescription) {
         List<Header> headers = response.getHeaders();
-
+        
         if (headers.isEmpty()) {
             mismatchDescription.appendText("Response has no headers");
         } else {
             mismatchDescription.appendText("Response has headers [" + StringUtils.join(response.getHeaders(), ", ") + "]");
         }
     }
-
+    
 }

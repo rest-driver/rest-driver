@@ -30,62 +30,62 @@ import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class HasHeaderWithValueTest {
-
+    
     private HasHeaderWithValue matcher;
-
+    
     @Before
     public void before() {
         matcher = new HasHeaderWithValue("Content-Type", containsString("application/json"));
     }
-
+    
     @Test
     public void matcherShouldDescribeItselfCorrectly() {
         Description description = new StringDescription();
         matcher.describeTo(description);
-
+        
         assertThat(description.toString(), is("Response with header named 'Content-Type' and value matching: a string containing \"application/json\""));
     }
-
+    
     @Test
     public void matcherShouldFailIfResponseDoesntHaveHeaders() {
         Response mockResponse = mock(Response.class);
-
+        
         assertThat(matcher.matches(mockResponse), is(false));
     }
-
+    
     @Test
     public void matcherShouldFailIfMatcherDoesntMatch() {
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(Arrays.asList(new Header("Content-Type", "text/xml")));
-
+        
         assertThat(matcher.matches(mockResponse), is(false));
     }
-
+    
     @Test
     public void matcherShouldPassIfMatcherMatches() {
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(Arrays.asList(new Header("Content-Type", "application/json;charset=UTF-8")));
-
+        
         assertThat(matcher.matches(mockResponse), is(true));
     }
-
+    
     @Test
     public void matcherShouldDescribeMismatchCorrectlyIfResponseHasNoHeaders() {
         Response mockResponse = mock(Response.class);
         Description description = new StringDescription();
         matcher.describeMismatchSafely(mockResponse, description);
-
+        
         assertThat(description.toString(), is("Response has no headers"));
     }
-
+    
     @Test
     public void matcherShouldDescribeMismatchCorrectlyIfResponseHasHeaders() {
         Response mockResponse = mock(Response.class);
         when(mockResponse.getHeaders()).thenReturn(Arrays.asList(new Header("Header1: value"), new Header("Header2: value")));
         Description description = new StringDescription();
         matcher.describeMismatchSafely(mockResponse, description);
-
+        
         assertThat(description.toString(), is("Response has headers [Header1: value, Header2: value]"));
     }
-
+    
 }

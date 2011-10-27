@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  */
 public interface RequestMatcher {
-
+    
     /**
      * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}.
      * Implementations can be as precise or as loose as they like when matching.
@@ -36,5 +36,5 @@ public interface RequestMatcher {
      * @return True if there is a match, falsetto otherwise.
      */
     boolean isMatch(HttpServletRequest actualRequest, ClientDriverRequest expectedRequest);
-
+    
 }

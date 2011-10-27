@@ -19,22 +19,24 @@ package com.github.restdriver.serverdriver.matchers;
  * Runtime Exception class for errors when JSONpath returns a result of an unexpected type.
  */
 public class RuntimeJsonTypeMismatchException extends RuntimeException {
-
+    
     /**
      * Constructor.
+     * 
      * @param message The message.
      * @param ex The ClassCastException which we're wrapping.
      */
     public RuntimeJsonTypeMismatchException(String message, ClassCastException ex) {
         super(message, ex);
     }
-
+    
     /**
      * Constructor.
+     * 
      * @param message The message.
      */
     public RuntimeJsonTypeMismatchException(String message) {
         super(message);
     }
-
+    
 }

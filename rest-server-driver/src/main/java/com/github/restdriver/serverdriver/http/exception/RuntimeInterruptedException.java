@@ -19,10 +19,10 @@ package com.github.restdriver.serverdriver.http.exception;
  * RuntimeException wrapper for InterruptedException.
  */
 public class RuntimeInterruptedException extends RuntimeException {
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param message The reason for the exception
      * @param e The underlying InterruptedException
      */

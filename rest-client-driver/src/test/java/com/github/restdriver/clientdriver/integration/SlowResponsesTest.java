@@ -27,21 +27,21 @@ import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 public class SlowResponsesTest {
-
+    
     @Test
     public void notSpecifyingExpectationNumberDefaultsToOnce() throws Exception {
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse().after(250, MILLISECONDS));
-
+        
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
-
+        
         client.execute(getter);
-
+        
         // Nothing to assert here without relying on system clock and having a long running test :(
-
+        
         driver.shutdown();
     }
-
+    
 }

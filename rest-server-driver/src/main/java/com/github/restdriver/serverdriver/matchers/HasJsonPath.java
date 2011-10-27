@@ -26,96 +26,96 @@ import com.jayway.jsonpath.JsonPath;
 
 /**
  * Matcher to enable assertions on JSON objects using JSONpath.
- *
+ * 
  * @param <T> The type of the matcher.
  */
 public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
-
+    
     private final String jsonPath;
     private final Matcher<T> matcher;
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param jsonPath The JSONpath to use.
      */
     public HasJsonPath(String jsonPath) {
         this(jsonPath, null);
     }
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param jsonPath The JSONpath to use.
-     * @param matcher  The matcher to apply to the result of the JSONpath.
+     * @param matcher The matcher to apply to the result of the JSONpath.
      */
     public HasJsonPath(String jsonPath, Matcher<T> matcher) {
         this.jsonPath = jsonPath;
         this.matcher = matcher;
     }
-
+    
     @Override
     public boolean matchesSafely(JsonNode jsonNode) {
-
+        
         Object jsonPathResult = null;
-
+        
         try {
-
+            
             jsonPathResult = JsonPath.read(jsonNode.toString(), jsonPath);
-
+            
             if (matcher == null) {
                 return jsonPathResult != null;
             }
-
+            
             boolean initialMatchResult = matcher.matches(jsonPathResult);
-
+            
             // if matcher is for longs and jsonPath returns an integer, do our best
             if (!initialMatchResult && jsonPathResult instanceof Integer) {
                 return matcher.matches(intToLong(jsonPathResult));
             }
-
+            
             return initialMatchResult;
-
+            
         } catch (ParseException pe) {
             // we weren't passed valid JSON, which can only happen if jsonNode.toString() produces bad JSON...
             return false;
-
+            
         } catch (ClassCastException cce) {
-
+            
             if (matcher.matches(intToLong(jsonPathResult))) {
                 return true;
-
+                
             } else {
                 throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
-
+                
             }
-
+            
         }
-
+        
     }
-
+    
     private long intToLong(Object o) {
-
+        
         int i;
-
+        
         try {
             i = (Integer) o;
         } catch (ClassCastException cce) {
             throw new RuntimeJsonTypeMismatchException("JSONpath returned a type unsuitable for matching with the given matcher: " + cce.getMessage(), cce);
         }
-
+        
         return i;
-
+        
     }
-
+    
     @Override
     public void describeTo(Description description) {
         description.appendText("a JSON object matching JSONpath \"" + jsonPath + "\"");
-
+        
         if (matcher != null) {
             description.appendText(" with ");
             matcher.describeTo(description);
         }
-
+        
     }
 }

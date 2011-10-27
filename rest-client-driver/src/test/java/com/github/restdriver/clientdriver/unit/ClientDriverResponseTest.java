@@ -23,25 +23,25 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 
 public class ClientDriverResponseTest {
-
+    
     @Test
     public void creatingResponseWithoutContentGives204Status() {
         ClientDriverResponse response = new ClientDriverResponse();
-
+        
         assertThat(response.getStatus(), is(204));
     }
-
+    
     @Test
     public void creatingResponseWithNullContentGives204Status() {
         ClientDriverResponse response = new ClientDriverResponse(null);
-
+        
         assertThat(response.getStatus(), is(204));
     }
-
+    
     @Test
     public void creatingResponseWithEmptyStringContentGives200Status() {
         ClientDriverResponse response = new ClientDriverResponse("");
-
+        
         assertThat(response.getStatus(), is(200));
     }
     
@@ -66,5 +66,5 @@ public class ClientDriverResponseTest {
         
         assertThat(response.getContentType(), is("text/xml"));
     }
-
+    
 }

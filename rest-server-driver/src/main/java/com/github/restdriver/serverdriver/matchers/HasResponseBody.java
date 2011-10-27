@@ -25,9 +25,9 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * Matcher to check that an HttpResponse has the specified body.
  */
 public final class HasResponseBody extends TypeSafeMatcher<Response> {
-
+    
     private final Matcher<String> bodyMatcher;
-
+    
     /**
      * Creates a new instance of this matcher.
      * 
@@ -36,19 +36,19 @@ public final class HasResponseBody extends TypeSafeMatcher<Response> {
     public HasResponseBody(Matcher<String> bodyMatcher) {
         this.bodyMatcher = bodyMatcher;
     }
-
+    
     @Override
     public void describeTo(Description description) {
         description.appendText("Response with body matching: ");
         bodyMatcher.describeTo(description);
     }
-
+    
     @Override
     public boolean matchesSafely(Response actualResponse) {
-
+        
         String actualContent = actualResponse.getContent();
-
+        
         return bodyMatcher.matches(actualContent);
     }
-
+    
 }

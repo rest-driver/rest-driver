@@ -21,22 +21,22 @@ import org.apache.http.HttpHost;
  * Encapsulates a request to use an HTTP proxy.
  */
 public final class RequestProxy implements AnyRequestModifier {
-
+    
     private final HttpHost proxyHost;
-
+    
     /**
      * Constructor.
-     *
+     * 
      * @param proxyHost The proxy host.
      * @param proxyPort The proxy port.
      */
     public RequestProxy(String proxyHost, int proxyPort) {
         this.proxyHost = new HttpHost(proxyHost, proxyPort);
     }
-
+    
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
         request.setProxyHost(proxyHost);
     }
-
+    
 }

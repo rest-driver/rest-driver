@@ -29,94 +29,94 @@ import com.github.restdriver.clientdriver.ClientDriverFactory;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class SpecifyExpectationNumberTest {
-
+    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
+    
     @Test
     public void notSpecifyingExpectationNumberDefaultsToOnce() throws Exception {
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse());
-
+        
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         client.execute(getter);
-
+        
         driver.shutdown();
-
+        
     }
-
+    
     @Test
     public void specifyingNumberOfTimesForExpectationExpectsItThatNumberOfTimes() throws Exception {
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
-
+        
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
         new DefaultHttpClient().execute(getter);
-
+        
         driver.shutdown();
-
+        
     }
-
+    
     @Test
     public void specifyingNumberOfTimesForExpectationAndNotRequestingCorrectNumberOfTimesFails() throws Exception {
-
+        
         thrown.expect(ClientDriverFailedExpectationException.class);
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
-
+        
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
         new DefaultHttpClient().execute(getter);
         new DefaultHttpClient().execute(getter);
-
+        
         driver.shutdown();
-
+        
     }
-
+    
     @Test
     public void specifyingNumberOfTimesFailureHasDecentMessage() throws Exception {
-
+        
         thrown.expect(ClientDriverFailedExpectationException.class);
         thrown.expectMessage("1 unmatched expectation(s), first is: ClientDriverRequest: GET /request; expected: 2, actual: 1");
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
-
+        
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
-
+        
         driver.shutdown();
-
+        
     }
-
+    
     @Test
     public void specifyingAnyTimesForExpectationWorks() throws Exception {
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).anyTimes();
-
+        
         HttpGet getter = new HttpGet(driver.getBaseUrl() + "/request");
         new DefaultHttpClient().execute(getter);
         new DefaultHttpClient().execute(getter);
         new DefaultHttpClient().execute(getter);
-
+        
         driver.shutdown();
-
+        
     }
-
+    
     @Test
     public void specifyingAnyTimesForExpectationAnyNotCallingItWorks() throws Exception {
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).anyTimes();
-
+        
         driver.shutdown();
-
+        
     }
-
+    
 }

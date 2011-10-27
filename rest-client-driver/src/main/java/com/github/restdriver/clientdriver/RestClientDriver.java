@@ -21,43 +21,47 @@ import java.util.regex.Pattern;
  * Helper class for fluent creation of Client Driver objects.
  */
 public final class RestClientDriver {
-
+    
     private RestClientDriver() {
     }
-
+    
     /**
      * Creates a new {@link ClientDriverRequest} object.
+     * 
      * @param path The path to match
      * @return The newly created request
      */
     public static ClientDriverRequest onRequestTo(String path) {
         return new ClientDriverRequest(path);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverRequest} object.
+     * 
      * @param path The path to match
      * @return The newly created request
      */
     public static ClientDriverRequest onRequestTo(Pattern path) {
         return new ClientDriverRequest(path);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object.
+     * 
      * @param content The content to return
      * @return The newly created response
      */
     public static ClientDriverResponse giveResponse(String content) {
         return new ClientDriverResponse(content);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object with no content.
+     * 
      * @return The newly created response
      */
     public static ClientDriverResponse giveEmptyResponse() {
         return new ClientDriverResponse();
     }
-
+    
 }

@@ -39,40 +39,40 @@ import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
  * Time: 20:51
  */
 public class ChooseOwnPortTest {
-
+    
     @Test
     public void userCanChooseOwnPort() throws IOException {
-
+        
         int portNum = ClientDriver.getFreePort();
-
+        
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
         driver.addExpectation(onRequestTo("/url"), giveResponse("hello"));
-
+        
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet("http://localhost:" + portNum + "/url");
         HttpResponse response = client.execute(getter);
-
+        
         assertThat(response.getStatusLine().getStatusCode(), is(200));
         assertThat(IOUtils.toString(response.getEntity().getContent()), is("hello"));
-
+        
     }
-
+    
     @Test
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
-
+        
         int portNum = ClientDriver.getFreePort();
-
+        
         try {
             // one of these must throw an exception.
             new ClientDriverFactory().createClientDriver(portNum);
             new ClientDriverFactory().createClientDriver(portNum);
-
+            
         } catch (ClientDriverSetupException cdse) {
-
+            
             assertThat(cdse.getCause(), instanceOf(BindException.class));
-
+            
         }
-
+        
     }
-
+    
 }

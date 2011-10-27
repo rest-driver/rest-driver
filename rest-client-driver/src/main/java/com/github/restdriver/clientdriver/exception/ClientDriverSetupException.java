@@ -20,9 +20,9 @@ package com.github.restdriver.clientdriver.exception;
  * the HTTP server itself, so will not cause tests to fail, but will appear in the server logs (usually to STDERR)
  */
 public class ClientDriverSetupException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -2270688849375416363L;
-
+    
     /**
      * Constructor.
      * 
@@ -34,5 +34,5 @@ public class ClientDriverSetupException extends RuntimeException {
     public ClientDriverSetupException(String message, Throwable cause) {
         super(message, cause);
     }
-
+    
 }

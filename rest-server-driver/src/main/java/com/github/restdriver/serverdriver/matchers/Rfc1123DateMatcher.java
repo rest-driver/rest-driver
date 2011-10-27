@@ -26,49 +26,48 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Matcher to check that headers contain dates which are spec-valid.  All dates in HTTP headers (Date-header, caching, etc) should
+ * Matcher to check that headers contain dates which are spec-valid. All dates in HTTP headers (Date-header, caching, etc) should
  * pass this matcher.
  */
 public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
-
+    
     public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
-
+    
     /**
      * Parse a string as if it is an RFC1123-compliant date.
-     *
+     * 
      * @param rawString The original String.
      * @return The DateTime object set to UTC.
      */
     public DateTime getDateTime(String rawString) {
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
         formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
-
+        
         try {
             return new DateTime(formatter.parse(rawString)).toDateTime(DateTimeZone.UTC);
-
+            
         } catch (ParseException pe) {
             throw new RuntimeDateFormatException(pe);
         }
-
+        
     }
-
-
+    
     @Override
     protected boolean matchesSafely(Header dateHeader) {
-
+        
         try {
             getDateTime(dateHeader.getValue());
             return true;
-
+            
         } catch (RuntimeDateFormatException pe) {
             return false;
-
+            
         }
     }
-
+    
     @Override
     public void describeTo(Description description) {
         description.appendText("Rfc1123-compliant date in header, like 'Mon, 09 May 2011 18:49:18 GMT'");
     }
-
+    
 }

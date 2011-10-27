@@ -25,9 +25,9 @@ import java.net.UnknownHostException;
  * Time: 16:15
  */
 public final class RuntimeUnknownHostException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -3385006541772137637L;
-
+    
     /**
      * Create a new instance with a specific cause.
      * 
@@ -36,5 +36,5 @@ public final class RuntimeUnknownHostException extends RuntimeException {
     public RuntimeUnknownHostException(UnknownHostException e) {
         super(e);
     }
-
+    
 }

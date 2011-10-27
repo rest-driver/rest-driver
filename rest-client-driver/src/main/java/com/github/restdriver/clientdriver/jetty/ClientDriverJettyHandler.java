@@ -25,7 +25,7 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
  * Interface for classes which handle incoming http requests in the Client Driver.
  */
 public interface ClientDriverJettyHandler {
-
+    
     /**
      * Add in a {@link com.github.restdriver.clientdriver.ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
      * 
@@ -36,22 +36,22 @@ public interface ClientDriverJettyHandler {
      * @return The added expectation
      */
     ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response);
-
+    
     /**
      * This method will throw a ClientDriverFailedExpectationException if there have been any unexpected requests.
      */
     void checkForUnexpectedRequests();
-
+    
     /**
      * This method will throw a ClientDriverFailedExpectationException if any expectations have not been met.
      */
     void checkForUnmatchedExpectations();
-
+    
     /**
      * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
      * 
      * @return "this", usually.
      */
     Handler getJettyHandler();
-
+    
 }

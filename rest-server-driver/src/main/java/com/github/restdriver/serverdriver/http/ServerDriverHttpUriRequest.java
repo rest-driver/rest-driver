@@ -22,11 +22,11 @@ import org.apache.http.client.methods.HttpUriRequest;
  * Wraps an {@link HttpUriRequest} with some other details which that class does not support.
  */
 public final class ServerDriverHttpUriRequest {
-
+    
     private final HttpUriRequest request;
-
+    
     private HttpHost proxyHost;
-
+    
     /**
      * Constructor.
      * 
@@ -35,15 +35,16 @@ public final class ServerDriverHttpUriRequest {
     public ServerDriverHttpUriRequest(HttpUriRequest request) {
         this.request = request;
     }
-
+    
     /**
      * Get the wrapped {@link HttpUriRequest}.
+     * 
      * @return The wrapped {@link HttpUriRequest}.
      */
     public HttpUriRequest getHttpUriRequest() {
         return request;
     }
-
+    
     /**
      * Set the host details to use as a proxy.
      * 
@@ -52,13 +53,14 @@ public final class ServerDriverHttpUriRequest {
     public void setProxyHost(HttpHost proxyHost) {
         this.proxyHost = proxyHost;
     }
-
+    
     /**
      * Getter.
+     * 
      * @return The {@link HttpHost} to be used as a proxy.
      */
     public HttpHost getProxyHost() {
         return proxyHost;
     }
-
+    
 }

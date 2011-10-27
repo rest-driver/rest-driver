@@ -30,25 +30,25 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class HeadersAcceptanceTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     private String baseUrl;
-
+    
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
     }
-
+    
     @Test
     public void getRetrievesHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("").withHeader("X-foo", "barrr"));
-
+        
         Response response = get(baseUrl);
-
+        
         // multiple ways to assert on a header
         assertThat(response, hasHeaderWithValue("X-foo", equalTo("barrr")));
         assertThat(response, hasHeader("X-foo", equalTo("barrr")));
@@ -56,16 +56,16 @@ public class HeadersAcceptanceTest {
         assertThat(response, hasHeader("X-foo: barrr"));
         assertThat(response, hasHeader(header("X-foo", "barrr")));
         assertThat(response, hasHeader(header("X-foo: barrr")));
-
+        
         // header *names* are case insensitive
         assertThat(response, hasHeader(header("X-FOO: barrr")));
         assertThat(response, hasHeader("X-FOO: barrr"));
         assertThat(response, hasHeader("X-FOO"));
-
+        
         // but values are case-sensitive
         assertThat(response, not(hasHeader(header("X-foo: BARRR"))));
         assertThat(response, not(hasHeader("X-foo: BARRR")));
-
+        
     }
-
+    
 }
