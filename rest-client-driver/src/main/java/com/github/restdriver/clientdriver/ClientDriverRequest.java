@@ -89,9 +89,9 @@ public final class ClientDriverRequest {
 
         String queryString = request.getQueryString();
         if (StringUtils.isNotEmpty(StringUtils.trimToEmpty(queryString))) {
-            String[] params = queryString.split("&");
-            for (int i = 0; i < params.length; i++) {
-                String[] queryPair = params[i].split("=");
+            String[] splitQueryString = queryString.split("&");
+            for (int i = 0; i < splitQueryString.length; i++) {
+                String[] queryPair = splitQueryString[i].split("=");
                 this.params.put(queryPair[0], queryPair[1]);
             }
         }

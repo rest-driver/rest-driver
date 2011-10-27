@@ -15,15 +15,11 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.IOUtils;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
@@ -34,65 +30,73 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
 public final class DefaultRequestMatcher implements RequestMatcher {
     
     /**
-     * Checks for a match between an actual {@link HttpServletRequest} and an expected {@link ClientDriverRequest}. This
+     * Checks for a match between an actual {@link ClientDriverRequest} and an expected {@link ClientDriverRequest}. This
      * implementation is as strict as it can be with exact matching for Strings, but can also use regular expressions in
      * the form of Patterns.
      * 
      * @param actualRequest
-     *            The actual request
+     *            The actual request {@link ClientDriverRequest}
      * @param expectedRequest
      *            The expected {@link ClientDriverRequest}
      * @return True if there is a match, falsetto otherwise.
      */
-    @Override
-    public boolean isMatch(HttpServletRequest actualRequest, ClientDriverRequest expectedRequest) {
+    @SuppressWarnings("unchecked")
+    public boolean isMatch(ClientDriverRequest actualClientDriverRequest, ClientDriverRequest expectedRequest) {
         
         // TODO: Better diagnostics from this method. See https://github.com/rest-driver/rest-driver/issues/7
         
         // same method?
-        if (!actualRequest.getMethod().equals(expectedRequest.getMethod().toString())) {
+        if (actualClientDriverRequest.getMethod() != expectedRequest.getMethod()) {
             return false;
         }
         // same base path?
-        if (!isStringOrPatternMatch(actualRequest.getPathInfo(), expectedRequest.getPath())) {
+        // The actual request will always be a string as it is a 'real';
+        if (!isStringOrPatternMatch((String) actualClientDriverRequest.getPath(), expectedRequest.getPath())) {
             return false;
         }
         
-        Map<String, String[]> actualParams = actualRequest.getParameterMap();
+        Map<String, Collection<Object>> actualParams = actualClientDriverRequest.getParams();
+        Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         
         // same number of query-string parameters?
-        if (actualParams.size() != expectedRequest.getParams().size()) {
+        if (actualParams.size() != expectedParams.size()) {
             return false;
         }
         
-        // same keys/values in query-string parameter map?
-        Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         for (String expectedKey : expectedParams.keySet()) {
             
-            String[] actualParamValues = actualParams.get(expectedKey);
+            Collection<Object> actualParamValues = actualParams.get(expectedKey);
             
-            if (actualParamValues == null || actualParamValues.length == 0) {
+            if (actualParamValues == null || actualParamValues.size() == 0) {
                 return false;
             }
             
             Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
             
-            if (expectedParamValues.size() != actualParamValues.length) {
+            if (expectedParamValues.size() != actualParamValues.size()) {
                 return false;
             }
             
-            for (String actualParamValue : actualParamValues) {
+            for (Object actualParamValue : actualParamValues) {
                 
-                boolean matched = false;
-                
-                for (Object expectedParamValue : expectedParamValues) {
-                    if (isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
-                        matched = true;
+                if (actualParamValue instanceof String || actualParamValue == null) {
+                    
+                    final String strActualValue = (String) actualParamValue;
+                    
+                    boolean matched = false;
+                    
+                    for (Object expectedParamValue : expectedParamValues) {
+                        
+                        if (isStringOrPatternMatch(strActualValue, expectedParamValue)) {
+                            matched = true;
+                        }
                     }
-                }
-                
-                if (!matched) {
-                    return false;
+                    
+                    if (!matched) {
+                        return false;
+                    }
+                } else {
+                    throw new ClientDriverInternalException("Expected all params on incomming request to be strings", null);
                 }
             }
             
@@ -100,23 +104,32 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         
         // same keys/values in headers map?
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
+        Map<String, Object> actualHeaders = actualClientDriverRequest.getHeaders();
+        
         for (String expectedHeaderName : expectedHeaders.keySet()) {
-            
-            Enumeration<String> actualHeaderValues = actualRequest.getHeaders(expectedHeaderName);
-            
-            if (actualHeaderValues == null) {
-                return false;
-            }
             
             Object expectedHeaderValue = expectedHeaders.get(expectedHeaderName);
             
             boolean matched = false;
             
-            while (actualHeaderValues.hasMoreElements()) {
-                String value = actualHeaderValues.nextElement();
-                if (isStringOrPatternMatch(value, expectedHeaderValue)) {
-                    matched = true;
-                    break;
+            for (Entry<String, Object> actualHeader : actualHeaders.entrySet()) {
+                Object value = actualHeader.getValue();
+                if (value instanceof Enumeration) {
+                    Enumeration<String> valueEnumeration = (Enumeration<String>) value;
+                    while (valueEnumeration.hasMoreElements()) {
+                        String currentValue = valueEnumeration.nextElement();
+                        if (isStringOrPatternMatch(currentValue, expectedHeaderValue)) {
+                            matched = true;
+                            break;
+                        }
+                    }
+                    
+                } else {
+                    
+                    if (isStringOrPatternMatch((String) value, expectedHeaderValue)) {
+                        matched = true;
+                        break;
+                    }
                 }
             }
             
@@ -131,7 +144,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             
             // this is needed because clients have a habit of putting
             // "text/html; charset=UTF-8" when you only ask for "text/html".
-            String actualContentType = actualRequest.getContentType();
+            String actualContentType = (String) actualClientDriverRequest.getBodyContentType();
             if (actualContentType.contains(";")) {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
@@ -142,22 +155,19 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
             
             // same content?
-            try {
-                if (!isStringOrPatternMatch(IOUtils.toString(actualRequest.getReader()), expectedRequest
-                        .getBodyContent())) {
-                    return false;
-                }
-            } catch (IOException ioException) {
-                throw new ClientDriverInternalException("Internal error, IOException while reading from body content",
-                        ioException);
+            if (!isStringOrPatternMatch((String) actualClientDriverRequest.getBodyContent(), expectedRequest.getBodyContent())) {
+                return false;
             }
         }
         
         return true;
-        
     }
     
     private boolean isStringOrPatternMatch(String actual, Object expected) {
+        if (actual == null) {
+            actual = "";
+        }
+        
         if (expected instanceof String) {
             
             return actual.equals(expected);
