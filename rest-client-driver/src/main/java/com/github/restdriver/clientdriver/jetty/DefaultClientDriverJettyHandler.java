@@ -111,7 +111,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
-            if (matcher.isMatch(request, thisPair.getRequest())) {
+            if (matcher.isMatch(new ClientDriverRequest(request), thisPair.getRequest())) {
                 thisExpectation.match();
                 if (matchedExpectation == null) {
                     matchedExpectation = thisExpectation;
