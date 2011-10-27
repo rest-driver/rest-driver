@@ -55,7 +55,7 @@ public abstract class Poller {
 
     private static final TimeDuration DEFAULT_POLL = new TimeDuration(1, SECONDS);
 
-    private boolean loud = false;
+    private boolean loud;
 
     /**
      * Creates a new Poller set to repeat the {@link #poll()} once per second for ten seconds.

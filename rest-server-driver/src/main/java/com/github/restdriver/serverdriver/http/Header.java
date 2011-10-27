@@ -26,6 +26,8 @@ import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
  * Represents an HTTP header.
  */
 public final class Header implements AnyRequestModifier {
+    
+    private static final int HASH_CODE_PRIME = 31;
 
     private final String name;
     private final String value;
@@ -97,16 +99,13 @@ public final class Header implements AnyRequestModifier {
 
     @Generated("Eclipse")
     @Override
-    // CHECKSTYLE:OFF
     public int hashCode() {
-        int prime = 31;
+        int prime = HASH_CODE_PRIME;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.toLowerCase().hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
-
-    // CHECKSTYLE:ON
 
     @Generated("Eclipse")
     @Override

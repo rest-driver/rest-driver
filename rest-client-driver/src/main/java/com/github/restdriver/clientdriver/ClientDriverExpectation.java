@@ -24,8 +24,8 @@ public class ClientDriverExpectation {
 
     private final ClientDriverRequestResponsePair pair;
     private int numberOfTimes = 1;
-    private int numberOfMatches = 0;
-    private boolean matchAnyTimes = false;
+    private int numberOfMatches;
+    private boolean matchAnyTimes;
 
     /**
      * Creates a new expectation instance.

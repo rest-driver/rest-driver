@@ -34,7 +34,7 @@ public final class ClientDriverResponse {
     private String contentType;
     private final Map<String, String> headers;
 
-    private long delayTime = 0;
+    private long delayTime;
     private TimeUnit delayTimeUnit = TimeUnit.SECONDS;
 
     /**
