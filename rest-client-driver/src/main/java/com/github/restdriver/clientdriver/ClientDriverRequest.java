@@ -18,11 +18,18 @@ package com.github.restdriver.clientdriver;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Class for encapsulating an HTTP request.
@@ -68,6 +75,43 @@ public final class ClientDriverRequest {
         method = Method.GET;
         params = HashMultimap.create();
         headers = new HashMap<String, Object>();
+    }
+    
+    /**
+     * Contructor taking HttpServletRequest
+     *
+     * @param request HttpServletRequest
+     */
+    public ClientDriverRequest(HttpServletRequest request) {
+        this.path = request.getPathInfo();
+        this.method = Enum.valueOf(Method.class, request.getMethod());
+        this.params = HashMultimap.create();
+
+        String queryString = request.getQueryString();
+        if (StringUtils.isNotEmpty(StringUtils.trimToEmpty(queryString))) {
+            String[] params = queryString.split("&");
+            for (int i = 0; i < params.length; i++) {
+                String[] queryPair = params[i].split("=");
+                this.params.put(queryPair[0], queryPair[1]);
+            }
+        }
+
+        headers = new HashMap<String, Object>();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        if (headerNames != null) {
+            while (headerNames.hasMoreElements()) {
+                String headerName = headerNames.nextElement();
+                headers.put(headerName, request.getHeader(headerName));
+            }
+        }
+
+        try {
+            this.bodyContent = IOUtils.toString(request.getReader());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read body of request", e);
+        }
+
+        this.bodyContentType = request.getContentType();
     }
     
     /**
