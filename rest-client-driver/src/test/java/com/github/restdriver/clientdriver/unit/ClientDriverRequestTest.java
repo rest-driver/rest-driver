@@ -23,8 +23,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -62,14 +63,14 @@ public class ClientDriverRequestTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         String expectedPathInfo = "someUrlPath";
         String expectedMethod = "GET";
-        Enumeration<String> expectedHeaderNames = new Vector<String>(Arrays.asList("header1")).elements();
+        Enumeration<String> expectedHeaderNames = Collections.enumeration(Arrays.asList("header1"));
         
         String bodyContent = "bodyContent";
         String expectedContentType = "contentType";
 
         when(mockRequest.getPathInfo()).thenReturn(expectedPathInfo);
         when(mockRequest.getMethod()).thenReturn(expectedMethod);
-        when(mockRequest.getQueryString()).thenReturn("hello=world");
+        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {{ put("hello", new String[] { "world" });}});
         when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
         when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
         when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(bodyContent)));

@@ -96,7 +96,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                         return false;
                     }
                 } else {
-                    throw new ClientDriverInternalException("Expected all params on incomming request to be strings", null);
+                    throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
                 }
             }
             

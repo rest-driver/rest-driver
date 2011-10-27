@@ -15,9 +15,6 @@
  */
 package com.github.restdriver.clientdriver;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -29,7 +26,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Class for encapsulating an HTTP request.
@@ -79,23 +78,22 @@ public final class ClientDriverRequest {
     
     /**
      * Contructor taking HttpServletRequest
-     *
+     * 
      * @param request HttpServletRequest
      */
     public ClientDriverRequest(HttpServletRequest request) {
         this.path = request.getPathInfo();
         this.method = Enum.valueOf(Method.class, request.getMethod());
         this.params = HashMultimap.create();
-
-        String queryString = request.getQueryString();
-        if (StringUtils.isNotEmpty(StringUtils.trimToEmpty(queryString))) {
-            String[] splitQueryString = queryString.split("&");
-            for (int i = 0; i < splitQueryString.length; i++) {
-                String[] queryPair = splitQueryString[i].split("=");
-                this.params.put(queryPair[0], queryPair[1]);
+        
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        for (Entry<String, String[]> paramEntry : parameterMap.entrySet()) {
+            String[] values = paramEntry.getValue();
+            for (String value : values) {
+                this.params.put(paramEntry.getKey(), value);
             }
         }
-
+        
         headers = new HashMap<String, Object>();
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
@@ -104,13 +102,13 @@ public final class ClientDriverRequest {
                 headers.put(headerName, request.getHeader(headerName));
             }
         }
-
+        
         try {
             this.bodyContent = IOUtils.toString(request.getReader());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read body of request", e);
         }
-
+        
         this.bodyContentType = request.getContentType();
     }
     
