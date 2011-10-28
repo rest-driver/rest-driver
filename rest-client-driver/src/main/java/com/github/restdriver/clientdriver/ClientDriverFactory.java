@@ -16,11 +16,14 @@
 package com.github.restdriver.clientdriver;
 
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main entry point to the Rest Client Driver.
  */
 public final class ClientDriverFactory {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriverFactory.class);
     
     /**
      * Factory method to create and start a {@link ClientDriver}. A port will be chosen automatically.
@@ -28,9 +31,10 @@ public final class ClientDriverFactory {
      * @return A new {@link ClientDriver}, which has found a free port, bound to it and started up.
      */
     public ClientDriver createClientDriver() {
-        
-        return new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()));
-        
+        LOGGER.debug("Creating new ClientDriver");
+        ClientDriver clientDriver = new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()));
+        LOGGER.debug("ClientDriver created at '" + clientDriver.getBaseUrl() + "'.");
+        return clientDriver;
     }
     
     /**
@@ -42,9 +46,10 @@ public final class ClientDriverFactory {
      * @return A new {@link ClientDriver}, which has found a free port, bound to it and started up.
      */
     public ClientDriver createClientDriver(int port) {
-        
-        return new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()), port);
-        
+        LOGGER.debug("Creating new ClientDriver");
+        ClientDriver clientDriver = new ClientDriver(new DefaultClientDriverJettyHandler(new DefaultRequestMatcher()), port);
+        LOGGER.debug("ClientDriver created at '" + clientDriver.getBaseUrl() + "'.");
+        return clientDriver;
     }
     
 }

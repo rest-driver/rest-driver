@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
 /**
@@ -28,6 +31,8 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  * path &amp; query string, and any body of the request.
  */
 public final class DefaultRequestMatcher implements RequestMatcher {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRequestMatcher.class);
     
     /**
      * Checks for a match between an actual {@link ClientDriverRequest} and an expected {@link ClientDriverRequest}. This
@@ -41,25 +46,28 @@ public final class DefaultRequestMatcher implements RequestMatcher {
      * @return True if there is a match, falsetto otherwise.
      */
     @SuppressWarnings("unchecked")
-    public boolean isMatch(ClientDriverRequest actualClientDriverRequest, ClientDriverRequest expectedRequest) {
+    public boolean isMatch(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
         
         // TODO: Better diagnostics from this method. See https://github.com/rest-driver/rest-driver/issues/7
         
         // same method?
-        if (actualClientDriverRequest.getMethod() != expectedRequest.getMethod()) {
+        if (actualRequest.getMethod() != expectedRequest.getMethod()) {
+            LOGGER.info("REJECTED on method: expected: " + expectedRequest.getMethod() + " != " + actualRequest.getMethod());
             return false;
         }
         // same base path?
         // The actual request will always be a string as it is a 'real';
-        if (!isStringOrPatternMatch((String) actualClientDriverRequest.getPath(), expectedRequest.getPath())) {
+        if (!isStringOrPatternMatch((String) actualRequest.getPath(), expectedRequest.getPath())) {
+            LOGGER.info("REJECTED on path: expected: " + expectedRequest.getPath() + " != " + actualRequest.getPath());
             return false;
         }
         
-        Map<String, Collection<Object>> actualParams = actualClientDriverRequest.getParams();
+        Map<String, Collection<Object>> actualParams = actualRequest.getParams();
         Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         
         // same number of query-string parameters?
         if (actualParams.size() != expectedParams.size()) {
+            LOGGER.info("REJECTED on No. of Params: expected: " + expectedParams.size() + " != " + actualParams.size());
             return false;
         }
         
@@ -68,43 +76,43 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             Collection<Object> actualParamValues = actualParams.get(expectedKey);
             
             if (actualParamValues == null || actualParamValues.size() == 0) {
+                LOGGER.info("REJECTED on missing param key: expected: " + expectedKey + "=" + expectedParams.get(expectedKey));
                 return false;
             }
             
             Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
             
             if (expectedParamValues.size() != actualParamValues.size()) {
+                LOGGER.info("REJECTED on number of values for param '" + expectedKey + "': expected " + expectedParamValues.size() + " != " + actualParamValues.size());
                 return false;
             }
             
-            for (Object actualParamValue : actualParamValues) {
+            for (Object expectedParamValue : expectedParamValues) {
                 
-                if (actualParamValue instanceof String || actualParamValue == null) {
-                    
-                    final String strActualValue = (String) actualParamValue;
-                    
-                    boolean matched = false;
-                    
-                    for (Object expectedParamValue : expectedParamValues) {
+                boolean matched = false;
+                
+                for (Object actualParamValue : actualParamValues) {
+                    if (actualParamValue instanceof String || actualParamValue == null) {
                         
+                        final String strActualValue = (String) actualParamValue;
                         if (isStringOrPatternMatch(strActualValue, expectedParamValue)) {
                             matched = true;
                         }
+                    } else {
+                        throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
                     }
-                    
-                    if (!matched) {
-                        return false;
-                    }
-                } else {
-                    throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
+                }
+                
+                if (!matched) {
+                    LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
+                    return false;
                 }
             }
-            
         }
         
         // same keys/values in headers map?
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
-        Map<String, Object> actualHeaders = actualClientDriverRequest.getHeaders();
+        Map<String, Object> actualHeaders = actualRequest.getHeaders();
         
         for (String expectedHeaderName : expectedHeaders.keySet()) {
             
@@ -134,6 +142,11 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
             
             if (!matched) {
+                if (expectedHeaderValue instanceof String) {
+                    LOGGER.info("REJECTED on missing expected header: expected " + expectedHeaderName + "=" + (String) expectedHeaderValue);
+                } else {
+                    LOGGER.info("REJECTED on missing expected header: expected " + expectedHeaderName + "=" + (Pattern) expectedHeaderValue);
+                }
                 return false;
             }
             
@@ -144,18 +157,29 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             
             // this is needed because clients have a habit of putting
             // "text/html; charset=UTF-8" when you only ask for "text/html".
-            String actualContentType = (String) actualClientDriverRequest.getBodyContentType();
+            String actualContentType = (String) actualRequest.getBodyContentType();
             if (actualContentType.contains(";")) {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
             
             // same type?
             if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
+                if (expectedRequest.getBodyContentType() instanceof String) {
+                    LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContentType() + ", acutal" + (String) actualContentType);
+                } else {
+                    LOGGER.info("REJECTED on content type: expected " + ((Pattern) expectedRequest.getBodyContentType()).pattern() + ", acutal" + (String) actualContentType);
+                }
                 return false;
             }
             
+            
             // same content?
-            if (!isStringOrPatternMatch((String) actualClientDriverRequest.getBodyContent(), expectedRequest.getBodyContent())) {
+            if (!isStringOrPatternMatch((String) actualRequest.getBodyContent(), expectedRequest.getBodyContent())) {
+                if (expectedRequest.getBodyContent() instanceof String) {
+                    LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContent() + ", acutal" + (String) actualRequest.getBodyContent());
+                } else {
+                    LOGGER.info("REJECTED on content type: expected " + ((Pattern) expectedRequest.getBodyContent()).pattern() + ", acutal" + (String) actualRequest.getBodyContent());
+                }
                 return false;
             }
         }
