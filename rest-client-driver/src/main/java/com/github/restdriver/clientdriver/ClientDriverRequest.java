@@ -300,4 +300,34 @@ public final class ClientDriverRequest {
         return headers;
     }
     
+    public String getDetails() {
+        StringBuilder details = new StringBuilder();
+        details.append("Request:\n");
+        details.append("\tPath: " + this.getPath() + "\n");
+        
+        if (this.getParams().isEmpty()) {
+            details.append("\tParams: None\n");
+        } else {
+            details.append("\tParams:\n");
+            for (Entry<String, Collection<Object>> entry : this.getParams().entrySet()) {
+                for (Object value : entry.getValue()) {
+                    if (value instanceof String) {
+                        details.append("\t\t" + entry.getKey() + "=" + (String) value);
+                    } else {
+                        if (value instanceof Pattern) {
+                            details.append("\t\t" + entry.getKey() + "=" + ((Pattern) value).pattern() + "\n");
+                        } else {
+                            throw new IllegalArgumentException("Expected all Param values to be a String or a Pattern.");
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (this.getHeaders().isEmpty()) {
+            details.append("\tHeaders : None");
+        }
+        
+        return details.toString();
+    }
 }
