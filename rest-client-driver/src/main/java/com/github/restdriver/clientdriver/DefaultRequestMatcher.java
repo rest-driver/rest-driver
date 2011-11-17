@@ -41,21 +41,21 @@ public final class DefaultRequestMatcher implements RequestMatcher {
      * @return True if there is a match, falsetto otherwise.
      */
     @SuppressWarnings("unchecked")
-    public boolean isMatch(ClientDriverRequest actualClientDriverRequest, ClientDriverRequest expectedRequest) {
+    public boolean isMatch(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
         
         // TODO: Better diagnostics from this method. See https://github.com/rest-driver/rest-driver/issues/7
         
         // same method?
-        if (actualClientDriverRequest.getMethod() != expectedRequest.getMethod()) {
+        if (actualRequest.getMethod() != expectedRequest.getMethod()) {
             return false;
         }
         // same base path?
         // The actual request will always be a string as it is a 'real';
-        if (!isStringOrPatternMatch((String) actualClientDriverRequest.getPath(), expectedRequest.getPath())) {
+        if (!isStringOrPatternMatch((String) actualRequest.getPath(), expectedRequest.getPath())) {
             return false;
         }
         
-        Map<String, Collection<Object>> actualParams = actualClientDriverRequest.getParams();
+        Map<String, Collection<Object>> actualParams = actualRequest.getParams();
         Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         
         // same number of query-string parameters?
@@ -104,7 +104,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         
         // same keys/values in headers map?
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
-        Map<String, Object> actualHeaders = actualClientDriverRequest.getHeaders();
+        Map<String, Object> actualHeaders = actualRequest.getHeaders();
         
         for (String expectedHeaderName : expectedHeaders.keySet()) {
             
@@ -144,7 +144,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             
             // this is needed because clients have a habit of putting
             // "text/html; charset=UTF-8" when you only ask for "text/html".
-            String actualContentType = (String) actualClientDriverRequest.getBodyContentType();
+            String actualContentType = (String) actualRequest.getBodyContentType();
             if (actualContentType.contains(";")) {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
@@ -155,7 +155,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
             
             // same content?
-            if (!isStringOrPatternMatch((String) actualClientDriverRequest.getBodyContent(), expectedRequest.getBodyContent())) {
+            if (!isStringOrPatternMatch((String) actualRequest.getBodyContent(), expectedRequest.getBodyContent())) {
                 return false;
             }
         }
