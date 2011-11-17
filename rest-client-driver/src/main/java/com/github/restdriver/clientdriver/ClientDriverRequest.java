@@ -81,6 +81,7 @@ public final class ClientDriverRequest {
      * 
      * @param request HttpServletRequest
      */
+    @SuppressWarnings("unchecked")
     public ClientDriverRequest(HttpServletRequest request) {
         this.path = request.getPathInfo();
         this.method = Enum.valueOf(Method.class, request.getMethod());
