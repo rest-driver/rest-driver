@@ -17,6 +17,7 @@ package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
 import com.github.restdriver.serverdriver.http.*;
 import org.apache.http.HttpResponse;
@@ -49,11 +50,11 @@ import com.github.restdriver.serverdriver.http.response.Response;
 public final class RestServerDriver {
     
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
+    public static final long DEFAULT_CONNECTION_TIMEOUT = 10000;
+    public static final long DEFAULT_SOCKET_TIMEOUT = 10000;
     
     private RestServerDriver() {
     }
-    
-    private static final int DEFAULT_HTTP_TIMEOUT_MS = 10000;
     
     /* ****************************************************************************
      * Helper methods to make value objects *
@@ -141,6 +142,42 @@ public final class RestServerDriver {
         } catch (NumberFormatException nfe) {
             return DEFAULT_HTTP_PROXY_PORT;
         }
+    }
+    
+    /**
+     * Use a single timeout value for both connection and socket timeouts.
+     * 
+     * @param timeout The timeout duration to use.
+     * @param timeUnit The unit of the timeout.
+     * 
+     * @return The RequestTimeout instance.
+     */
+    public static AnyRequestModifier withTimeout(int timeout, TimeUnit timeUnit) {
+        return new RequestTimeout(timeUnit.toMillis(timeout), timeUnit.toMillis(timeout));
+    }
+    
+    /**
+     * Specify a connection timeout.
+     * 
+     * @param timeout The timeout duration to use.
+     * @param timeUnit The unit of the timeout.
+     * 
+     * @return The RequestConnectionTimeout instance.
+     */
+    public static AnyRequestModifier withConnectionTimeout(int timeout, TimeUnit timeUnit) {
+        return new RequestConnectionTimeout(timeUnit.toMillis(timeout));
+    }
+    
+    /**
+     * Specify a socket timeout.
+     * 
+     * @param timeout The timeout duration to use.
+     * @param timeUnit The unit of the timeout.
+     * 
+     * @return The RequestSocketTimeout instance.
+     */
+    public static AnyRequestModifier withSocketTimeout(int timeout, TimeUnit timeUnit) {
+        return new RequestSocketTimeout(timeUnit.toMillis(timeout));
     }
     
     /**
@@ -444,8 +481,8 @@ public final class RestServerDriver {
         HttpClient httpClient = new DefaultHttpClient();
         
         HttpParams httpParams = httpClient.getParams();
-        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_HTTP_TIMEOUT_MS);
-        HttpConnectionParams.setSoTimeout(httpParams, 0);
+        HttpConnectionParams.setConnectionTimeout(httpParams, (int) request.getConnectionTimeout());
+        HttpConnectionParams.setSoTimeout(httpParams, (int) request.getSocketTimeout());
         HttpClientParams.setRedirecting(httpParams, false);
         
         if (request.getProxyHost() != null) {

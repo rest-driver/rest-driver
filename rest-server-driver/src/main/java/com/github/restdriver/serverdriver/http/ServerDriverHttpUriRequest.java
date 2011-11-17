@@ -18,6 +18,8 @@ package com.github.restdriver.serverdriver.http;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.HttpUriRequest;
 
+import com.github.restdriver.serverdriver.RestServerDriver;
+
 /**
  * Wraps an {@link HttpUriRequest} with some other details which that class does not support.
  */
@@ -26,6 +28,8 @@ public final class ServerDriverHttpUriRequest {
     private final HttpUriRequest request;
     
     private HttpHost proxyHost;
+    private long connectionTimeout = RestServerDriver.DEFAULT_CONNECTION_TIMEOUT;
+    private long socketTimeout = RestServerDriver.DEFAULT_SOCKET_TIMEOUT;
     
     /**
      * Constructor.
@@ -61,6 +65,42 @@ public final class ServerDriverHttpUriRequest {
      */
     public HttpHost getProxyHost() {
         return proxyHost;
+    }
+    
+    /**
+     * Getter.
+     * 
+     * @return The connection timeout.
+     */
+    public long getConnectionTimeout() {
+        return connectionTimeout;
+    }
+    
+    /**
+     * Set the number of milliseconds to use as a connection timeout.
+     * 
+     * @param connectionTimeout The number of milliseconds to use as the timeout.
+     */
+    public void setConnectionTimeout(long connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+    
+    /**
+     * Getter.
+     * 
+     * @return The socket timeout.
+     */
+    public long getSocketTimeout() {
+        return socketTimeout;
+    }
+    
+    /**
+     * Set the number of milliseconds to use as a socket timeout.
+     * 
+     * @param socketTimeout The number of milliseconds to use as the timeout.
+     */
+    public void setSocketTimeout(long socketTimeout) {
+        this.socketTimeout = socketTimeout;
     }
     
 }
