@@ -56,7 +56,7 @@ public class ResponseToStringAcceptanceTest {
         String expectedResponse = "HTTP/1.1 400 Bad Request" + n;
         expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
                 "Content-Length: 0" + n +
-                "Server: Jetty(8.0.3.v20111011)";
+                "Server: Jetty(8.0.4.v20111024)";
         
         assertThat(response.toString(), is(equalTo(expectedResponse)));
         
@@ -71,7 +71,7 @@ public class ResponseToStringAcceptanceTest {
         String expectedResponse = "HTTP/1.1 200 OK" + n;
         expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
                 "Content-Length: 19" + n +
-                "Server: Jetty(8.0.3.v20111011)" + n +
+                "Server: Jetty(8.0.4.v20111024)" + n +
                 n +
                 "This is the content";
         
