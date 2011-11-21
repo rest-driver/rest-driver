@@ -20,6 +20,8 @@ import static com.github.restdriver.serverdriver.RestServerDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.regex.Pattern;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -66,6 +68,17 @@ public class HeadersAcceptanceTest {
         assertThat(response, not(hasHeader(header("X-foo: BARRR"))));
         assertThat(response, not(hasHeader("X-foo: BARRR")));
         
+    }
+    
+    @Test
+    public void serverDriverSendsDefaultUserAgentWhenNoneIsSpecified() {
+        driver.addExpectation(
+                new ClientDriverRequest("/").withHeader("User-Agent", Pattern.compile("rest-server-driver/.*")),
+                new ClientDriverResponse("received header"));
+        
+        Response response = get(baseUrl);
+        
+        assertThat(response.asText(), is("received header"));
     }
     
 }
