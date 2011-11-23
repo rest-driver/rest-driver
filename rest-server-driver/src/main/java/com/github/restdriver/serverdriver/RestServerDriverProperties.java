@@ -27,13 +27,11 @@ public final class RestServerDriverProperties {
         Properties properties = new Properties();
         try {
             properties.load(io);
-            if (properties != null) {
-                for (Entry<Object, Object> property : properties.entrySet()) {
-                    System.setProperty(property.getKey().toString(), property.getValue().toString());
-                }
+            for (Entry<Object, Object> property : properties.entrySet()) {
+                System.setProperty(property.getKey().toString(), property.getValue().toString());
             }
         } catch (IOException e) {
-            System.out.println("Properties cannot be readed.");
+            System.out.println("Properties cannot be read.");
             e.printStackTrace();
         }
         
