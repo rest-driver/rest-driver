@@ -20,6 +20,8 @@ import java.io.InputStream;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import com.github.restdriver.serverdriver.exception.RuntimeConfigurationException;
+
 public final class RestServerDriverProperties {
     
     static {
@@ -31,8 +33,7 @@ public final class RestServerDriverProperties {
                 System.setProperty(property.getKey().toString(), property.getValue().toString());
             }
         } catch (IOException e) {
-            System.out.println("Properties cannot be read.");
-            e.printStackTrace();
+            throw new RuntimeConfigurationException(e);
         }
         
     }
