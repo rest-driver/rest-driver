@@ -77,7 +77,7 @@ public final class ClientDriverRequest {
     }
     
     /**
-     * Contructor taking HttpServletRequest
+     * Constructor taking HttpServletRequest
      * 
      * @param request HttpServletRequest
      */
