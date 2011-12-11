@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
 /**
@@ -28,6 +31,8 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  * path &amp; query string, and any body of the request.
  */
 public final class DefaultRequestMatcher implements RequestMatcher {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRequestMatcher.class);
     
     /**
      * Checks for a match between an actual {@link ClientDriverRequest} and an expected {@link ClientDriverRequest}. This
@@ -47,11 +52,13 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         
         // same method?
         if (actualRequest.getMethod() != expectedRequest.getMethod()) {
+            LOGGER.info("REJECTED on method: expected " + expectedRequest.getMethod() + " != " + actualRequest.getMethod());
             return false;
         }
         // same base path?
         // The actual request will always be a string as it is a 'real';
         if (!isStringOrPatternMatch((String) actualRequest.getPath(), expectedRequest.getPath())) {
+            LOGGER.info("REJECTED on path: expected " + expectedRequest.getPath() + " != " + actualRequest.getPath());
             return false;
         }
         
@@ -60,6 +67,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         
         // same number of query-string parameters?
         if (actualParams.size() != expectedParams.size()) {
+            LOGGER.info("REJECTED on number of params: expected " + expectedParams.size() + " != " + actualParams.size());
             return false;
         }
         
@@ -68,38 +76,38 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             Collection<Object> actualParamValues = actualParams.get(expectedKey);
             
             if (actualParamValues == null || actualParamValues.size() == 0) {
+                LOGGER.info("REJECTED on missing param key: expected " + expectedKey + "=" + expectedParams.get(expectedKey));
                 return false;
             }
             
             Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
             
             if (expectedParamValues.size() != actualParamValues.size()) {
+                LOGGER.info("REJECTED on number of values for param '" + expectedKey + "': expected " + expectedParamValues.size() + " != " + actualParamValues.size());
                 return false;
             }
             
-            for (Object actualParamValue : actualParamValues) {
+            for (Object expectedParamValue : expectedParamValues) {
                 
-                if (actualParamValue instanceof String || actualParamValue == null) {
-                    
-                    final String strActualValue = (String) actualParamValue;
-                    
-                    boolean matched = false;
-                    
-                    for (Object expectedParamValue : expectedParamValues) {
+                boolean matched = false;
+                
+                for (Object actualParamValue : actualParamValues) {
+                    if (actualParamValue instanceof String || actualParamValue == null) {
                         
-                        if (isStringOrPatternMatch(strActualValue, expectedParamValue)) {
+                        String actualValue = (String) actualParamValue;
+                        if (isStringOrPatternMatch(actualValue, expectedParamValue)) {
                             matched = true;
                         }
+                    } else {
+                        throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
                     }
-                    
-                    if (!matched) {
-                        return false;
-                    }
-                } else {
-                    throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
+                }
+                
+                if (!matched) {
+                    LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
+                    return false;
                 }
             }
-            
         }
         
         // same keys/values in headers map?
@@ -134,6 +142,11 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
             
             if (!matched) {
+                if (expectedHeaderValue instanceof String) {
+                    LOGGER.info("REJECTED on missing header: expected " + expectedHeaderName + "=" + (String) expectedHeaderValue);
+                } else {
+                    LOGGER.info("REJECTED on missing header: expected " + expectedHeaderName + "=" + (Pattern) expectedHeaderValue);
+                }
                 return false;
             }
             
@@ -151,11 +164,22 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             
             // same type?
             if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
+                if (expectedRequest.getBodyContentType() instanceof String) {
+                    LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContentType() + ", actual " + (String) actualContentType);
+                } else {
+                    LOGGER.info("REJECTED on content type: expected " + ((Pattern) expectedRequest.getBodyContentType()).pattern() + ", actual " + (String) actualContentType);
+                }
                 return false;
             }
             
+            
             // same content?
             if (!isStringOrPatternMatch((String) actualRequest.getBodyContent(), expectedRequest.getBodyContent())) {
+                if (expectedRequest.getBodyContent() instanceof String) {
+                    LOGGER.info("REJECTED on content: expected " + (String) expectedRequest.getBodyContent() + ", actual " + (String) actualRequest.getBodyContent());
+                } else {
+                    LOGGER.info("REJECTED on content: expected " + ((Pattern) expectedRequest.getBodyContent()).pattern() + ", actual " + (String) actualRequest.getBodyContent());
+                }
                 return false;
             }
         }

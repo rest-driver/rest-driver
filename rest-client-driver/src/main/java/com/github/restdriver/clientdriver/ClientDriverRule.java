@@ -18,6 +18,8 @@ package com.github.restdriver.clientdriver;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
@@ -25,6 +27,7 @@ import org.junit.runners.model.Statement;
 public final class ClientDriverRule implements TestRule {
     
     private final ClientDriver clientDriver;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriverRequest.class);
     
     /**
      * Creates a new rule with a driver running on a free port.
@@ -56,6 +59,7 @@ public final class ClientDriverRule implements TestRule {
      * @return The newly added expectation.
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
+        LOGGER.info("addExpectation: " + request.getPath());
         return clientDriver.addExpectation(request, response);
     }
     
