@@ -103,7 +103,7 @@ public final class ClientDriverResponse {
     }
     
     /**
-     * @return the amout of time to delay the response
+     * @return the amount of time to delay the response
      */
     public long getDelayTime() {
         return delayTime;
