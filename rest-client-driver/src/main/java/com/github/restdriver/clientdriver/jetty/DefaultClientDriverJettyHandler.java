@@ -122,7 +122,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         if (matchedExpectation == null) {
-            unexpectedRequest = request.getPathInfo();
+            unexpectedRequest = request.getMethod() + " " + request.getPathInfo();
             
             String reqQuery = request.getQueryString();
             
