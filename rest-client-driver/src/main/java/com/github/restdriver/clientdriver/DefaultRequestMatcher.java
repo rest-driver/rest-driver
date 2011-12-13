@@ -45,27 +45,69 @@ public final class DefaultRequestMatcher implements RequestMatcher {
      *            The expected {@link ClientDriverRequest}
      * @return True if there is a match, falsetto otherwise.
      */
-    @SuppressWarnings("unchecked")
     public boolean isMatch(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
         
         // TODO: Better diagnostics from this method. See https://github.com/rest-driver/rest-driver/issues/7
         
-        // same method?
+        boolean sameMethod = isSameMethod(actualRequest, expectedRequest);
+        
+        if (!sameMethod) {
+            return false;
+        }
+        
+        boolean sameBasePath = isSameBasePath(actualRequest, expectedRequest);
+        
+        if (!sameBasePath) {
+            return false;
+        }
+        
+        boolean sameQueryString = hasSameQueryString(actualRequest, expectedRequest);
+        
+        if (!sameQueryString) {
+            return false;
+        }
+        
+        boolean sameHeaders = hasSameHeaders(actualRequest, expectedRequest);
+        
+        if (!sameHeaders) {
+            return false;
+        }
+        
+        boolean sameBody = hasSameBody(actualRequest, expectedRequest);
+        
+        if (!sameBody) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    private boolean isSameMethod(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
+        
         if (actualRequest.getMethod() != expectedRequest.getMethod()) {
             LOGGER.info("REJECTED on method: expected " + expectedRequest.getMethod() + " != " + actualRequest.getMethod());
             return false;
         }
-        // same base path?
+        
+        return true;
+    }
+    
+    private boolean isSameBasePath(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
+        
         // The actual request will always be a string as it is a 'real';
         if (!isStringOrPatternMatch((String) actualRequest.getPath(), expectedRequest.getPath())) {
             LOGGER.info("REJECTED on path: expected " + expectedRequest.getPath() + " != " + actualRequest.getPath());
             return false;
         }
         
+        return true;
+    }
+    
+    private boolean hasSameQueryString(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
+        
         Map<String, Collection<Object>> actualParams = actualRequest.getParams();
         Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
         
-        // same number of query-string parameters?
         if (actualParams.size() != expectedParams.size()) {
             LOGGER.info("REJECTED on number of params: expected " + expectedParams.size() + " != " + actualParams.size());
             return false;
@@ -87,30 +129,46 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 return false;
             }
             
-            for (Object expectedParamValue : expectedParamValues) {
-                
-                boolean matched = false;
-                
-                for (Object actualParamValue : actualParamValues) {
-                    if (actualParamValue instanceof String || actualParamValue == null) {
-                        
-                        String actualValue = (String) actualParamValue;
-                        if (isStringOrPatternMatch(actualValue, expectedParamValue)) {
-                            matched = true;
-                        }
-                    } else {
-                        throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
-                    }
-                }
-                
-                if (!matched) {
-                    LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
-                    return false;
-                }
+            boolean sameParamValues = areTheSame(expectedKey, actualParamValues, expectedParamValues);
+            
+            if (!sameParamValues) {
+                return false;
             }
         }
         
-        // same keys/values in headers map?
+        return true;
+    }
+    
+    private boolean areTheSame(String expectedKey, Collection<Object> actualParamValues, Collection<Object> expectedParamValues) {
+        
+        for (Object expectedParamValue : expectedParamValues) {
+            
+            boolean matched = false;
+            
+            for (Object actualParamValue : actualParamValues) {
+                if (actualParamValue instanceof String || actualParamValue == null) {
+                    
+                    String actualValue = (String) actualParamValue;
+                    if (isStringOrPatternMatch(actualValue, expectedParamValue)) {
+                        matched = true;
+                    }
+                } else {
+                    throw new ClientDriverInternalException("Expected all params on incoming request to be strings", null);
+                }
+            }
+            
+            if (!matched) {
+                LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean hasSameHeaders(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
+        
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
         Map<String, Object> actualHeaders = actualRequest.getHeaders();
         
@@ -152,7 +210,11 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             
         }
         
-        // same request body?
+        return true;
+    }
+    
+    private boolean hasSameBody(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest) {
+        
         if (expectedRequest.getBodyContent() != null) {
             
             // this is needed because clients have a habit of putting
@@ -162,7 +224,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
             
-            // same type?
             if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
                 if (expectedRequest.getBodyContentType() instanceof String) {
                     LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContentType() + ", actual " + (String) actualContentType);
@@ -173,7 +234,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
             
             
-            // same content?
             if (!isStringOrPatternMatch((String) actualRequest.getBodyContent(), expectedRequest.getBodyContent())) {
                 if (expectedRequest.getBodyContent() instanceof String) {
                     LOGGER.info("REJECTED on content: expected " + (String) expectedRequest.getBodyContent() + ", actual " + (String) actualRequest.getBodyContent());
