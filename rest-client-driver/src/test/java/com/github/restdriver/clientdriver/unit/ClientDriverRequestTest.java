@@ -21,6 +21,7 @@ import static org.hamcrest.Matchers.*;
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 
 public class ClientDriverRequestTest {
     
@@ -44,6 +45,24 @@ public class ClientDriverRequestTest {
         request.withHeader("content-type", "text/xml");
         
         assertThat(request.getBodyContentType().toString(), is("text/xml"));
+    }
+    
+    @Test
+    public void toStringIncludesPath() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah");
+        assertThat(request.toString(), containsString("/blah"));
+    }
+    
+    @Test
+    public void toStringIncludesMethod() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah").withMethod(Method.POST);
+        assertThat(request.toString(), containsString("POST"));
+    }
+    
+    @Test
+    public void toStringIncludesQueryString() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah").withParam("q", "something").withParam("rows", "10");
+        assertThat(request.toString(), containsString("?q=something&rows=10"));
     }
     
 }

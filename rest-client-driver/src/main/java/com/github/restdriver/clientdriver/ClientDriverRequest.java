@@ -15,12 +15,15 @@
  */
 package com.github.restdriver.clientdriver;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
 
@@ -149,7 +152,20 @@ public final class ClientDriverRequest {
      */
     @Override
     public String toString() {
-        return "ClientDriverRequest: " + method + " " + path.toString() + "; ";
+        
+        List<String> queryStringValues = new ArrayList<String>();
+        
+        for (Entry<String, Object> entry : params.entries()) {
+            queryStringValues.add(entry.getKey() + "=" + entry.getValue());
+        }
+        
+        String queryString = StringUtils.join(queryStringValues, "&");
+        
+        if (queryStringValues.size() > 0) {
+            queryString = "?" + queryString;
+        }
+        
+        return "ClientDriverRequest: " + method + " " + path.toString() + queryString + "; ";
     }
     
     /**
