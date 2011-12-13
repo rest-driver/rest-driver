@@ -24,15 +24,16 @@ package com.github.restdriver.clientdriver;
 public interface RequestMatcher {
     
     /**
-     * Checks for a match between an actual {@link ClientDriverRequest} and an expected {@link ClientDriverRequest}.
-     * Implementations can be as precise or as loose as they like when matching.
+     * Checks for a match between a real {@link RealRequest} and an expected {@link ClientDriverRequest}. This
+     * implementation is as strict as it can be with exact matching for Strings, but can also use regular expressions in
+     * the form of Patterns.
      * 
-     * @param actualRequest
-     *            The actual {@link ClientDriverRequest}
+     * @param realRequest
+     *            The real request {@link RealRequest}
      * @param expectedRequest
      *            The expected {@link ClientDriverRequest}
      * @return True if there is a match, falsetto otherwise.
      */
-    boolean isMatch(ClientDriverRequest actualRequest, ClientDriverRequest expectedRequest);
+    boolean isMatch(RealRequest realRequest, ClientDriverRequest expectedRequest);
     
 }

@@ -32,6 +32,7 @@ import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
@@ -111,7 +112,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
-            if (matcher.isMatch(new ClientDriverRequest(request), thisPair.getRequest())) {
+            if (matcher.isMatch(new HttpRealRequest(request), thisPair.getRequest())) {
                 thisExpectation.match();
                 if (matchedExpectation == null) {
                     matchedExpectation = thisExpectation;

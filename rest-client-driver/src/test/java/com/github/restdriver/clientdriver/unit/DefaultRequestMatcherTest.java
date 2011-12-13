@@ -17,11 +17,14 @@ package com.github.restdriver.clientdriver.unit;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -31,317 +34,382 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;
+import com.github.restdriver.clientdriver.RealRequest;
 
 // suppressed to allow inline definition of maps with asMap()
 @SuppressWarnings("unchecked")
 public class DefaultRequestMatcherTest {
 
+    private Map<String, Object> headers;
+    private Map<String, Collection<String>> params;
+    private String content;
+    private String contentType;
+    
     private DefaultRequestMatcher sut;
 
     @Before
     public void before() {
+        headers = new HashMap<String, Object>();
+        params = new HashMap<String, Collection<String>>();
+        content = null;
+        contentType = null;
         sut = new DefaultRequestMatcher();
+    }
+    
+    private RealRequest mockRealRequest(String path, Method method, Map<String, Object> headers,
+            Map<String, Collection<String>> params, String content, String contentType) {
+        RealRequest real = mock(RealRequest.class);
+        when(real.getPath()).thenReturn(path);
+        when(real.getMethod()).thenReturn(method);
+        when(real.getHeaders()).thenReturn(headers);
+        when(real.getParams()).thenReturn(params);
+        when(real.getBodyContent()).thenReturn(content);
+        when(real.getBodyContentType()).thenReturn(contentType);
+        return real;
     }
 
     @Test
     public void testMatchNoParams() {
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchNoParamsPattern() {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-            
-        ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[a]{5}")).withMethod(Method.GET);
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest(Pattern.compile("[a]{5}")).withMethod(Method.GET);
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWithParams() {
-
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParams(asMap("kk", "vv", "k2", "v2"));
         
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa")
+        params = asMap("kk", "vv", "k2", "v2");
+
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
                                         .withMethod(Method.GET)
                                         .withParam("kk", "vv")
                                         .withParam("k2", "v2");
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWithParamsPattern() throws IOException {
-
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParams(asMap("kk", "vv", "k2", "v2"));
         
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa")
+        params = asMap("kk", "vv", "k2", "v2");
+
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
                                         .withMethod(Method.GET)
                                         .withParam("kk",Pattern.compile("[v]{2}")).withParam("k2", Pattern.compile("v[0-9]"));
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWithWrongParam() {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "not vv");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+        params = asMap("kk", "not vv");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithWrongParamPattern() {
+        
+        params = asMap("kk", "xx");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", Pattern.compile("[v]{2}"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("kk", "xx"));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", Pattern.compile("[v]{2}"));
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithNullParam() {
+        
+        params = asMap("kk", (String) null);
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("kk", (String) null));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithParamsTooMany() {
-
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParams(asMap("k1", asStringArray("v1")));
         
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa")
+        params = asMap("k1", "v1");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
                                         .withMethod(Method.GET)
                                         .withParam("kk", "vv")
                                         .withParam("k2", "v2");
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithParamsTooFew() {
+        
+        params = asMap("k1", "v1", "k2", "v2");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("k1", asStringArray("v1"), "k2", asStringArray("v2")));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testSuccessfulMatchWithMultipleIdenticalParams() {
+        
+        params = asMap("kk", asStringList("vv", "vvv"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testSuccessfulMatchWithMultipleIdenticalParamsInDifferentOrder() {
+        
+        params = asMap("key", asStringList("that", "this"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "that").withParam("key", "this");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testFailedMatchWithMultipleIdenticalParams() {
+        
+        params = asMap("kk", asStringList("vv", "v2"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("kk", asStringArray("vv", "v2")));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "vv").withParam("kk", "vvv");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testFailedMatchWithMultipleIdenticalParamsInDifferentOrder() {
+        
+        params = asMap("key", asStringList("that", "this"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("key", asStringArray("that", "this")));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "tha");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "tha");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testFailedMatchWithWrongNumberOfIdenticalParams() {
+        
+        params = asMap("key", "that");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParams(asMap("key", asStringArray("that")));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("key", "this").withParam("key", "that");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testFailedMatchWithOneWrongParamPattern() {
+        
+        params = asMap("kk", asStringList("v1", "v2"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", "v1").withParam("kk", "v2");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", Pattern.compile("[v]{2}"));
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("kk", Pattern.compile("[v]{2}"));
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWrongMethod() {
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.DELETE);
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.DELETE);
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWrongPath() {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest("bbbbb").withMethod(Method.GET);
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("bbbbb").withMethod(Method.GET);
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWrongPathPattern() {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest(Pattern.compile("[b]{5}")).withMethod(Method.GET);
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest(Pattern.compile("[b]{5}")).withMethod(Method.GET);
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestBody() throws IOException {
+        
+        content = "ooooh";
+        contentType = "text/junk";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWithRequestBodyPattern() throws IOException {
+        
+        content = "ooooh";
+        contentType = "text/junk";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"), Pattern.compile("text/j[a-z]{3}"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"), Pattern.compile("text/j[a-z]{3}"));
-
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWithRequestBodyWrongType() throws IOException {
+        
+        content = "ooooh";
+        contentType = "text/jnkular";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/jnkular");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestBodyWrongTypePattern() throws IOException {
+        
+        content = "ooooh";
+        contentType = "text/jnkular";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", Pattern.compile("text/[a-z]{4}"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/jnkular");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", Pattern.compile("text/[a-z]{4}"));
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestBodyWrongContent() throws IOException {
+        
+        content = "ooook";
+        contentType = "texy/junk";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooook", "texy/junk");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooooh", "text/junk");
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestBodyWrongContentPattern() throws IOException {
+        
+        content = "ooook";
+        contentType = "text/junk";
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"), "text/junk");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody("ooook", "text/junk");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withBody(Pattern.compile("[o]{4}h"), "text/junk");
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestHeaderString() throws Exception {
+        
+        headers.put("Cache-Control", "no-cache");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
-
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchMultipleWithRequestHeaderString() throws Exception {
+        
+        headers.put("Some-Header", Collections.enumeration(Arrays.asList("foo", "bar")));
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Some-Header", "bar");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        aReq.getHeaders().put("Some-Header", Collections.enumeration(Arrays.asList("foo", "bar")));
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Some-Header", "bar");
-
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWrongWithRequestHeaderString() throws Exception {
+        
+        headers.put("Cache-Control", "cache-please!");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "cache-please!");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWrongWithMissingRequestHeaderString() throws Exception {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWithRequestHeaderPattern() throws Exception {
+        
+        headers.put("Content-Length", "1234");
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length","1234");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
 
-        assertThat(sut.isMatch(aReq, bReq), is(true));
+        assertThat(sut.isMatch(real, expected), is(true));
     }
 
     @Test
     public void testMatchWrongWithRequestHeaderPattern() throws Exception {
+        
+        headers.put("Content-Length", "invalid");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", "invalid");
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
-
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
     @Test
     public void testMatchWrongWithMissingRequestHeaderPattern() throws Exception {
 
-        ClientDriverRequest aReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET);
-        ClientDriverRequest bReq = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Content-Length", Pattern.compile("\\d+"));
 
-        assertThat(sut.isMatch(aReq, bReq), is(false));
+        assertThat(sut.isMatch(real, expected), is(false));
     }
 
-    private String[] asStringArray(String... strings) {
-        return strings;
+    private static List<String> asStringList(String... strings) {
+        return Arrays.asList(strings);
     }
 
     @SuppressWarnings("rawtypes")
@@ -358,7 +426,11 @@ public class DefaultRequestMatcherTest {
             if (previous == null) {
                 previous = object;
             } else {
-                map.put(previous, object);
+                if (object instanceof String) {
+                    map.put(previous, asStringList((String) object));
+                } else {
+                    map.put(previous, object);
+                }
                 previous = null;
             }
         }

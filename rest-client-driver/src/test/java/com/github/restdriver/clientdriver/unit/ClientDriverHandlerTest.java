@@ -39,6 +39,7 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.RealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
@@ -128,7 +129,7 @@ public class ClientDriverHandlerTest {
         
         when(mockHttpRequest.getMethod()).thenReturn("GET");
         when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
-        when(mockRequestMatcher.isMatch((ClientDriverRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
+        when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
         
         mockHttpResponse.setContentType("fhieow");
         mockHttpResponse.setStatus(404);
