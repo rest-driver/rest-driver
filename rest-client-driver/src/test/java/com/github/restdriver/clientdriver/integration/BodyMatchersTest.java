@@ -58,7 +58,7 @@ public class BodyMatchersTest {
         assertThat(correctResponse.getStatusLine().getStatusCode(), is(201));
         
         HttpPost incorrectPost = new HttpPost(clientDriver.getBaseUrl() + "/foo");
-        incorrectPost.setEntity(new StringEntity("something containing my subst... WAIT, no, it's doesn't"));
+        incorrectPost.setEntity(new StringEntity("something containing my subst... WAIT, no, it doesn't"));
         
         HttpResponse incorrectResponse = client.execute(incorrectPost);
         EntityUtils.consume(incorrectResponse.getEntity());
