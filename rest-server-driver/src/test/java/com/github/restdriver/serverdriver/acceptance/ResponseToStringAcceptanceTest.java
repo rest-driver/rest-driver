@@ -53,12 +53,10 @@ public class ResponseToStringAcceptanceTest {
         
         Response response = get(baseUrl);
         
-        String expectedResponse = "HTTP/1.1 400 Bad Request" + n;
-        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
-                "Content-Length: 0" + n +
-                "Server: Jetty(8.0.4.v20111024)";
-        
-        assertThat(response.toString(), is(equalTo(expectedResponse)));
+        assertThat(response.toString(), containsString("HTTP/1.1 400 Bad Request"));
+        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
+        assertThat(response.toString(), containsString("Content-Length: 0"));
+        assertThat(response.toString(), containsString("Server: rest-client-driver("));
         
     }
     
@@ -68,14 +66,11 @@ public class ResponseToStringAcceptanceTest {
         
         Response response = get(baseUrl);
         
-        String expectedResponse = "HTTP/1.1 200 OK" + n;
-        expectedResponse += "Content-Type: text/plain;charset=ISO-8859-1" + n +
-                "Content-Length: 19" + n +
-                "Server: Jetty(8.0.4.v20111024)" + n +
-                n +
-                "This is the content";
-        
-        assertThat(response.toString(), is(equalTo(expectedResponse)));
+        assertThat(response.toString(), containsString("HTTP/1.1 200 OK"));
+        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
+        assertThat(response.toString(), containsString("Content-Length: 19"));
+        assertThat(response.toString(), containsString("Server: rest-client-driver("));
+        assertThat(response.toString(), containsString(n + "This is the content"));
         
     }
     
