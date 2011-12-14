@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
 
+import com.github.restdriver.matchers.MatchesRegex;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -219,7 +220,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, String contentType) {
-        bodyContentMatcher = new MatchesPattern(withBodyContent);
+        bodyContentMatcher = new MatchesRegex(withBodyContent);
         bodyContentType = contentType;
         return this;
     }
@@ -233,7 +234,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, Pattern contentType) {
-        bodyContentMatcher = new MatchesPattern(withBodyContent);
+        bodyContentMatcher = new MatchesRegex(withBodyContent);
         bodyContentType = contentType;
         return this;
     }

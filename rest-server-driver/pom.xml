@@ -19,6 +19,12 @@
             <version>${project.version}</version>
 			<scope>test</scope>
         </dependency>
+    
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>rest-driver-shared</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.jayway.jsonpath</groupId>
@@ -106,15 +112,4 @@
 
 	</dependencies>
 	
-	<build>
-	
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		
-	</build>
-
 </project>

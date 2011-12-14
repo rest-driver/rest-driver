@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.clientdriver;
+package com.github.restdriver;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import com.github.restdriver.clientdriver.exception.RuntimeConfigurationException;
+import com.github.restdriver.exception.RuntimeConfigurationException;
 
-public final class RestClientDriverProperties {
+public final class RestDriverProperties {
     
     static {
-        InputStream io = RestClientDriverProperties.class.getClassLoader().getResourceAsStream("rest-client-driver.properties");
+        InputStream io = RestDriverProperties.class.getClassLoader().getResourceAsStream("rest-driver.properties");
         Properties properties = new Properties();
         try {
             properties.load(io);
@@ -38,11 +38,11 @@ public final class RestClientDriverProperties {
         
     }
     
-    private RestClientDriverProperties() {
+    private RestDriverProperties() {
     }
     
     public static String getVersion() {
-        return System.getProperty("rest.client.driver.version", "");
+        return System.getProperty("rest.driver.version", "");
     }
 
 }

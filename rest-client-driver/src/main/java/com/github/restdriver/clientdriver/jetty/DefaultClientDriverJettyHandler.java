@@ -28,13 +28,13 @@ import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.RestClientDriverProperties;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
@@ -80,7 +80,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         response.setContentType(matchedResponse.getContentType());
         response.setStatus(matchedResponse.getStatus());
         response.getWriter().print(matchedResponse.getContent());
-        response.setHeader("Server", "rest-client-driver(" + RestClientDriverProperties.getVersion() + ")");
+        response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
         
         for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());

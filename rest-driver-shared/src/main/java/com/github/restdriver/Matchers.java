@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.clientdriver;
+package com.github.restdriver;
 
 import java.util.regex.Pattern;
 
-import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import com.github.restdriver.matchers.MatchesRegex;
 
-public class MatchesPattern extends TypeSafeMatcher<String> {
+public final class Matchers {
     
-    private final Pattern pattern;
-    
-    public MatchesPattern(Pattern pattern) {
-        this.pattern = pattern;
+    private Matchers() {
     }
     
-    @Override
-    public final void describeTo(Description description) {
-        description.appendText("A string matching the pattern: " + pattern.toString());
+    public static MatchesRegex matchingRegex(String pattern) {
+        return new MatchesRegex(Pattern.compile(pattern));
     }
     
-    @Override
-    protected boolean matchesSafely(String item) {
-        return pattern.matcher(item).matches();
+    public static MatchesRegex matchingRegex(Pattern pattern) {
+        return new MatchesRegex(pattern);
     }
     
 }

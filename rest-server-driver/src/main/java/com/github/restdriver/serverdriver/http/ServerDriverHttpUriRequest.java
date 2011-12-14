@@ -18,7 +18,7 @@ package com.github.restdriver.serverdriver.http;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.HttpUriRequest;
 
-import com.github.restdriver.serverdriver.RestServerDriverProperties;
+import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.serverdriver.RestServerDriver;
 
 /**
@@ -27,7 +27,7 @@ import com.github.restdriver.serverdriver.RestServerDriver;
 public final class ServerDriverHttpUriRequest {
     
     private static final String USER_AGENT = "User-Agent";
-    private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestServerDriverProperties.getVersion();
+    private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
 
     private final HttpUriRequest request;
     

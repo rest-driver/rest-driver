@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.clientdriver.exception;
+package com.github.restdriver.exception;
 
 import java.io.IOException;
 
