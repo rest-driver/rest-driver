@@ -44,6 +44,8 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  */
 public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
     
+    private static final long DEFAULT_WAIT_INTERVAL = 500;
+    
     private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
@@ -163,15 +165,51 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             return;
         }
         
-        for (ClientDriverExpectation expectation : expectations) {
-            if (expectation.shouldMatchAnyTimes()) {
+        long waitFor = 0;
+        ClientDriverExpectation failedExpectation = null;
+        
+        while (true) {
+            
+            if (waitFor > 0) {
+                waitFor(waitFor);
+                waitFor = 0;
+            }
+        
+            for (ClientDriverExpectation expectation : expectations) {
+                if (expectation.getPair().getResponse().canExpire() && expectation.getPair().getResponse().hasExpired()) {
+                    waitFor = DEFAULT_WAIT_INTERVAL;
+                    break;
+                }
+                
+                if (expectation.shouldMatchAnyTimes()) {
+                    break;
+                }
+                
+                failedExpectation = expectation;
+                
+            }
+            
+            if (waitFor > 0) {
                 continue;
             }
             
-            throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
-                    + expectation.getPair().getRequest() + expectation.getStatusString(), null);
+            if (failedExpectation != null) {
+                throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
+                        + failedExpectation.getPair().getRequest() + failedExpectation.getStatusString(), null);
+            }
+            
+            break;
+            
         }
         
+    }
+    
+    private void waitFor(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException ie) {
+            throw new ClientDriverInternalException("Waiting for requests was interrupted", ie);
+        }
     }
     
     /**
