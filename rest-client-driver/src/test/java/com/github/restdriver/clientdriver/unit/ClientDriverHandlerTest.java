@@ -99,19 +99,20 @@ public class ClientDriverHandlerTest {
         when(mockHttpRequest.getMethod()).thenReturn("POST");
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
+        when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
         
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
-        } catch (ClientDriverInternalException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+        } catch (ClientDriverInternalException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
         }
         
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
-        } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+        } catch (ClientDriverFailedExpectationException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
         }
         
     }
