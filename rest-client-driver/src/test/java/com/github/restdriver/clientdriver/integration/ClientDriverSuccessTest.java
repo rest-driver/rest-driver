@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
+import static com.github.restdriver.clientdriver.ClientDriverRequest.Method.*;
 import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -30,6 +31,7 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
 import org.apache.http.entity.StringEntity;
@@ -359,5 +361,29 @@ public class ClientDriverSuccessTest {
         HttpResponse response = client.execute(trace);
         
         assertThat(response.getStatusLine().getStatusCode(), is(200));
+    }
+    
+    @Test
+    public void testPostWithBodyOverTwoExpectations() throws Exception {
+        // bug fix
+        
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(onRequestTo("/foo"), giveResponse("___").withStatus(417));
+        driver.addExpectation(onRequestTo("/blah2").withBody("<eh/>", "application/xml").withMethod(POST), giveResponse("___").withStatus(418));
+        
+        HttpClient postClient = new DefaultHttpClient();
+        HttpPost poster = new HttpPost(baseUrl + "/blah2");
+        poster.setEntity(new StringEntity("<eh/>", "application/xml", "iso-8859-1"));
+        HttpResponse response = postClient.execute(poster);
+        
+        HttpClient getClient = new DefaultHttpClient();
+        HttpGet getter = new HttpGet(baseUrl + "/foo");
+        HttpResponse getResponse = getClient.execute(getter);
+
+        assertThat(getResponse.getStatusLine().getStatusCode(), equalTo(417));
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(418));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
+        
     }
 }
