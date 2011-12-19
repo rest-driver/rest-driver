@@ -7,7 +7,7 @@
     <parent>
         <groupId>com.github.rest-driver</groupId>
         <artifactId>rest-driver</artifactId>
-        <version>1.1.17</version>
+        <version>1.1.18-SNAPSHOT</version>
     </parent>
     
     <dependencies>
