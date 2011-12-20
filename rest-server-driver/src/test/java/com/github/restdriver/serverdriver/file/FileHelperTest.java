@@ -51,4 +51,16 @@ public class FileHelperTest {
         FileHelper.fromFile("missing.txt");
     }
     
+    @Test
+    public void replaceParameters() {
+        String fileContent = FileHelper.fromFileWithParameters("parameter.txt").withParameter("name", "Andrew").toString();
+        assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
+    }
+
+    @Test
+    public void replaceParametersInAscii() {
+        String fileContent = FileHelper.fromFileWithParameters("parameter.txt", "ASCII").withParameter("name", "Andrew").toString();
+        assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
+    }
+    
 }
