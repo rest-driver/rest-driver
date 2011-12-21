@@ -18,6 +18,7 @@ package com.github.restdriver.serverdriver.file;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 
@@ -108,10 +109,29 @@ public final class FileHelper {
          *
          * @param name Key name to replace
          * @param value New value
-         * @return
+         * @return A new builder that has name substituted for value
          */
         public FileWithParametersBuilder withParameter(String name, String value) {
-            return new FileWithParametersBuilder(contents.replace("{{" + name + "}}", value));
+            return new FileWithParametersBuilder(substitute(name, value));
+        }
+
+        /**
+         * For all entries in parameters replace instances of the {{key}} with value
+         * @param parameters  A map of parameter replacements
+         * @return A new builder that has all the substitutions completed.
+         */
+        public FileWithParametersBuilder withParameters(Map<String, String> parameters) {
+            
+            FileWithParametersBuilder builder = this;
+            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+                builder = builder.withParameter(entry.getKey(), entry.getValue());
+            }
+            
+            return builder;
+        }
+        
+        private String substitute(String name, String value) {
+            return contents.replace("{{" + name + "}}", value);
         }
 
         @Override
