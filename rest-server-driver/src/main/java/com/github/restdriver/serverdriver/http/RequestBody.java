@@ -50,7 +50,10 @@ public final class RequestBody implements BodyableRequestModifier {
      * Gets the content of this request body.
      * 
      * @return The content as a string
+     * 
+     * @deprecated This shouldn't need to be exposed. Expect it to go away in the future.
      */
+    @Deprecated
     public String getContent() {
         return content;
     }
@@ -59,7 +62,10 @@ public final class RequestBody implements BodyableRequestModifier {
      * Gets the content-type of this request body.
      * 
      * @return The content-type as a string
+     * 
+     * @deprecated This shouldn't need to be exposed. Expect it to go away in the future.
      */
+    @Deprecated
     public String getContentType() {
         return contentType;
     }
