@@ -94,6 +94,17 @@ public final class RestServerDriver {
     }
     
     /**
+     * Make a RequestBody from a byte array.
+     * 
+     * @param content Request body content as a byte array.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(byte[] content, String contentType) {
+        return new ByteArrayRequestBody(content, contentType);
+    }
+    
+    /**
      * Use a user-specified proxy.
      * 
      * @param proxyHost The host.

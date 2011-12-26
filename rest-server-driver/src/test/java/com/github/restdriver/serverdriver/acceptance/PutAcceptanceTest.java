@@ -113,4 +113,18 @@ public class PutAcceptanceTest {
         assertThat(response.getContent(), is("Back at you"));
     }
     
+    @Test
+    public void putWithByteArrayBody() {
+        driver.addExpectation(
+                new ClientDriverRequest("/bytes")
+                        .withMethod(ClientDriverRequest.Method.PUT)
+                        .withBody("some bytes", "application/pdf"),
+                new ClientDriverResponse("The response").withStatus(418));
+        
+        Response response = put(baseUrl + "/bytes", body("some bytes".getBytes(), "application/pdf"));
+        
+        assertThat(response, hasStatusCode(418));
+        assertThat(response.getContent(), is("The response"));
+    }
+    
 }
