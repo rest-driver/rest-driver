@@ -19,9 +19,11 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.net.URI;
 import java.util.regex.Pattern;
 
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -190,6 +192,61 @@ public class ClientDriverFailTest {
             assertThat(bre.getMessage(), equalTo("Unexpected request: GET /testing?key=value3&key=value2"));
         }
         
+    }
+    
+    @Test
+    public void getWithBodyFailsIfMatcherFails() throws Exception {
+        clientDriver = new ClientDriverFactory().createClientDriver();
+        
+        clientDriver.addExpectation(
+                onRequestTo("/foo").withMethod(Method.GET).withBody("BODY", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpMethodWithBody get = new HttpMethodWithBody("GET", clientDriver.getBaseUrl() + "/foo");
+        client.execute(get);
+        
+        try {
+            clientDriver.shutdown();
+            Assert.fail();
+        } catch (ClientDriverFailedExpectationException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: GET /foo"));
+        }
+    }
+    
+    @Test
+    public void deleteWithBodyFailsIfMatcherFails() throws Exception {
+        clientDriver = new ClientDriverFactory().createClientDriver();
+        
+        clientDriver.addExpectation(
+                onRequestTo("/foo").withMethod(Method.DELETE).withBody("BODY", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpMethodWithBody delete = new HttpMethodWithBody("DELETE", clientDriver.getBaseUrl() + "/foo");
+        client.execute(delete);
+        
+        try {
+            clientDriver.shutdown();
+            Assert.fail();
+        } catch (ClientDriverFailedExpectationException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: DELETE /foo"));
+        }
+    }
+    
+    private class HttpMethodWithBody extends HttpEntityEnclosingRequestBase {
+        private final String method;
+        
+        public HttpMethodWithBody(String method, String uri) {
+            super();
+            this.method = method;
+            setURI(URI.create(uri));
+        }
+        
+        @Override
+        public String getMethod() {
+            return method;
+        }
     }
     
 }
