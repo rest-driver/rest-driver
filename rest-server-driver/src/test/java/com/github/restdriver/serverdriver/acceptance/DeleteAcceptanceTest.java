@@ -64,4 +64,14 @@ public class DeleteAcceptanceTest {
         assertThat(response.getContent(), is("Hello"));
     }
     
+    @Test
+    public void deleteAllowsBodyContent() {
+        driver.addExpectation(
+                new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE).withBody("A BODY?", "text/plain"),
+                new ClientDriverResponse("Hurrah").withStatus(418));
+        
+        Response response = delete(baseUrl, body("A BODY?", "text/plain"));
+        assertThat(response.getStatusCode(), is(418));
+    }
+    
 }

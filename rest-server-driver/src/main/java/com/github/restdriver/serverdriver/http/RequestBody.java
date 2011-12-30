@@ -22,13 +22,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 
 /**
- * Encapsulates a Request body for a PUT or a POST.
- * 
- * User: mjg
- * Date: 21/04/11
- * Time: 14:32
+ * Encapsulates a Request body for a method.
  */
-public final class RequestBody implements BodyableRequestModifier {
+public final class RequestBody implements AnyRequestModifier {
     
     private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
     

@@ -18,6 +18,13 @@ package com.github.restdriver.serverdriver.http;
 /**
  * Common interface for classes which are intended to modify any request.
  */
-public interface AnyRequestModifier extends BodyableRequestModifier {
+public interface AnyRequestModifier {
+    
+    /**
+     * Apply this modifier to the given request.
+     * 
+     * @param request The request
+     */
+    void applyTo(ServerDriverHttpUriRequest request);
     
 }

@@ -115,4 +115,15 @@ public class GetAcceptanceTest {
         assertThat(response, hasStatusCode(404));
     }
     
+    @Test
+    public void getAllowsBodyContent() {
+        driver.addExpectation(
+                onRequestTo("/").withBody("BODIEZ!", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        Response response = get(baseUrl, body("BODIEZ!", "text/plain"));
+        assertThat(response, hasStatusCode(418));
+        
+    }
+    
 }
