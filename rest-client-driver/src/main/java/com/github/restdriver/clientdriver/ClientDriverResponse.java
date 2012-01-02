@@ -122,7 +122,7 @@ public final class ClientDriverResponse {
         return waitUntil != 0;
     }
     
-    public boolean hasExpired() {
+    public boolean hasNotExpired() {
         return waitUntil > System.currentTimeMillis();
     }
     

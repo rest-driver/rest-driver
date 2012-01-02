@@ -167,19 +167,22 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             return;
         }
         
-        long waitFor = 0;
+        long period = 0;
         ClientDriverExpectation failedExpectation = null;
         
         while (true) {
             
-            if (waitFor > 0) {
-                waitFor(waitFor);
-                waitFor = 0;
+            if (period > 0) {
+                waitFor(period);
+                period = 0;
             }
         
             for (ClientDriverExpectation expectation : expectations) {
-                if (expectation.getPair().getResponse().canExpire() && expectation.getPair().getResponse().hasExpired()) {
-                    waitFor = DEFAULT_WAIT_INTERVAL;
+                
+                ClientDriverResponse response = expectation.getPair().getResponse();
+                
+                if (response.canExpire() && response.hasNotExpired()) {
+                    period = DEFAULT_WAIT_INTERVAL;
                     break;
                 }
                 
@@ -188,10 +191,9 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
                 }
                 
                 failedExpectation = expectation;
-                
             }
             
-            if (waitFor > 0) {
+            if (period > 0) {
                 continue;
             }
             
@@ -201,7 +203,6 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             }
             
             break;
-            
         }
         
     }
