@@ -24,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -66,8 +65,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     /**
      * {@inheritDoc}
      * <p/>
-     * This implementation uses the expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pairs to serve its requests. If an unexpected request comes in, a
-     * {@link com.github.restdriver.clientdriver.exception.ClientDriverInternalException} is thrown
+     * This implementation uses the expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pairs to serve its requests.
+     * If an unexpected request comes in, a {@link ClientDriverInternalException} is thrown.
      */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -143,9 +142,6 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         return matchedExpectation.getPair();
     }
     
-    /**
-     * This method will throw a {@link ClientDriverFailedExpectationException} if there have been any unexpected requests.
-     */
     @Override
     public void checkForUnexpectedRequests() {
         
@@ -155,9 +151,6 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
     }
     
-    /**
-     * This method will throw a {@link ClientDriverFailedExpectationException} if any expectations have not been met.
-     */
     @Override
     public void checkForUnmatchedExpectations() {
         
@@ -176,29 +169,12 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
     }
     
-    /**
-     * Add in a {@link ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
-     * 
-     * @param request The expected request
-     * @param response The response to serve to that request
-     * @return The added expectation
-     */
     @Override
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         ClientDriverRequestResponsePair pair = new ClientDriverRequestResponsePair(request, response);
         ClientDriverExpectation expectation = new ClientDriverExpectation(pair);
         expectations.add(expectation);
         return expectation;
-    }
-    
-    /**
-     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
-     * 
-     * @return "this"
-     */
-    @Override
-    public Handler getJettyHandler() {
-        return this;
     }
     
 }

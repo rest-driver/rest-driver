@@ -143,7 +143,7 @@ public class ClientDriverHandlerTest {
         mockHttpResponse.setHeader("hhh", "JJJ");
         
         sut.addExpectation(realRequest, realResponse);
-        sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+        sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
         
         printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
