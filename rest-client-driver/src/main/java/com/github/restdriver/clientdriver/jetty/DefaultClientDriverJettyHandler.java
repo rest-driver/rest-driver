@@ -24,14 +24,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
@@ -64,8 +65,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     /**
      * {@inheritDoc}
      * <p/>
-     * This implementation uses the expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pairs to serve its requests. If an unexpected request comes in, a
-     * {@link com.github.restdriver.clientdriver.exception.ClientDriverInternalException} is thrown
+     * This implementation uses the expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pairs to serve its requests.
+     * If an unexpected request comes in, a {@link ClientDriverInternalException} is thrown.
      */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -78,6 +79,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         response.setContentType(matchedResponse.getContentType());
         response.setStatus(matchedResponse.getStatus());
         response.getWriter().print(matchedResponse.getContent());
+        response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
         
         for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
@@ -108,10 +110,12 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         int index = 0;
         
         ClientDriverExpectation matchedExpectation = null;
+        HttpRealRequest realRequest = new HttpRealRequest(request);
+        
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
-            if (matcher.isMatch(new ClientDriverRequest(request), thisPair.getRequest())) {
+            if (matcher.isMatch(realRequest, thisPair.getRequest())) {
                 thisExpectation.match();
                 if (matchedExpectation == null) {
                     matchedExpectation = thisExpectation;
@@ -121,7 +125,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         if (matchedExpectation == null) {
-            unexpectedRequest = request.getPathInfo();
+            unexpectedRequest = request.getMethod() + " " + request.getPathInfo();
             
             String reqQuery = request.getQueryString();
             
@@ -138,9 +142,6 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         return matchedExpectation.getPair();
     }
     
-    /**
-     * This method will throw a {@link ClientDriverFailedExpectationException} if there have been any unexpected requests.
-     */
     @Override
     public void checkForUnexpectedRequests() {
         
@@ -150,9 +151,6 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
     }
     
-    /**
-     * This method will throw a {@link ClientDriverFailedExpectationException} if any expectations have not been met.
-     */
     @Override
     public void checkForUnmatchedExpectations() {
         
@@ -171,29 +169,12 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
     }
     
-    /**
-     * Add in a {@link ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
-     * 
-     * @param request The expected request
-     * @param response The response to serve to that request
-     * @return The added expectation
-     */
     @Override
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         ClientDriverRequestResponsePair pair = new ClientDriverRequestResponsePair(request, response);
         ClientDriverExpectation expectation = new ClientDriverExpectation(pair);
         expectations.add(expectation);
         return expectation;
-    }
-    
-    /**
-     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
-     * 
-     * @return "this"
-     */
-    @Override
-    public Handler getJettyHandler() {
-        return this;
     }
     
 }

@@ -17,6 +17,9 @@ package com.github.restdriver.serverdriver.file;
 
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -49,6 +52,25 @@ public class FileHelperTest {
     @Test(expected = RuntimeFileNotFoundException.class)
     public void readMissingFileFromClasspathThrowsException() {
         FileHelper.fromFile("missing.txt");
+    }
+    
+    @Test
+    public void replaceParameter() {
+        String fileContent = FileHelper.fromFileWithParameters("parameter.txt").withParameter("name", "Andrew").toString();
+        assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
+    }
+
+    @Test
+    public void replaceParameterInAscii() {
+        String fileContent = FileHelper.fromFileWithParameters("parameter.txt", "ASCII").withParameter("name", "Andrew").toString();
+        assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
+    }
+
+    @Test
+    public void replaceParameters() {
+        Map<String, String> parameters = new HashMap<String, String>() {{put("greeting", "Hello"); put("thing", "world");}};
+        String fileContent = FileHelper.fromFileWithParameters("parameters.txt").withParameters(parameters).toString();
+        assertThat(fileContent, is("Hello, world!"));
     }
     
 }

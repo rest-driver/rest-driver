@@ -22,12 +22,12 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 
 /**
- * Interface for classes which handle incoming http requests in the Client Driver.
+ * Interface for classes which handle incoming HTTP requests in the Client Driver.
  */
-public interface ClientDriverJettyHandler {
+public interface ClientDriverJettyHandler extends Handler {
     
     /**
-     * Add in a {@link com.github.restdriver.clientdriver.ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
+     * Add in a {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
      * 
      * @param request
      *            The expected request
@@ -46,12 +46,5 @@ public interface ClientDriverJettyHandler {
      * This method will throw a ClientDriverFailedExpectationException if any expectations have not been met.
      */
     void checkForUnmatchedExpectations();
-    
-    /**
-     * Get this object as a Jetty Handler. Call this if you have a reference to it as a {@link ClientDriverJettyHandler} only.
-     * 
-     * @return "this", usually.
-     */
-    Handler getJettyHandler();
     
 }

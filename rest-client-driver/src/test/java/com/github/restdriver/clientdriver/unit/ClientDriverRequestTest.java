@@ -17,17 +17,6 @@ package com.github.restdriver.clientdriver.unit;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
 
@@ -59,30 +48,21 @@ public class ClientDriverRequestTest {
     }
     
     @Test
-    public void instantiationWithHttpRequestPopulatesCorrectly() throws IOException {
-        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        String expectedPathInfo = "someUrlPath";
-        String expectedMethod = "GET";
-        Enumeration<String> expectedHeaderNames = Collections.enumeration(Arrays.asList("header1"));
-        
-        String bodyContent = "bodyContent";
-        String expectedContentType = "contentType";
-
-        when(mockRequest.getPathInfo()).thenReturn(expectedPathInfo);
-        when(mockRequest.getMethod()).thenReturn(expectedMethod);
-        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {{ put("hello", new String[] { "world" });}});
-        when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
-        when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
-        when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(bodyContent)));
-        when(mockRequest.getContentType()).thenReturn(expectedContentType);
-
-        ClientDriverRequest clientDriverRequest = new ClientDriverRequest(mockRequest);
-
-        assertThat((String) clientDriverRequest.getPath(), is(expectedPathInfo));
-        assertThat(clientDriverRequest.getMethod(), is(Method.GET));
-        assertThat(clientDriverRequest.getParams().size(), is(1));
-        assertThat((String) clientDriverRequest.getParams().get("hello").iterator().next(), is("world"));
-        assertThat((String) clientDriverRequest.getHeaders().get("header1"), is("thisIsHeader1"));
-        assertThat((String) clientDriverRequest.getBodyContentType(), is(expectedContentType));
+    public void toStringIncludesPath() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah");
+        assertThat(request.toString(), containsString("/blah"));
     }
+    
+    @Test
+    public void toStringIncludesMethod() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah").withMethod(Method.POST);
+        assertThat(request.toString(), containsString("POST"));
+    }
+    
+    @Test
+    public void toStringIncludesQueryString() {
+        ClientDriverRequest request = new ClientDriverRequest("/blah").withParam("q", "something").withParam("rows", "10");
+        assertThat(request.toString(), containsString("?q=something&rows=10"));
+    }
+    
 }

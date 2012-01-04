@@ -52,7 +52,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?foo=bar"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: GET /blah?foo=bar"));
         }
         
     }
@@ -93,7 +93,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=groon"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: POST /blah?gang=groon"));
         }
         
     }
@@ -117,7 +117,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /blah?gang=goon"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: POST /blah?gang=goon"));
         }
         
     }
@@ -141,7 +141,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /test"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: GET /test"));
         }
     }
     
@@ -164,7 +164,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /test"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: GET /test"));
         }
     }
     
@@ -187,7 +187,7 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: /testing?key=value3&key=value2"));
+            assertThat(bre.getMessage(), equalTo("Unexpected request: GET /testing?key=value3&key=value2"));
         }
         
     }

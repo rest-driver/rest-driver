@@ -68,7 +68,7 @@ public final class ClientDriver {
     private void startJetty() {
         
         try {
-            jettyServer.setHandler(handler.getJettyHandler());
+            jettyServer.setHandler(handler);
             jettyServer.start();
             
         } catch (Exception e) {
@@ -112,7 +112,7 @@ public final class ClientDriver {
     /**
      * Verifies that all expectations have been met and nothing unexpected has been requested.
      * 
-     * If the verification fails, a {@link com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException} is thrown with plenty of detail, and your test will fail!
+     * If the verification fails, a {@link ClientDriverFailedExpectationException} is thrown with plenty of detail, and your test will fail!
      */
     public void verify() {
         handler.checkForUnexpectedRequests();
@@ -139,7 +139,7 @@ public final class ClientDriver {
     }
     
     /**
-     * Add in an expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pair.
+     * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
      * 
      * @param request
      *            The expected request
@@ -148,8 +148,7 @@ public final class ClientDriver {
      * 
      * @return The newly added expectation.
      */
-    public ClientDriverExpectation addExpectation(ClientDriverRequest request,
-            ClientDriverResponse response) {
+    public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         return handler.addExpectation(request, response);
     }
 }

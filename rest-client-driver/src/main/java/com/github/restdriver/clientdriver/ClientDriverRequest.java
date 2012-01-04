@@ -15,18 +15,19 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang.StringUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.core.IsEqual;
 
-import org.apache.commons.io.IOUtils;
-
+import com.github.restdriver.matchers.MatchesRegex;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -49,7 +50,7 @@ public final class ClientDriverRequest {
     private final Map<String, Object> headers;
     
     private Method method;
-    private Object bodyContent;
+    private Matcher<? extends String> bodyContentMatcher;
     private Object bodyContentType;
     
     /**
@@ -74,42 +75,6 @@ public final class ClientDriverRequest {
         method = Method.GET;
         params = HashMultimap.create();
         headers = new HashMap<String, Object>();
-    }
-    
-    /**
-     * Contructor taking HttpServletRequest
-     * 
-     * @param request HttpServletRequest
-     */
-    public ClientDriverRequest(HttpServletRequest request) {
-        this.path = request.getPathInfo();
-        this.method = Enum.valueOf(Method.class, request.getMethod());
-        this.params = HashMultimap.create();
-        
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        for (Entry<String, String[]> paramEntry : parameterMap.entrySet()) {
-            String[] values = paramEntry.getValue();
-            for (String value : values) {
-                this.params.put(paramEntry.getKey(), value);
-            }
-        }
-        
-        headers = new HashMap<String, Object>();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames != null) {
-            while (headerNames.hasMoreElements()) {
-                String headerName = headerNames.nextElement();
-                headers.put(headerName, request.getHeader(headerName));
-            }
-        }
-        
-        try {
-            this.bodyContent = IOUtils.toString(request.getReader());
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read body of request", e);
-        }
-        
-        this.bodyContentType = request.getContentType();
     }
     
     /**
@@ -188,14 +153,27 @@ public final class ClientDriverRequest {
      */
     @Override
     public String toString() {
-        return "ClientDriverRequest: " + method + " " + path.toString() + "; ";
+        
+        List<String> queryStringValues = new ArrayList<String>();
+        
+        for (Entry<String, Object> entry : params.entries()) {
+            queryStringValues.add(entry.getKey() + "=" + entry.getValue());
+        }
+        
+        String queryString = StringUtils.join(queryStringValues, "&");
+        
+        if (queryStringValues.size() > 0) {
+            queryString = "?" + queryString;
+        }
+        
+        return "ClientDriverRequest: " + method + " " + path.toString() + queryString + "; ";
     }
     
     /**
-     * @return the bodyContent
+     * @return The body content matcher
      */
-    public Object getBodyContent() {
-        return bodyContent;
+    public Matcher<? extends String> getBodyContentMatcher() {
+        return bodyContentMatcher;
     }
     
     /**
@@ -214,7 +192,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(String withBodyContent, String withContentType) {
-        bodyContent = withBodyContent;
+        bodyContentMatcher = new IsEqual<String>(withBodyContent);
         bodyContentType = withContentType;
         return this;
     }
@@ -228,7 +206,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(String withBodyContent, Pattern contentType) {
-        bodyContent = withBodyContent;
+        bodyContentMatcher = new IsEqual<String>(withBodyContent);
         bodyContentType = contentType;
         return this;
     }
@@ -242,7 +220,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, String contentType) {
-        bodyContent = withBodyContent;
+        bodyContentMatcher = new MatchesRegex(withBodyContent);
         bodyContentType = contentType;
         return this;
     }
@@ -256,8 +234,14 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, Pattern contentType) {
-        this.bodyContent = withBodyContent;
+        bodyContentMatcher = new MatchesRegex(withBodyContent);
         bodyContentType = contentType;
+        return this;
+    }
+    
+    public ClientDriverRequest withBody(Matcher<? extends String> bodyContentMatcher, String contentType) {
+        this.bodyContentMatcher = bodyContentMatcher;
+        this.bodyContentType = contentType;
         return this;
     }
     

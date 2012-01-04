@@ -39,6 +39,7 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.RealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
@@ -95,21 +96,23 @@ public class ClientDriverHandlerTest {
         HttpServletRequest mockHttpRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
         
+        when(mockHttpRequest.getMethod()).thenReturn("POST");
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
+        when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
         
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
-        } catch (ClientDriverInternalException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
+        } catch (ClientDriverInternalException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
         }
         
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
-        } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request: yarr?gooo=gredge"));
+        } catch (ClientDriverFailedExpectationException e) {
+            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
         }
         
     }
@@ -128,7 +131,7 @@ public class ClientDriverHandlerTest {
         
         when(mockHttpRequest.getMethod()).thenReturn("GET");
         when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
-        when(mockRequestMatcher.isMatch((ClientDriverRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
+        when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
         
         mockHttpResponse.setContentType("fhieow");
         mockHttpResponse.setStatus(404);
@@ -140,7 +143,7 @@ public class ClientDriverHandlerTest {
         mockHttpResponse.setHeader("hhh", "JJJ");
         
         sut.addExpectation(realRequest, realResponse);
-        sut.getJettyHandler().handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+        sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
         
         printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
