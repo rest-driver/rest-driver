@@ -21,6 +21,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
@@ -28,6 +29,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
@@ -385,5 +387,52 @@ public class ClientDriverSuccessTest {
         assertThat(response.getStatusLine().getStatusCode(), is(418));
         assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
         
+    }
+    
+    @Test
+    public void bodyIsAllowedForGet() throws Exception {
+        
+        driver.addExpectation(
+                onRequestTo("/foo").withBody("A BODY", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpMethodWithBody get = new HttpMethodWithBody("GET", driver.getBaseUrl() + "/foo");
+        get.setEntity(new StringEntity("A BODY"));
+        HttpResponse response = client.execute(get);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(418));
+        
+    }
+    
+    @Test
+    public void bodyIsAllowedForDelete() throws Exception {
+        
+        driver.addExpectation(
+                onRequestTo("/foo").withMethod(Method.DELETE).withBody("A BODY", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpMethodWithBody delete = new HttpMethodWithBody("DELETE", driver.getBaseUrl() + "/foo");
+        delete.setEntity(new StringEntity("A BODY"));
+        HttpResponse response = client.execute(delete);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(418));
+        
+    }
+    
+    private class HttpMethodWithBody extends HttpEntityEnclosingRequestBase {
+        private final String method;
+        
+        public HttpMethodWithBody(String method, String uri) {
+            super();
+            this.method = method;
+            setURI(URI.create(uri));
+        }
+        
+        @Override
+        public String getMethod() {
+            return method;
+        }
     }
 }
