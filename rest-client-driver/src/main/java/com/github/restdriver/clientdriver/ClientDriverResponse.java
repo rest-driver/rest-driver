@@ -37,6 +37,8 @@ public final class ClientDriverResponse {
     private long delayTime;
     private TimeUnit delayTimeUnit = TimeUnit.SECONDS;
     
+    private long waitUntil;
+    
     /**
      * Creates a new response with an empty body, a status code of 204 and a Content-Type of 'text/plain'.
      */
@@ -116,6 +118,14 @@ public final class ClientDriverResponse {
         return delayTimeUnit;
     }
     
+    public boolean canExpire() {
+        return waitUntil != 0;
+    }
+    
+    public boolean hasNotExpired() {
+        return waitUntil > System.currentTimeMillis();
+    }
+    
     /**
      * @return the status
      */
@@ -152,6 +162,18 @@ public final class ClientDriverResponse {
         } else {
             headers.put(name, value);
         }
+        return this;
+    }
+
+    /**
+     * Sets the amount of time to allow this response to match within.
+     * 
+     * @param interval The number of given unit to wait
+     * @param unit The unit to wait for
+     * @return This object, so you can chain these calls.
+     */
+    public ClientDriverResponse within(long interval, TimeUnit unit) {
+        this.waitUntil = System.currentTimeMillis() + unit.toMillis(interval);
         return this;
     }
     

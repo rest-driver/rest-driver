@@ -43,6 +43,8 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  */
 public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
     
+    private static final long DEFAULT_WAIT_INTERVAL = 500;
+    
     private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
@@ -158,17 +160,61 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             return;
         }
         
-        for (ClientDriverExpectation expectation : expectations) {
-            if (expectation.shouldMatchAnyTimes()) {
+        long period = 0;
+        ClientDriverExpectation failedExpectation = null;
+        
+        while (true) {
+            
+            if (period > 0) {
+                waitFor(period);
+                period = 0;
+            }
+        
+            for (ClientDriverExpectation expectation : expectations) {
+                
+                ClientDriverResponse response = expectation.getPair().getResponse();
+                
+                if (response.canExpire() && response.hasNotExpired()) {
+                    period = DEFAULT_WAIT_INTERVAL;
+                    break;
+                }
+                
+                if (expectation.shouldMatchAnyTimes()) {
+                    break;
+                }
+                
+                failedExpectation = expectation;
+            }
+            
+            if (period > 0) {
                 continue;
             }
             
-            throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
-                    + expectation.getPair().getRequest() + expectation.getStatusString(), null);
+            if (failedExpectation != null) {
+                throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
+                        + failedExpectation.getPair().getRequest() + failedExpectation.getStatusString(), null);
+            }
+            
+            break;
         }
         
     }
     
+    private void waitFor(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException ie) {
+            throw new ClientDriverInternalException("Waiting for requests was interrupted", ie);
+        }
+    }
+    
+    /**
+     * Add in a {@link ClientDriverRequest}/{@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
+     * 
+     * @param request The expected request
+     * @param response The response to serve to that request
+     * @return The added expectation
+     */
     @Override
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         ClientDriverRequestResponsePair pair = new ClientDriverRequestResponsePair(request, response);
