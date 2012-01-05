@@ -19,12 +19,9 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-import com.github.restdriver.serverdriver.http.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
@@ -36,9 +33,21 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.github.restdriver.serverdriver.http.AnyRequestModifier;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
+import com.github.restdriver.serverdriver.http.RequestBody;
+import com.github.restdriver.serverdriver.http.RequestConnectionTimeout;
+import com.github.restdriver.serverdriver.http.RequestProxy;
+import com.github.restdriver.serverdriver.http.RequestSocketTimeout;
+import com.github.restdriver.serverdriver.http.RequestTimeout;
+import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
+import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
+import com.github.restdriver.serverdriver.http.request.HttpDeleteWithEntity;
+import com.github.restdriver.serverdriver.http.request.HttpGetWithEntity;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -229,7 +238,7 @@ public final class RestServerDriver {
      * @return A Response encapsulating the server's reply.
      */
     public static Response get(Object url, AnyRequestModifier... modifiers) {
-        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpGet(url.toString()));
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpGetWithEntity(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
@@ -279,42 +288,42 @@ public final class RestServerDriver {
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response post(Object url, BodyableRequestModifier... modifiers) {
+    public static Response post(Object url, AnyRequestModifier... modifiers) {
         ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpPost(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response postOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response postOf(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response doPostOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response doPostOf(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response posting(Object url, BodyableRequestModifier... modifiers) {
+    public static Response posting(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
@@ -330,42 +339,42 @@ public final class RestServerDriver {
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response put(Object url, BodyableRequestModifier... modifiers) {
+    public static Response put(Object url, AnyRequestModifier... modifiers) {
         ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpPut(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response putOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response putOf(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response doPutOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response doPutOf(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response putting(Object url, BodyableRequestModifier... modifiers) {
+    public static Response putting(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
@@ -382,7 +391,7 @@ public final class RestServerDriver {
      * @return Response encapsulating the server's reply
      */
     public static Response delete(Object url, AnyRequestModifier... modifiers) {
-        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpDelete(url.toString()));
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpDeleteWithEntity(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
@@ -463,12 +472,12 @@ public final class RestServerDriver {
     /*
      * Internal methods for creating requests and responses
      */
-    private static void applyModifiersToRequest(BodyableRequestModifier[] modifiers, ServerDriverHttpUriRequest request) {
+    private static void applyModifiersToRequest(AnyRequestModifier[] modifiers, ServerDriverHttpUriRequest request) {
         if (modifiers == null) {
             return;
         }
         
-        for (BodyableRequestModifier modifier : modifiers) {
+        for (AnyRequestModifier modifier : modifiers) {
             modifier.applyTo(request);
         }
     }
