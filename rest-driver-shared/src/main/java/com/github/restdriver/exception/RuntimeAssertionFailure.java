@@ -13,28 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver;
+package com.github.restdriver.exception;
 
-import java.util.regex.Pattern;
-
-import com.github.restdriver.matchers.IsEquivalentXml;
-import com.github.restdriver.matchers.MatchesRegex;
-
-public final class Matchers {
+public class RuntimeAssertionFailure extends RuntimeException {
     
-    private Matchers() {
-    }
-    
-    public static MatchesRegex matchingRegex(String pattern) {
-        return new MatchesRegex(Pattern.compile(pattern));
-    }
-    
-    public static MatchesRegex matchingRegex(Pattern pattern) {
-        return new MatchesRegex(pattern);
-    }
-    
-    public static IsEquivalentXml equivalentXmlTo(String xml) {
-        return new IsEquivalentXml(xml);
+    public RuntimeAssertionFailure(String message, Throwable cause) {
+        super(message, cause);
     }
     
 }
