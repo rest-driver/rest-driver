@@ -15,55 +15,27 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.ByteArrayEntity;
 
 /**
- * Encapsulates a Request body for a method.
+ * Encapsulates a request body created from an array of bytes.
  */
-public final class RequestBody implements AnyRequestModifier {
+public class ByteArrayRequestBody implements AnyRequestModifier {
     
-    private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
-    
-    private final String content;
+    private final byte[] content;
     private final String contentType;
     
     /**
-     * Creates a new request body instance.
+     * Creates a new body instance
      * 
-     * @param content A string to use for the content
-     * @param contentType A string representing the content-type
+     * @param content The body content as a byte array.
+     * @param contentType The body content type.
      */
-    public RequestBody(String content, String contentType) {
+    public ByteArrayRequestBody(byte[] content, String contentType) {
         this.content = content;
         this.contentType = contentType;
-    }
-    
-    /**
-     * Gets the content of this request body.
-     * 
-     * @return The content as a string
-     * 
-     * @deprecated This shouldn't need to be exposed. Expect it to go away in the future.
-     */
-    @Deprecated
-    public String getContent() {
-        return content;
-    }
-    
-    /**
-     * Gets the content-type of this request body.
-     * 
-     * @return The content-type as a string
-     * 
-     * @deprecated This shouldn't need to be exposed. Expect it to go away in the future.
-     */
-    @Deprecated
-    public String getContentType() {
-        return contentType;
     }
     
     @Override
@@ -79,11 +51,10 @@ public final class RequestBody implements AnyRequestModifier {
         
         entityRequest.setHeader("Content-type", contentType);
         
-        try {
-            entityRequest.setEntity(new StringEntity(content, contentType, DEFAULT_CONTENT_ENCODING));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error setting entity of request", e);
-        }
+        ByteArrayEntity entity = new ByteArrayEntity(content);
+        entity.setContentType(contentType);
+        entityRequest.setEntity(entity);
         
     }
+    
 }

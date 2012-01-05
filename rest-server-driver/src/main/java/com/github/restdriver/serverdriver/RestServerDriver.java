@@ -16,9 +16,12 @@
 package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -34,6 +37,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
+import com.github.restdriver.serverdriver.http.ByteArrayRequestBody;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
 import com.github.restdriver.serverdriver.http.RequestBody;
@@ -100,6 +104,55 @@ public final class RestServerDriver {
      */
     public static RequestBody body(String content, String contentType) {
         return new RequestBody(content, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from a byte array.
+     * 
+     * @param content Request body content as a byte array.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(byte[] content, String contentType) {
+        return new ByteArrayRequestBody(content, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from an {@link InputStream}.
+     * 
+     * @param content Request body content as an {@link InputStream}.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(InputStream content, String contentType) {
+        byte[] bytes;
+        
+        try {
+            bytes = IOUtils.toByteArray(content);
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting stream to bytes", e);
+        }
+        
+        return new ByteArrayRequestBody(bytes, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from a {@link Reader}.
+     * 
+     * @param content Request body content as a {@link Reader}.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(Reader content, String contentType) {
+        byte[] bytes;
+        
+        try {
+            bytes = IOUtils.toByteArray(content);
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting reader to bytes", e);
+        }
+        
+        return new ByteArrayRequestBody(bytes, contentType);
     }
     
     /**

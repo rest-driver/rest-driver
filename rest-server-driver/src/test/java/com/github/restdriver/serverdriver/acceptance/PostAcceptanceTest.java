@@ -113,4 +113,18 @@ public class PostAcceptanceTest {
         assertThat(response.getContent(), is("Back at you"));
     }
     
+    @Test
+    public void postWithByteArrayBody() {
+        driver.addExpectation(
+                new ClientDriverRequest("/bytes")
+                        .withMethod(ClientDriverRequest.Method.POST)
+                        .withBody("some bytes", "application/pdf"),
+                new ClientDriverResponse("The response").withStatus(418));
+        
+        Response response = post(baseUrl + "/bytes", body("some bytes".getBytes(), "application/pdf"));
+        
+        assertThat(response, hasStatusCode(418));
+        assertThat(response.getContent(), is("The response"));
+    }
+    
 }
