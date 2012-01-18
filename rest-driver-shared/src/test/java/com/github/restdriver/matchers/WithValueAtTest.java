@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -26,38 +26,45 @@ import org.hamcrest.StringDescription;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WithSizeTest {
+import com.github.restdriver.matchers.WithValueAt;
+
+public class WithValueAtTest {
     
     private static final ObjectMapper MAPPER = new ObjectMapper();
     
-    private WithSize matcher;
+    private WithValueAt matcher;
     
     @Before
     public void before() {
-        matcher = new WithSize(lessThan(2));
+        matcher = new WithValueAt(1, is("bar"));
     }
     
     @Test
-    public void matcherShouldDescribeItselfCorrectly() {
+    public void matcherDescribesItselfCorrectly() {
         Description description = new StringDescription();
         matcher.describeTo(description);
         
-        assertThat(description.toString(), is("A JSON array with size: a value less than <2>"));
+        assertThat(description.toString(), is("A JSON array with value at 1 which matches: is \"bar\""));
     }
     
     @Test
     public void matcherShouldFailWhenAskedToMatchNonArrayNode() {
-        assertThat(matcher.matches(new TextNode("something")), is(false));
+        assertThat(matcher.matches(new TextNode("bar")), is(false));
     }
     
     @Test
-    public void matcherShouldFailWhenMatcherFails() {
-        assertThat(matcher.matches(array("foo", "bar")), is(false));
+    public void matcherShouldFailWhenGivenEmptyArrayNode() {
+        assertThat(matcher.matches(array()), is(false));
     }
     
     @Test
-    public void matcherShouldPassWhenMatcherPasses() {
-        assertThat(matcher.matches(array("foo")), is(true));
+    public void matcherShouldFailWhenRequiredElementDoesntMatch() {
+        assertThat(matcher.matches(array("notbar")), is(false));
+    }
+    
+    @Test
+    public void matcherShouldPassWhenRequiredElementMatches() {
+        assertThat(matcher.matches(array("foo", "bar")), is(true));
     }
     
     private ArrayNode array(String... items) {

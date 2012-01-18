@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 
-import com.github.restdriver.serverdriver.Json;
+import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 
 /**
  * User: mjg
@@ -33,11 +35,13 @@ import com.github.restdriver.serverdriver.Json;
  */
 public class HasJsonPathTest {
     
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    
     private HasJsonPath<?> hasJsonPath;
     
     @Test
     public void jsonMatchesString() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 'bar'}"));
+        JsonNode json = makeJson("{'foo': 'bar'}");
         
         hasJsonPath = new HasJsonPath<String>("$.foo", is("bar"));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -45,7 +49,7 @@ public class HasJsonPathTest {
     
     @Test
     public void jsonMatchesLong() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
+        JsonNode json = makeJson("{'foo': 5}");
         
         hasJsonPath = new HasJsonPath<Long>("$.foo", greaterThan(4L));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -53,7 +57,7 @@ public class HasJsonPathTest {
     
     @Test
     public void jsonMatchesInteger() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
+        JsonNode json = makeJson("{'foo': 5}");
         
         hasJsonPath = new HasJsonPath<Integer>("$.foo", is(5));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -61,7 +65,7 @@ public class HasJsonPathTest {
     
     @Test
     public void wrongClassIsCoercedCorrectly() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
+        JsonNode json = makeJson("{'foo': 5}");
         
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4)); // jp returns Long
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -69,7 +73,7 @@ public class HasJsonPathTest {
     
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void outOfIntegerRangeNumberThrowsException() throws ParseException {
-        JsonNode json = Json.asJson(makeJson("{'foo': 4294967294 }")); // too big
+        JsonNode json = makeJson("{'foo': 4294967294 }"); // too big
         
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4));
         hasJsonPath.matchesSafely(json);
@@ -77,7 +81,7 @@ public class HasJsonPathTest {
     
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void matchingADoubleAndAnInt() throws ParseException {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5.5 }")); // too big
+        JsonNode json = makeJson("{'foo': 5.5 }"); // too big
         
         hasJsonPath = new HasJsonPath<Integer>("$.foo", greaterThan(4));
         hasJsonPath.matchesSafely(json);
@@ -85,7 +89,7 @@ public class HasJsonPathTest {
     
     @Test
     public void testTypeIsTotallyWrong() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5}"));
+        JsonNode json = makeJson("{'foo': 5}");
         
         hasJsonPath = new HasJsonPath<String>("$.foo", containsString("no it doesn't"));
         assertThat(hasJsonPath.matchesSafely(json), is(false));
@@ -93,7 +97,7 @@ public class HasJsonPathTest {
     
     @Test
     public void jsonMatchesFloat() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 5.5}"));
+        JsonNode json = makeJson("{'foo': 5.5}");
         
         hasJsonPath = new HasJsonPath<Double>("$.foo", is(5.5));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -101,7 +105,7 @@ public class HasJsonPathTest {
     
     @Test
     public void jsonMatchesBoolean() {
-        JsonNode json = Json.asJson(makeJson("{'foo': false}"));
+        JsonNode json = makeJson("{'foo': false}");
         
         hasJsonPath = new HasJsonPath<Boolean>("$.foo", is(true));
         assertThat(hasJsonPath.matchesSafely(json), is(false));
@@ -109,7 +113,7 @@ public class HasJsonPathTest {
     
     @Test
     public void jsonMatchesNull() {
-        JsonNode json = Json.asJson(makeJson("{'foo': null}"));
+        JsonNode json = makeJson("{'foo': null}");
         
         hasJsonPath = new HasJsonPath<Object>("$.foo", is(nullValue()));
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -117,7 +121,7 @@ public class HasJsonPathTest {
     
     @Test
     public void matcherMatchesPresentFieldValue() {
-        JsonNode json = Json.asJson(makeJson("{'foo': 23}"));
+        JsonNode json = makeJson("{'foo': 23}");
         
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         assertThat(hasJsonPath.matchesSafely(json), is(true));
@@ -125,7 +129,7 @@ public class HasJsonPathTest {
     
     @Test
     public void matcherDoesntMatchMissingFieldValue() {
-        JsonNode json = Json.asJson(makeJson("{'bar': 23}"));
+        JsonNode json = makeJson("{'bar': 23}");
         
         hasJsonPath = new HasJsonPath<Object>("$.foo");
         assertThat(hasJsonPath.matchesSafely(json), is(false));
@@ -143,8 +147,12 @@ public class HasJsonPathTest {
         
     }
     
-    private String makeJson(String fakeJson) {
-        return fakeJson.replace("'", "\"");
+    private JsonNode makeJson(String fakeJson) {
+        try {
+            return MAPPER.readTree(fakeJson.replace("'", "\""));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }

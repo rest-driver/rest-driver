@@ -17,6 +17,10 @@ package com.github.restdriver;
 
 import java.util.regex.Pattern;
 
+import org.codehaus.jackson.JsonNode;
+import org.hamcrest.Matcher;
+
+import com.github.restdriver.matchers.HasJsonWhich;
 import com.github.restdriver.matchers.IsEquivalentXml;
 import com.github.restdriver.matchers.MatchesRegex;
 
@@ -35,6 +39,10 @@ public final class Matchers {
     
     public static IsEquivalentXml equivalentXmlTo(String xml) {
         return new IsEquivalentXml(xml);
+    }
+    
+    public static HasJsonWhich hasJsonWhich(Matcher<JsonNode> matcher) {
+        return new HasJsonWhich(matcher);
     }
     
 }

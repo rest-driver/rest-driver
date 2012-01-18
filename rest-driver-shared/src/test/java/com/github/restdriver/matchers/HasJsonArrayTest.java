@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -27,6 +27,9 @@ import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.github.restdriver.matchers.HasJsonArray;
+import com.github.restdriver.matchers.WithSize;
 
 public class HasJsonArrayTest {
     

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.exception;
 
 /**
  * Runtime Exception class for errors when JSONpath returns a result of an unexpected type.
