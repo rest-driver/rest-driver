@@ -118,6 +118,50 @@ public final class ClientDriverRequest {
      * Setter for expecting query-string parameters on the end of the url.
      * 
      * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, int value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, long value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, boolean value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, Object value) {
+        return withParam(key, value.toString());
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
      * @param value The value from ?key=value in the form of a Pattern
      * @return the object you called the method on, so you can chain these calls.
      */
