@@ -46,7 +46,7 @@ public final class ClientDriverRequest {
     }
     
     private final Object path;
-    private final Multimap<String, Object> params;
+    private final Multimap<String, Matcher<? extends String>> params;
     private final Map<String, Object> headers;
     
     private Method method;
@@ -110,8 +110,52 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withParam(String key, String value) {
-        params.put(key, value);
+        params.put(key, new IsEqual<String>(value));
         return this;
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, int value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, long value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, boolean value) {
+        return withParam(key, String.valueOf(value));
+    }
+    
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     * 
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a String
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, Object value) {
+        return withParam(key, value.toString());
     }
     
     /**
@@ -122,7 +166,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls.
      */
     public ClientDriverRequest withParam(String key, Pattern value) {
-        params.put(key, value);
+        params.put(key, new MatchesRegex(value));
         return this;
     }
     
@@ -134,7 +178,13 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withParams(Map<String, Object> newParams) {
         for (Entry<String, Object> entry : newParams.entrySet()) {
-            this.params.put(entry.getKey(), entry.getValue());
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (value instanceof Pattern) {
+                this.params.put(key, new MatchesRegex((Pattern) value));
+            } else {
+                this.params.put(key, new IsEqual<String>(value.toString()));
+            }
         }
         return this;
     }
@@ -142,7 +192,7 @@ public final class ClientDriverRequest {
     /**
      * @return the params
      */
-    public Map<String, Collection<Object>> getParams() {
+    Map<String, Collection<Matcher<? extends String>>> getParams() {
         return params.asMap();
     }
     
@@ -156,8 +206,9 @@ public final class ClientDriverRequest {
         
         List<String> queryStringValues = new ArrayList<String>();
         
-        for (Entry<String, Object> entry : params.entries()) {
-            queryStringValues.add(entry.getKey() + "=" + entry.getValue());
+        for (Entry<String, Matcher<? extends String>> entry : params.entries()) {
+            String stringified = removeQuotes(entry.getValue());
+            queryStringValues.add(entry.getKey() + "=" + stringified);
         }
         
         String queryString = StringUtils.join(queryStringValues, "&");
@@ -167,6 +218,10 @@ public final class ClientDriverRequest {
         }
         
         return "ClientDriverRequest: " + method + " " + path.toString() + queryString + "; ";
+    }
+    
+    private static String removeQuotes(Matcher<? extends String> matcher) {
+        return StringUtils.removeEnd(StringUtils.removeStart(matcher.toString(), "\""), "\"");
     }
     
     /**

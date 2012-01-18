@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     private boolean hasSameQueryString(RealRequest realRequest, ClientDriverRequest expectedRequest) {
         
         Map<String, Collection<String>> actualParams = realRequest.getParams();
-        Map<String, Collection<Object>> expectedParams = expectedRequest.getParams();
+        Map<String, Collection<Matcher<? extends String>>> expectedParams = expectedRequest.getParams();
         
         if (actualParams.size() != expectedParams.size()) {
             LOGGER.info("REJECTED on number of params: expected " + expectedParams.size() + " != " + actualParams.size());
@@ -112,7 +113,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 return false;
             }
             
-            Collection<Object> expectedParamValues = expectedParams.get(expectedKey);
+            Collection<Matcher<? extends String>> expectedParamValues = expectedParams.get(expectedKey);
             
             if (expectedParamValues.size() != actualParamValues.size()) {
                 LOGGER.info("REJECTED on number of values for param '" + expectedKey + "': expected " + expectedParamValues.size() + " != " + actualParamValues.size());
@@ -129,15 +130,16 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         return true;
     }
     
-    private boolean containsMatch(String expectedKey, Collection<String> actualParamValues, Collection<Object> expectedParamValues) {
+    private boolean containsMatch(String expectedKey, Collection<String> actualParamValues, Collection<Matcher<? extends String>> expectedParamValues) {
         
-        for (Object expectedParamValue : expectedParamValues) {
+        for (Matcher<? extends String> expectedParamValue : expectedParamValues) {
             
             boolean matched = false;
             
             for (String actualParamValue : actualParamValues) {
-                if (isStringOrPatternMatch(actualParamValue, expectedParamValue)) {
+                if (expectedParamValue.matches(actualParamValue)) {
                     matched = true;
+                    break;
                 }
             }
             

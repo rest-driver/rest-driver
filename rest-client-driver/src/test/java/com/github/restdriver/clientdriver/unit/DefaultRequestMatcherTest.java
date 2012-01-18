@@ -112,6 +112,64 @@ public class DefaultRequestMatcherTest {
 
         assertThat(sut.isMatch(real, expected), is(true));
     }
+    
+    @Test
+    public void testMatchWithIntegerParam() throws IOException {
+        
+        params = asMap("number", "10");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
+                                        .withMethod(Method.GET)
+                                        .withParam("number", 10);
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+        
+    }
+    
+    @Test
+    public void testMatchWithLongParam() throws IOException {
+        
+        params = asMap("number", "10");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
+                                        .withMethod(Method.GET)
+                                        .withParam("number", 10L);
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+        
+    }
+    
+    @Test
+    public void testMatchWithBooleanParam() throws IOException {
+        
+        params = asMap("number", "true");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
+                                        .withMethod(Method.GET)
+                                        .withParam("number", true);
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+        
+    }
+    
+    @Test
+    public void testMatchWithObjectParam() throws IOException {
+        
+        Object param = Method.POST;
+        
+        params = asMap("number", "POST");
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
+                                        .withMethod(Method.GET)
+                                        .withParam("number", param);
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+        
+    }
 
     @Test
     public void testMatchWithWrongParam() {
