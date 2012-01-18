@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import java.text.ParseException;
 
@@ -22,6 +22,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 import com.jayway.jsonpath.JsonPath;
 
 /**

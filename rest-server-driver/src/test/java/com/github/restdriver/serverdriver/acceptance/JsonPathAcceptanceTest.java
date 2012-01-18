@@ -29,8 +29,8 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.matchers.RuntimeJsonTypeMismatchException;
 
 public class JsonPathAcceptanceTest {
     

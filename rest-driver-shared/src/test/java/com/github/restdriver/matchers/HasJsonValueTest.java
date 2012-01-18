@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
-import com.github.restdriver.serverdriver.Json;
-import org.codehaus.jackson.JsonNode;
-import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+
+import java.io.IOException;
+
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.junit.Test;
 
 /**
  * User: mjg
@@ -29,60 +31,62 @@ import static org.hamcrest.Matchers.*;
  */
 public class HasJsonValueTest {
     
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    
     private HasJsonValue hasJsonValue;
     
     @Test
     public void jsonMatchesString() {
-        JsonNode json = Json.asJson("{\"foo\": \"bar\"}");
+        JsonNode json = asJson("{\"foo\": \"bar\"}");
         hasJsonValue = new HasJsonValue("foo", is("bar"));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingString() {
-        JsonNode json = Json.asJson("{\"foo\": \"grap\"}");
+        JsonNode json = asJson("{\"foo\": \"grap\"}");
         hasJsonValue = new HasJsonValue("foo", is("bar"));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
     
     @Test
     public void jsonMatchesANumber() {
-        JsonNode json = Json.asJson("{\"foo\": 5}");
+        JsonNode json = asJson("{\"foo\": 5}");
         hasJsonValue = new HasJsonValue("foo", greaterThan(4));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingNumber() {
-        JsonNode json = Json.asJson("{\"foo\": 5}");
+        JsonNode json = asJson("{\"foo\": 5}");
         hasJsonValue = new HasJsonValue("foo", greaterThan(6));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
     
     @Test
     public void jsonMatchesABool() {
-        JsonNode json = Json.asJson("{\"foo\": true}");
+        JsonNode json = asJson("{\"foo\": true}");
         hasJsonValue = new HasJsonValue("foo", is(true));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingBool() {
-        JsonNode json = Json.asJson("{\"foo\": true}");
+        JsonNode json = asJson("{\"foo\": true}");
         hasJsonValue = new HasJsonValue("foo", is(not(true)));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
     
     @Test
     public void jsonMatchesADouble() {
-        JsonNode json = Json.asJson("{\"foo\": 123.456}");
+        JsonNode json = asJson("{\"foo\": 123.456}");
         hasJsonValue = new HasJsonValue("foo", is(123.456));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingDouble() {
-        JsonNode json = Json.asJson("{\"foo\": 987.654}");
+        JsonNode json = asJson("{\"foo\": 987.654}");
         // hasJsonValue = new HasJsonValue("foo", greaterThan(1000)); -- ClassCastException
         hasJsonValue = new HasJsonValue("foo", greaterThan(1000.0));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
@@ -90,14 +94,14 @@ public class HasJsonValueTest {
     
     @Test
     public void jsonMatchesANull() {
-        JsonNode json = Json.asJson("{\"foo\": null}");
+        JsonNode json = asJson("{\"foo\": null}");
         hasJsonValue = new HasJsonValue("foo", nullValue());
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingNull() {
-        JsonNode json = Json.asJson("{\"foo\": true}");
+        JsonNode json = asJson("{\"foo\": true}");
         hasJsonValue = new HasJsonValue("foo", is(nullValue()));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
@@ -112,7 +116,7 @@ public class HasJsonValueTest {
                         "dWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRo" +
                         "ZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=";
         
-        JsonNode json = Json.asJson("{\"foo\": \"" + base64Data + "\"}");
+        JsonNode json = asJson("{\"foo\": \"" + base64Data + "\"}");
         
         hasJsonValue = new HasJsonValue("foo", is(base64Data));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
@@ -120,30 +124,38 @@ public class HasJsonValueTest {
     
     @Test
     public void jsonMatchesALong() {
-        JsonNode json = Json.asJson("{\"foo\": 123456789012345}");
+        JsonNode json = asJson("{\"foo\": 123456789012345}");
         hasJsonValue = new HasJsonValue("foo", is(123456789012345L));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsNonMatchingLong() {
-        JsonNode json = Json.asJson("{\"foo\": 123456789012345}");
+        JsonNode json = asJson("{\"foo\": 123456789012345}");
         hasJsonValue = new HasJsonValue("foo", lessThan(12345678L));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
     }
     
     @Test
     public void jsonSuccessfullyMatchesNestedObject() {
-        JsonNode json = Json.asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
+        JsonNode json = asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
         hasJsonValue = new HasJsonValue("address", new HasJsonValue("postcode", is("BS1 2PH")));
         assertThat(hasJsonValue.matchesSafely(json), is(true));
     }
     
     @Test
     public void jsonFailsMatchOnNestedObject() {
-        JsonNode json = Json.asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
+        JsonNode json = asJson("{\"address\": { \"postcode\": \"BS1 2PH\" } }");
         hasJsonValue = new HasJsonValue("address", new HasJsonValue("postcode", is("wrong")));
         assertThat(hasJsonValue.matchesSafely(json), is(false));
+    }
+    
+    private static JsonNode asJson(String json) {
+        try {
+            return MAPPER.readTree(json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
 }

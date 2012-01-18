@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import java.util.Iterator;
 
@@ -23,27 +23,24 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Matcher to check that a JSON array has a particular value at the specified index.
+ * Matcher which checks that a JSON array contains the specified value.
  */
-public final class WithValueAt extends TypeSafeMatcher<JsonNode> {
+public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
     
-    private final int position;
     private final Matcher<?> matcher;
     
     /**
-     * Create a new instance of this matcher.
+     * Create a new instance which uses the given matcher against all values in a JSON array.
      * 
-     * @param position The position in the array at which the value is to be evaluated
-     * @param matcher The matcher to use to evaluate the value
+     * @param matcher The matcher to be used for evaluation
      */
-    public WithValueAt(int position, Matcher<?> matcher) {
-        this.position = position;
+    public ContainingValue(Matcher<?> matcher) {
         this.matcher = matcher;
     }
     
     @Override
     public void describeTo(Description description) {
-        description.appendText("A JSON array with value at " + position + " which matches: ");
+        description.appendText("A JSON array containing: ");
         matcher.describeTo(description);
     }
     
@@ -55,20 +52,17 @@ public final class WithValueAt extends TypeSafeMatcher<JsonNode> {
         }
         
         Iterator<JsonNode> nodeIterator = node.getElements();
-        int nodeCount = 0;
         
         while (nodeIterator.hasNext()) {
             
-            JsonNode currentNode = nodeIterator.next();
+            String value = nodeIterator.next().getTextValue();
             
-            if (nodeCount == position) {
-                return matcher.matches(currentNode.getTextValue());
+            if (matcher.matches(value)) {
+                return true;
             }
-            
-            nodeCount++;
-            
         }
         
         return false;
     }
+    
 }
