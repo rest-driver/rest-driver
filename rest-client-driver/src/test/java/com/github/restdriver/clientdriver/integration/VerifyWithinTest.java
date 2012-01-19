@@ -73,6 +73,7 @@ public class VerifyWithinTest {
             }
         });
         thread.setDaemon(true);
+        
         thread.start();
         
         clientDriver.verify();
@@ -96,6 +97,7 @@ public class VerifyWithinTest {
             }
         });
         thread.setDaemon(true);
+        
         thread.start();
         
         clientDriver.verify();
@@ -107,30 +109,31 @@ public class VerifyWithinTest {
         
         clientDriver.addExpectation(
                 onRequestTo("/foo1"),
-                giveEmptyResponse().within(500, TimeUnit.MILLISECONDS));
+                giveEmptyResponse().within(5, TimeUnit.SECONDS));
         
         clientDriver.addExpectation(
                 onRequestTo("/foo2"),
-                giveEmptyResponse().within(500, TimeUnit.MILLISECONDS));
+                giveEmptyResponse().within(5, TimeUnit.SECONDS));
         
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                schnooze(200, TimeUnit.MILLISECONDS);
+                schnooze(500, TimeUnit.MILLISECONDS);
                 hitThat(clientDriver.getBaseUrl() + "/foo1");
             }
         });
         thread1.setDaemon(true);
-        thread1.start();
         
         Thread thread2 = new Thread(new Runnable() {
             @Override
             public void run() {
-                schnooze(200, TimeUnit.MILLISECONDS);
+                schnooze(500, TimeUnit.MILLISECONDS);
                 hitThat(clientDriver.getBaseUrl() + "/foo2");
             }
         });
         thread2.setDaemon(true);
+        
+        thread1.start();
         thread2.start();
         
         clientDriver.verify();
@@ -158,7 +161,6 @@ public class VerifyWithinTest {
             }
         });
         thread1.setDaemon(true);
-        thread1.start();
         
         Thread thread2 = new Thread(new Runnable() {
             @Override
@@ -168,6 +170,8 @@ public class VerifyWithinTest {
             }
         });
         thread2.setDaemon(true);
+        
+        thread1.start();
         thread2.start();
         
         clientDriver.verify();
