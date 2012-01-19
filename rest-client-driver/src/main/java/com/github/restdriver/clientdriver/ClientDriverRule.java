@@ -71,6 +71,16 @@ public final class ClientDriverRule implements TestRule {
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
     }
+
+    /**
+     * The given listener will be registered with the Client Driver and executes once execution has
+     * completed.
+     * 
+     * @param listener The listener
+     */
+    public void whenCompleted(ClientDriverCompletedListener listener) {
+        clientDriver.addListener(listener);
+    }
     
     /**
      * Statement which evaluates the given Statement and shuts down the client after evaluation.
