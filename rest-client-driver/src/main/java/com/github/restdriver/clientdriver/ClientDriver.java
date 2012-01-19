@@ -17,6 +17,8 @@ package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jetty.server.Server;
 
@@ -31,6 +33,7 @@ public final class ClientDriver {
     
     private final Server jettyServer;
     private final int port;
+    private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
     
     private final ClientDriverJettyHandler handler;
     
@@ -127,6 +130,8 @@ public final class ClientDriver {
             jettyServer.stop();
         } catch (Exception e) {
             throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
+        } finally {
+            completed();
         }
     }
     
@@ -150,5 +155,15 @@ public final class ClientDriver {
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         return handler.addExpectation(request, response);
+    }
+    
+    void addListener(ClientDriverListener listener) {
+        listeners.add(listener);
+    }
+    
+    private void completed() {
+        for (ClientDriverListener listener : listeners) {
+            listener.hasCompleted();
+        }
     }
 }
