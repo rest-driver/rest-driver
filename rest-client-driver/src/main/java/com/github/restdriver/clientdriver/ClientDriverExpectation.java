@@ -26,6 +26,7 @@ public class ClientDriverExpectation {
     private int numberOfTimes = 1;
     private int numberOfMatches;
     private boolean matchAnyTimes;
+    private MatchedRequestHandler matchedRequestHandler = new NullRequestHandler();
     
     /**
      * Creates a new expectation instance.
@@ -47,28 +48,34 @@ public class ClientDriverExpectation {
     
     /**
      * Indicate that this expectation should be matched a given number of times.
-     * 
+     *
      * @param times The number of times this expectation should be matched
      */
-    public final void times(int times) {
+    public final ClientDriverExpectation times(int times) {
         if (times < 1) {
             throw new ClientDriverInvalidExpectationException("Expectation cannot be matched less than once");
         }
         numberOfTimes = times;
+
+        return this;
     }
     
     /**
      * Indicate that this expectation should be matched any number of times.
      */
-    public final void anyTimes() {
+    public final ClientDriverExpectation anyTimes() {
         matchAnyTimes = true;
+        return this;
     }
     
     /**
      * Indicate that this expectation has been matched.
+     * @param realRequest
      */
-    public final void match() {
+    public final void match(HttpRealRequest realRequest) {
         numberOfMatches += 1;
+
+        matchedRequestHandler.onMatch(realRequest);
     }
     
     /**
@@ -107,5 +114,15 @@ public class ClientDriverExpectation {
         return "expected: " + expectedString + ", actual: " + numberOfMatches;
         
     }
-    
+
+    /**
+     * When a call is matched call a handler
+     *
+     * @param matchedRequestHandler called when the request is matched
+     * @return
+     */
+    public ClientDriverExpectation whenMatched(MatchedRequestHandler matchedRequestHandler) {
+        this.matchedRequestHandler = matchedRequestHandler;
+        return this;
+    }
 }

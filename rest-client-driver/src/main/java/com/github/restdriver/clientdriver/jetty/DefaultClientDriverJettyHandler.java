@@ -108,21 +108,22 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     }
     
     private ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
-        
-        int index = 0;
-        
+
         ClientDriverExpectation matchedExpectation = null;
         HttpRealRequest realRequest = new HttpRealRequest(request);
-        
+
+        int index;
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
             if (matcher.isMatch(realRequest, thisPair.getRequest())) {
-                thisExpectation.match();
+
+                thisExpectation.match(realRequest);
                 if (matchedExpectation == null) {
                     matchedExpectation = thisExpectation;
                     break;
                 }
+
             }
         }
         
