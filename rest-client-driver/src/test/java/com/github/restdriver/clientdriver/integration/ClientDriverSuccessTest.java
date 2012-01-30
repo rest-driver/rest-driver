@@ -381,7 +381,7 @@ public class ClientDriverSuccessTest {
         HttpClient getClient = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/foo");
         HttpResponse getResponse = getClient.execute(getter);
-
+        
         assertThat(getResponse.getStatusLine().getStatusCode(), equalTo(417));
         
         assertThat(response.getStatusLine().getStatusCode(), is(418));

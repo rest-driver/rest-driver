@@ -47,17 +47,21 @@ public class HttpRealRequestTest {
         
         String bodyContent = "bodyContent";
         String expectedContentType = "contentType";
-
+        
         when(mockRequest.getPathInfo()).thenReturn(expectedPathInfo);
         when(mockRequest.getMethod()).thenReturn(expectedMethod);
-        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {{ put("hello", new String[] { "world" });}});
+        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {
+            {
+                put("hello", new String[] { "world" });
+            }
+        });
         when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
         when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
         when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(bodyContent)));
         when(mockRequest.getContentType()).thenReturn(expectedContentType);
-
+        
         RealRequest realRequest = new HttpRealRequest(mockRequest);
-
+        
         assertThat((String) realRequest.getPath(), is(expectedPathInfo));
         assertThat(realRequest.getMethod(), is(Method.GET));
         assertThat(realRequest.getParams().size(), is(1));

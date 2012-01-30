@@ -20,9 +20,9 @@ import java.io.IOException;
 public class RuntimeConfigurationException extends RuntimeException {
     
     private static final long serialVersionUID = -8998669008887196143L;
-
+    
     public RuntimeConfigurationException(IOException e) {
         super(e);
     }
-
+    
 }

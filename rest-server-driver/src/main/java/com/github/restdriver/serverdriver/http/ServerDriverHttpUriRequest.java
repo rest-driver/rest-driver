@@ -28,7 +28,7 @@ public final class ServerDriverHttpUriRequest {
     
     private static final String USER_AGENT = "User-Agent";
     private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
-
+    
     private final HttpUriRequest request;
     
     private HttpHost proxyHost;

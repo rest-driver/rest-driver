@@ -20,7 +20,7 @@ package com.github.restdriver.serverdriver.http;
  * modify any request which can take a request body (ie are "bodyable").
  * 
  * @deprecated There is now no distinction between different requests. Bodies are allowed anywhere!
- * You should extend {@link AnyRequestModifier} instead.
+ *             You should extend {@link AnyRequestModifier} instead.
  */
 @Deprecated
 public interface BodyableRequestModifier {

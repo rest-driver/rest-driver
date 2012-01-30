@@ -18,6 +18,6 @@ package com.github.restdriver.clientdriver;
 public class NullRequestHandler implements MatchedRequestHandler {
     @Override
     public void onMatch(HttpRealRequest matchedRequest) {
-
+        
     }
 }

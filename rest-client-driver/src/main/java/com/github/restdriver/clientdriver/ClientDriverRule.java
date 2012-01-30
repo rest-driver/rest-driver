@@ -71,7 +71,7 @@ public final class ClientDriverRule implements TestRule {
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
     }
-
+    
     /**
      * The given listener will be registered with the Client Driver and executes once execution has
      * completed.
@@ -103,7 +103,7 @@ public final class ClientDriverRule implements TestRule {
                 } catch (AssertionError e) {
                     assertionError = e;
                 }
-            
+                
                 clientDriver.verify();
                 if (assertionError != null) {
                     throw assertionError;

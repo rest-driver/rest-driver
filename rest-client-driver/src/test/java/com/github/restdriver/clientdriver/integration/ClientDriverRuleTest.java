@@ -36,68 +36,68 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class ClientDriverRuleTest {
-
+    
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-
+    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
+    
     @Test
     public void letsTrySomethingThatFails() throws Exception {
-
+        
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
-
+        
         driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
         driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         HttpPost post = new HttpPost(driver.getBaseUrl() + "/blah?gang=groon");
-
+        
         client.execute(post);
-
+        
     }
-
+    
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
-
+        
         driver.addExpectation(onRequestTo("/blah"), giveResponse("").withStatus(404));
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         HttpGet get = new HttpGet(driver.getBaseUrl() + "/blah");
-
+        
         client.execute(get);
-
+        
     }
-
+    
     @Test
     public void letsTrySomethingThatShouldCallbackOnMatch() throws Exception {
-
+        
         final boolean[] matched = new boolean[1];
-
+        
         driver.addExpectation(
                 onRequestTo("/path").withMethod(ClientDriverRequest.Method.POST),
                 giveResponse(""))
                 .anyTimes()
                 .whenMatched(new MatchedRequestHandler() {
-
+                    
                     @Override
                     public void onMatch(HttpRealRequest matchedRequest) {
                         assertThat(matchedRequest.getBodyContent(), is("body"));
                         matched[0] = true;
                     }
-
+                    
                 });
-
+        
         HttpClient client = new DefaultHttpClient();
         HttpPost post = new HttpPost(driver.getBaseUrl() + "/path");
         post.setEntity(new StringEntity("body"));
         client.execute(post);
-
+        
         assertTrue(matched[0]);
     }
-
+    
 }

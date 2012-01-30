@@ -67,8 +67,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     /**
      * {@inheritDoc}
      * <p/>
-     * This implementation uses the expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pairs to serve its requests.
-     * If an unexpected request comes in, a {@link ClientDriverInternalException} is thrown.
+     * This implementation uses the expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pairs to serve its requests. If an unexpected request comes in, a
+     * {@link ClientDriverInternalException} is thrown.
      */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -108,22 +108,22 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     }
     
     private ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
-
+        
         ClientDriverExpectation matchedExpectation = null;
         HttpRealRequest realRequest = new HttpRealRequest(request);
-
+        
         int index;
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
             if (matcher.isMatch(realRequest, thisPair.getRequest())) {
-
+                
                 thisExpectation.match(realRequest);
                 if (matchedExpectation == null) {
                     matchedExpectation = thisExpectation;
                     break;
                 }
-
+                
             }
         }
         
@@ -170,7 +170,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
                 waitFor(period);
                 period = 0;
             }
-        
+            
             for (ClientDriverExpectation expectation : expectations) {
                 
                 ClientDriverResponse response = expectation.getPair().getResponse();

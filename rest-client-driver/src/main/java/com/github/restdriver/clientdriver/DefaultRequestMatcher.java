@@ -151,7 +151,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         
         return true;
     }
-
+    
     @SuppressWarnings("unchecked")
     private boolean hasSameHeaders(RealRequest realRequest, ClientDriverRequest expectedRequest) {
         
@@ -222,7 +222,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 return false;
             }
         }
-            
+        
         if (expectedRequest.getBodyContentMatcher() != null) {
             String actualContent = realRequest.getBodyContent();
             
