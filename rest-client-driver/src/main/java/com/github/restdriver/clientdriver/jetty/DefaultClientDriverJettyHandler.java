@@ -175,12 +175,13 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
                 
                 ClientDriverResponse response = expectation.getPair().getResponse();
                 
-                if (response.canExpire() && response.hasNotExpired()) {
-                    period = DEFAULT_WAIT_INTERVAL;
+                if (expectation.shouldMatchAnyTimes()) {
+                    period = 0;
                     break;
                 }
                 
-                if (expectation.shouldMatchAnyTimes()) {
+                if (response.canExpire() && response.hasNotExpired()) {
+                    period = DEFAULT_WAIT_INTERVAL;
                     break;
                 }
                 

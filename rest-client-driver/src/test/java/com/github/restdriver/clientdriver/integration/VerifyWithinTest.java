@@ -16,6 +16,8 @@
 package com.github.restdriver.clientdriver.integration;
 
 import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +57,23 @@ public class VerifyWithinTest {
         
         // Don't actually do anything
         clientDriver.verify();
+        
+    }
+    
+    @Test
+    public void expectationWhichMatchesAnyTimesDoesNotWait() throws Exception {
+        
+        clientDriver.addExpectation(
+                onRequestTo("/foo"),
+                giveEmptyResponse().within(10, TimeUnit.SECONDS)).anyTimes();
+        
+        long start = System.currentTimeMillis();
+        
+        clientDriver.verify();
+        
+        long end = System.currentTimeMillis();
+        
+        assertThat(end - start, is(lessThan(5000L)));
         
     }
     
