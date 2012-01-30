@@ -17,7 +17,11 @@ package com.github.restdriver.clientdriver.unit;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
+import com.github.restdriver.clientdriver.HttpRealRequest;
+import com.github.restdriver.clientdriver.MatchedRequestHandler;
+import org.eclipse.jetty.server.Request;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,6 +31,8 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.exception.ClientDriverInvalidExpectationException;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class ClientDriverExpectationTest {
     
@@ -71,12 +77,28 @@ public class ClientDriverExpectationTest {
         expectation.times(3);
         
         assertThat(expectation.isSatisfied(), is(false));
-        expectation.match();
+
+        HttpRealRequest realRequest = mock(HttpRealRequest.class);
+        
+        expectation.match(realRequest);
         assertThat(expectation.isSatisfied(), is(false));
-        expectation.match();
+        expectation.match(realRequest);
         assertThat(expectation.isSatisfied(), is(false));
-        expectation.match();
+        expectation.match(realRequest);
         assertThat(expectation.isSatisfied(), is(true));
+    }
+    
+    @Test
+    public void matchingExpectationCallsMatcher() {
+        MatchedRequestHandler matchHandlerMock = mock(MatchedRequestHandler.class);
+        ClientDriverExpectation expectation = new ClientDriverExpectation(PAIR);
+        expectation.whenMatched(matchHandlerMock);
+
+
+        HttpRealRequest realRequest = mock(HttpRealRequest.class);
+
+        expectation.match(realRequest);
+        verify(matchHandlerMock).onMatch(realRequest);
     }
     
     @Test
