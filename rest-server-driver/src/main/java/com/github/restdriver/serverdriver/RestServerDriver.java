@@ -37,6 +37,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
+import com.github.restdriver.serverdriver.http.BasicAuth;
 import com.github.restdriver.serverdriver.http.ByteArrayRequestBody;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
@@ -153,6 +154,17 @@ public final class RestServerDriver {
         }
         
         return new ByteArrayRequestBody(bytes, contentType);
+    }
+    
+    /**
+     * Use HTTP basic authentication.
+     * 
+     * @param username The username.
+     * @param password The password.
+     * @return The new BasicAuth instance.
+     */
+    public static BasicAuth withBasicAuth(String username, String password) {
+        return new BasicAuth(username, password);
     }
     
     /**
