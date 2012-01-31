@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
@@ -332,11 +333,20 @@ public final class ClientDriverRequest {
         return this;
     }
     
+    public ClientDriverRequest withBasicAuth(String username, String password) {
+        headers.put("Authorization", "Basic " + base64(username + ":" + password));
+        return this;
+    }
+    
     /**
      * @return the headers
      */
     public Map<String, Object> getHeaders() {
         return headers;
+    }
+    
+    private static String base64(String content) {
+        return new String(Base64.encodeBase64(content.getBytes()));
     }
     
 }
