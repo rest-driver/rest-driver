@@ -176,8 +176,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
                 ClientDriverResponse response = expectation.getPair().getResponse();
                 
                 if (expectation.shouldMatchAnyTimes()) {
-                    period = 0;
-                    break;
+                    continue;
                 }
                 
                 if (response.canExpire() && response.hasNotExpired()) {

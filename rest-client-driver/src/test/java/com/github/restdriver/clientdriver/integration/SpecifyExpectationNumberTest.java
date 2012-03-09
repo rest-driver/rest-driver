@@ -119,4 +119,17 @@ public class SpecifyExpectationNumberTest {
         
     }
     
+    @Test
+    public void specifyingAnyTimesBeforeOtherExpectationsConsidersLaterExpectationsCorrectly() throws Exception {
+        
+        thrown.expect(ClientDriverFailedExpectationException.class);
+        
+        ClientDriver driver = new ClientDriverFactory().createClientDriver();
+        driver.addExpectation(onRequestTo("/anytimes"), giveEmptyResponse()).anyTimes();
+        driver.addExpectation(onRequestTo("/one"), giveEmptyResponse());
+        
+        driver.shutdown();
+        
+    }
+    
 }
