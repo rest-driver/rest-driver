@@ -121,13 +121,13 @@ public class JsonPathAcceptanceTest {
         String jsonContent = makeJson(
 
         " { 'things' : " +
-                        "[ { 'thing' : { 'a': 'one', 'c' : 100 } } , " +
-                        "  { 'thing' : { 'a': 'two', 'c' : 150 } } ] } ");
+                        "[ { 'a': 'one', 'c' : 100 } , " +
+                        "  { 'a': 'two', 'c' : 150 } ] } ");
         
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
         Response response = get(baseUrl);
         
-        assertThat(response.asJson(), hasJsonPath("$.things.thing[?(@.c > 125)].a", hasItem(equalTo("two"))));
+        assertThat(response.asJson(), hasJsonPath("$.things[?(@.c > 125)].a", hasItem(equalTo("two"))));
     }
     
     @Test

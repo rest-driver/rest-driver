@@ -15,14 +15,13 @@
  */
 package com.github.restdriver.matchers;
 
-import java.text.ParseException;
-
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
+import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;
 
 /**
@@ -76,11 +75,8 @@ public final class HasJsonPath<T> extends TypeSafeMatcher<JsonNode> {
             }
             
             return initialMatchResult;
-            
-        } catch (ParseException pe) {
-            // we weren't passed valid JSON, which can only happen if jsonNode.toString() produces bad JSON...
+        } catch (InvalidPathException e) {
             return false;
-            
         } catch (ClassCastException cce) {
             
             if (matcher.matches(intToLong(jsonPathResult))) {

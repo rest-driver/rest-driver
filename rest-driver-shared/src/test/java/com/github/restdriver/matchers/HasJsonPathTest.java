@@ -136,6 +136,22 @@ public class HasJsonPathTest {
     }
     
     @Test
+    public void matcherDoesntMatchWithinObjectsInArrayWhenGivenFieldName() {
+        JsonNode json = makeJson("{'foo': [{'id': 1}, {'id': 2}, {'id': 3}]}");
+        
+        hasJsonPath = new HasJsonPath<Object>("$.foo.id");
+        assertThat(hasJsonPath.matchesSafely(json), is(false));
+    }
+    
+    @Test
+    public void matcherMatchesWithinObjectsWhenUsingWildcardArrayMatch() {
+        JsonNode json = makeJson("{'foo': [{'id': 1}, {'id': 2}, {'id': 3}]}");
+        
+        hasJsonPath = new HasJsonPath<Object>("$.foo[*].id");
+        assertThat(hasJsonPath.matchesSafely(json), is(true));
+    }
+    
+    @Test
     public void describeToDoesntThrowNPE() {
         // bugfix for issue #47
         
