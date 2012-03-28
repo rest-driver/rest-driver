@@ -18,18 +18,16 @@ package com.github.restdriver.matchers;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.codehaus.jackson.node.TextNode;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.github.restdriver.matchers.HasJsonArray;
-import com.github.restdriver.matchers.WithSize;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 public class HasJsonArrayTest {
     

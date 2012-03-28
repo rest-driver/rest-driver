@@ -15,10 +15,11 @@
  */
 package com.github.restdriver.matchers;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Matcher to check the size of a Json array.

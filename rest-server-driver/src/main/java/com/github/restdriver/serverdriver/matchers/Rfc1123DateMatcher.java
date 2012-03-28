@@ -15,15 +15,16 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.http.Header;
-import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 
 /**
  * Matcher to check that headers contain dates which are spec-valid. All dates in HTTP headers (Date-header, caching, etc) should

@@ -15,14 +15,15 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeUriSyntaxException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.text.StrBuilder;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrBuilder;
+
+import com.github.restdriver.serverdriver.http.exception.RuntimeUriSyntaxException;
 
 /**
  * Class to help with building of URLs.

@@ -17,9 +17,9 @@ package com.github.restdriver.serverdriver.http.response;
 
 import java.util.List;
 
-import org.codehaus.jackson.JsonNode;
 import org.w3c.dom.Element;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.restdriver.serverdriver.http.Header;
 
 /**

@@ -17,9 +17,9 @@ package com.github.restdriver;
 
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Matcher;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.restdriver.matchers.HasJsonWhich;
 import com.github.restdriver.matchers.IsEquivalentXml;
 import com.github.restdriver.matchers.MatchesRegex;

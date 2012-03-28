@@ -17,10 +17,10 @@ package com.github.restdriver.serverdriver;
 
 import static org.hamcrest.Matchers.*;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.restdriver.matchers.HasJsonPath;
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.response.Response;

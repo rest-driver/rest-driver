@@ -17,12 +17,12 @@ package com.github.restdriver.matchers;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.restdriver.exception.RuntimeAssertionFailure;
 
 /**

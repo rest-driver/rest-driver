@@ -15,11 +15,11 @@
  */
 package com.github.restdriver.matchers;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.JsonPath;

@@ -15,10 +15,11 @@
  */
 package com.github.restdriver.matchers;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Matcher to check that a given key has a particular value in a JsonNode.
@@ -55,19 +56,19 @@ public final class HasJsonValue extends TypeSafeMatcher<JsonNode> {
         }
         
         if (node.isInt()) {
-            return valueMatcher.matches(node.getIntValue());
+            return valueMatcher.matches(node.intValue());
             
         } else if (node.isLong()) {
-            return valueMatcher.matches(node.getLongValue());
+            return valueMatcher.matches(node.longValue());
             
         } else if (node.isTextual()) {
-            return valueMatcher.matches(node.getTextValue());
+            return valueMatcher.matches(node.textValue());
             
         } else if (node.isBoolean()) {
-            return valueMatcher.matches(node.getBooleanValue());
+            return valueMatcher.matches(node.booleanValue());
             
         } else if (node.isDouble()) {
-            return valueMatcher.matches(node.getDoubleValue());
+            return valueMatcher.matches(node.doubleValue());
             
         } else if (node.isObject()) {
             return valueMatcher.matches(node);

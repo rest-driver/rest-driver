@@ -21,11 +21,11 @@ import static org.hamcrest.Matchers.*;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 
 /**

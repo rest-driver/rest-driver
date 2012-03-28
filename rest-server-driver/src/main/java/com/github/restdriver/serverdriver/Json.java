@@ -17,11 +17,11 @@ package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.restdriver.matchers.ContainingValue;
 import com.github.restdriver.matchers.HasJsonArray;
 import com.github.restdriver.matchers.HasJsonValue;

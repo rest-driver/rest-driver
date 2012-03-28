@@ -17,10 +17,11 @@ package com.github.restdriver.matchers;
 
 import java.util.Iterator;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Matcher to check that a JSON array has a particular value at the specified index.
@@ -54,7 +55,7 @@ public final class WithValueAt extends TypeSafeMatcher<JsonNode> {
             return false;
         }
         
-        Iterator<JsonNode> nodeIterator = node.getElements();
+        Iterator<JsonNode> nodeIterator = node.elements();
         int nodeCount = 0;
         
         while (nodeIterator.hasNext()) {
@@ -62,7 +63,7 @@ public final class WithValueAt extends TypeSafeMatcher<JsonNode> {
             JsonNode currentNode = nodeIterator.next();
             
             if (nodeCount == position) {
-                return matcher.matches(currentNode.getTextValue());
+                return matcher.matches(currentNode.textValue());
             }
             
             nodeCount++;

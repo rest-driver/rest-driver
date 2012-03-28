@@ -20,9 +20,10 @@ import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * User: mjg

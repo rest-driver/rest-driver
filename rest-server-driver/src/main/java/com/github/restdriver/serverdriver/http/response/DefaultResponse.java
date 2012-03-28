@@ -29,9 +29,9 @@ import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.codehaus.jackson.JsonNode;
 import org.w3c.dom.Element;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.restdriver.serverdriver.Json;
 import com.github.restdriver.serverdriver.Xml;
 import com.github.restdriver.serverdriver.http.Header;
