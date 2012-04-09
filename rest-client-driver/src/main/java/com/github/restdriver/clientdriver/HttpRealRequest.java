@@ -64,7 +64,7 @@ public class HttpRealRequest implements RealRequest {
         }
         
         try {
-            this.bodyContent = IOUtils.toString(request.getReader());
+            this.bodyContent = IOUtils.toString(request.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read body of request", e);
         }

@@ -31,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Request;
 import org.junit.Assert;
 import org.junit.Before;
@@ -99,7 +100,7 @@ public class ClientDriverHandlerTest {
         when(mockHttpRequest.getMethod()).thenReturn("POST");
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
-        when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
+        when(mockHttpRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream("")));
         
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
@@ -148,4 +149,5 @@ public class ClientDriverHandlerTest {
         printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
     }
+    
 }
