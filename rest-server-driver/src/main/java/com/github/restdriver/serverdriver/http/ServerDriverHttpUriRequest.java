@@ -18,16 +18,12 @@ package com.github.restdriver.serverdriver.http;
 import org.apache.http.HttpHost;
 import org.apache.http.client.methods.HttpUriRequest;
 
-import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.serverdriver.RestServerDriver;
 
 /**
  * Wraps an {@link HttpUriRequest} with some other details which that class does not support.
  */
 public final class ServerDriverHttpUriRequest {
-    
-    private static final String USER_AGENT = "User-Agent";
-    private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
     
     private final HttpUriRequest request;
     
@@ -42,7 +38,6 @@ public final class ServerDriverHttpUriRequest {
      */
     public ServerDriverHttpUriRequest(HttpUriRequest request) {
         this.request = request;
-        this.request.setHeader(USER_AGENT, DEFAULT_USER_AGENT);
     }
     
     /**
