@@ -81,4 +81,15 @@ public class HeadersAcceptanceTest {
         assertThat(response.asText(), is("received header"));
     }
     
+    @Test
+    public void serverDriverSendsSpecifiedUserAgentWhenGiven() {
+        driver.addExpectation(
+                new ClientDriverRequest("/").withHeader("User-Agent", "provided"),
+                new ClientDriverResponse("received header"));
+        
+        Response response = get(baseUrl, header("User-Agent", "provided"));
+        
+        assertThat(response.asText(), is("received header"));
+    }
+    
 }

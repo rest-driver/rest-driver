@@ -29,6 +29,7 @@ import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -36,6 +37,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.serverdriver.http.AnyRequestModifier;
 import com.github.restdriver.serverdriver.http.BasicAuth;
 import com.github.restdriver.serverdriver.http.ByteArrayRequestBody;
@@ -66,6 +68,9 @@ public final class RestServerDriver {
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
     public static final long DEFAULT_CONNECTION_TIMEOUT = 10000;
     public static final long DEFAULT_SOCKET_TIMEOUT = 10000;
+    
+    private static final String USER_AGENT = "User-Agent";
+    private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
     
     private RestServerDriver() {
     }
@@ -563,11 +568,17 @@ public final class RestServerDriver {
             httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, request.getProxyHost());
         }
         
+        HttpUriRequest httpUriRequest = request.getHttpUriRequest();
+        
+        if (!httpUriRequest.containsHeader(USER_AGENT)) {
+            httpUriRequest.addHeader(USER_AGENT, DEFAULT_USER_AGENT);
+        }
+        
         HttpResponse response;
         
         try {
             long startTime = System.currentTimeMillis();
-            response = httpClient.execute(request.getHttpUriRequest());
+            response = httpClient.execute(httpUriRequest);
             long endTime = System.currentTimeMillis();
             
             return new DefaultResponse(response, (endTime - startTime));
