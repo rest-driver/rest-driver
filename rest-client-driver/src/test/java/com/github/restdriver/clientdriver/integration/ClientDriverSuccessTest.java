@@ -335,6 +335,23 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    public void testMatchingParamUsingMatcherDirectly() throws Exception {
+        String url = driver.getBaseUrl() + "/testing?key=value1";
+        
+        driver.addExpectation(
+                onRequestTo("/testing").withMethod(Method.GET).withParam("key", startsWith("value")),
+                giveResponse("something").withStatus(200));
+        
+        HttpClient client = new DefaultHttpClient();
+        
+        HttpGet getRequest = new HttpGet(url);
+        HttpResponse getResponse = client.execute(getRequest);
+        
+        String getEntityBody = EntityUtils.toString(getResponse.getEntity());
+        assertThat(getEntityBody, is("something"));
+    }
+    
+    @Test
     public void testMatchingOnMultipleParameters() throws Exception {
         String url = driver.getBaseUrl() + "/testing?key=value1&key=value2";
         
