@@ -170,6 +170,18 @@ public final class ClientDriverRequest {
         params.put(key, new MatchesRegex(value));
         return this;
     }
+
+    /**
+     * Setter for expecting query-string parameters on the end of the url.
+     *
+     * @param key The key from ?key=value
+     * @param value The value from ?key=value in the form of a Matcher
+     * @return the object you called the method on, so you can chain these calls.
+     */
+    public ClientDriverRequest withParam(String key, Matcher<? extends String> value) {
+        params.put(key, value);
+        return this;
+    }
     
     /**
      * Setter for expecting multiple query-string parameters on the end of the url.
