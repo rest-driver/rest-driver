@@ -32,7 +32,7 @@ public class RequestBodyTest {
         RequestBody body = new RequestBody("content", "contentType");
         body.applyTo(new ServerDriverHttpUriRequest(request));
         assertThat(IOUtils.toString(request.getEntity().getContent()), is("content"));
-        assertThat(request.getEntity().getContentType().getValue(), is("contentType; charset=UTF-8"));
+        assertThat(request.getEntity().getContentType().getValue(), is("contenttype; charset=UTF-8"));
         assertThat(request.getFirstHeader("Content-type").getValue(), is("contentType"));
     }
     

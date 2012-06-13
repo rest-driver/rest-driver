@@ -15,10 +15,9 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 
 /**
@@ -78,12 +77,7 @@ public final class RequestBody implements AnyRequestModifier {
         HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) internalRequest;
         
         entityRequest.setHeader("Content-type", contentType);
-        
-        try {
-            entityRequest.setEntity(new StringEntity(content, contentType, DEFAULT_CONTENT_ENCODING));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Error setting entity of request", e);
-        }
+        entityRequest.setEntity(new StringEntity(content, ContentType.create(contentType, DEFAULT_CONTENT_ENCODING)));
         
     }
 }

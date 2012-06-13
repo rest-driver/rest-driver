@@ -36,6 +36,7 @@ import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
@@ -210,7 +211,7 @@ public class ClientDriverSuccessTest {
         
         HttpClient client = new DefaultHttpClient();
         HttpPut putter = new HttpPut(baseUrl + "/blah2");
-        putter.setEntity(new StringEntity("Jack your body!", "text/plain", "UTF-8"));
+        putter.setEntity(new StringEntity("Jack your body!", ContentType.TEXT_PLAIN));
         HttpResponse response = client.execute(putter);
         
         assertThat(response.getStatusLine().getStatusCode(), is(501));
@@ -228,7 +229,7 @@ public class ClientDriverSuccessTest {
         
         HttpClient client = new DefaultHttpClient();
         HttpPut putter = new HttpPut(baseUrl + "/blah2");
-        putter.setEntity(new StringEntity("Jack your body!", "text/plain", "UTF-8"));
+        putter.setEntity(new StringEntity("Jack your body!", ContentType.TEXT_PLAIN));
         HttpResponse response = client.execute(putter);
         
         assertThat(response.getStatusLine().getStatusCode(), is(501));
@@ -334,6 +335,23 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    public void testMatchingParamUsingMatcherDirectly() throws Exception {
+        String url = driver.getBaseUrl() + "/testing?key=value1";
+        
+        driver.addExpectation(
+                onRequestTo("/testing").withMethod(Method.GET).withParam("key", startsWith("value")),
+                giveResponse("something").withStatus(200));
+        
+        HttpClient client = new DefaultHttpClient();
+        
+        HttpGet getRequest = new HttpGet(url);
+        HttpResponse getResponse = client.execute(getRequest);
+        
+        String getEntityBody = EntityUtils.toString(getResponse.getEntity());
+        assertThat(getEntityBody, is("something"));
+    }
+    
+    @Test
     public void testMatchingOnMultipleParameters() throws Exception {
         String url = driver.getBaseUrl() + "/testing?key=value1&key=value2";
         
@@ -375,7 +393,7 @@ public class ClientDriverSuccessTest {
         
         HttpClient postClient = new DefaultHttpClient();
         HttpPost poster = new HttpPost(baseUrl + "/blah2");
-        poster.setEntity(new StringEntity("<eh/>", "application/xml", "iso-8859-1"));
+        poster.setEntity(new StringEntity("<eh/>", ContentType.APPLICATION_XML));
         HttpResponse response = postClient.execute(poster);
         
         HttpClient getClient = new DefaultHttpClient();
