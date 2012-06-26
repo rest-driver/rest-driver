@@ -295,6 +295,40 @@ public class DefaultRequestMatcherTest {
     }
     
     @Test
+    public void testSuccessfulMatchAnyParamsWithNone() {
+    
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withAnyParams();
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+    
+    }
+    
+    @Test
+    public void testSuccessfulMatchAnyParamsWithOne() {
+    
+        params = asMap("kk", asStringList("v1", "v2"));
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withAnyParams();
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+    
+    }
+    
+    @Test
+    public void testSuccessfulMatchAnyParamsWithRedundantExpectedParameter() {
+    
+        params = asMap("kk", asStringList("v1", "v2"));
+        
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("mm", "x").withAnyParams();
+        
+        assertThat(sut.isMatch(real, expected), is(true));
+    
+    }
+    
+    @Test
     public void testMatchWrongMethod() {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
