@@ -96,6 +96,10 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     
     private boolean hasSameQueryString(RealRequest realRequest, ClientDriverRequest expectedRequest) {
         
+        if (expectedRequest.getAnyParams()) {
+            return true;
+        }
+        
         Map<String, Collection<String>> actualParams = realRequest.getParams();
         Map<String, Collection<Matcher<? extends String>>> expectedParams = expectedRequest.getParams();
         

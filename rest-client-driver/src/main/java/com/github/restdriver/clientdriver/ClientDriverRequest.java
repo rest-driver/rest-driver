@@ -53,6 +53,7 @@ public final class ClientDriverRequest {
     private Method method;
     private Matcher<? extends String> bodyContentMatcher;
     private Object bodyContentType;
+    private boolean anyParams;
     
     /**
      * Constructor taking String.
@@ -64,6 +65,7 @@ public final class ClientDriverRequest {
         method = Method.GET;
         params = HashMultimap.create();
         headers = new HashMap<String, Object>();
+        anyParams = false;
     }
     
     /**
@@ -76,6 +78,7 @@ public final class ClientDriverRequest {
         method = Method.GET;
         params = HashMultimap.create();
         headers = new HashMap<String, Object>();
+        anyParams = false;
     }
     
     /**
@@ -101,6 +104,16 @@ public final class ClientDriverRequest {
      */
     public Method getMethod() {
         return method;
+    }
+    
+    /**
+     * Setter for expecting any number of querystring parameters with any values.
+     * With this set, any expected parameters are ignored.
+     * @return
+     */
+    public ClientDriverRequest withAnyParams() {
+        anyParams = true;
+        return this;
     }
     
     /**
@@ -207,6 +220,13 @@ public final class ClientDriverRequest {
      */
     Map<String, Collection<Matcher<? extends String>>> getParams() {
         return params.asMap();
+    }
+    
+    /**
+     * @return the anyParams
+     */
+    boolean getAnyParams() {
+        return anyParams;
     }
     
     /**
