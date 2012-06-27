@@ -3,6 +3,7 @@
 * Matthew Gilliard (mjg123)
 * Andrew Jones (ahjones)
 * Joe Littlejohn (joelittlejohn)
+* David Morrissey (davemorrissey)
 * Mark Pope (scobal)
 * Neil Prosser (neilprosser)
 * Jaroslaw Zawila (jaroslawZawila)
