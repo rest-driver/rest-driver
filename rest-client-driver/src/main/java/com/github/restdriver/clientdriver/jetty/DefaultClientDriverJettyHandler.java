@@ -71,7 +71,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      * {@link ClientDriverInternalException} is thrown.
      */
     @Override
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public synchronized void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         
         ClientDriverRequestResponsePair matchingPair = getMatchingRequestPair(request);
         matchedResponses.add(matchingPair);

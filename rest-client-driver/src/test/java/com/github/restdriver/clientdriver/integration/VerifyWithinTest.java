@@ -82,12 +82,12 @@ public class VerifyWithinTest {
         
         clientDriver.addExpectation(
                 onRequestTo("/foo"),
-                giveEmptyResponse().within(500, TimeUnit.MILLISECONDS));
-        
+                giveEmptyResponse().within(2000, TimeUnit.MILLISECONDS));
+
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                schnooze(200, TimeUnit.MILLISECONDS);
+                schnooze(500, TimeUnit.MILLISECONDS);
                 hitThat(clientDriver.getBaseUrl() + "/foo");
             }
         });
