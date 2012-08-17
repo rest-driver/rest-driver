@@ -48,8 +48,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
-    private String unexpectedRequest;
-    
+    private final List<String> unexpectedRequests;
+
     /**
      * Constructor which accepts a {@link RequestMatcher}.
      * 
@@ -59,7 +59,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
         expectations = new ArrayList<ClientDriverExpectation>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
-        
+        unexpectedRequests = new ArrayList<String>();
+
         this.matcher = matcher;
         
     }
@@ -128,14 +129,17 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         if (matchedExpectation == null) {
-            unexpectedRequest = request.getMethod() + " " + request.getPathInfo();
-            
+            String unexpectedRequest = request.getMethod() + " " + request.getPathInfo();
+
             String reqQuery = request.getQueryString();
             
             if (reqQuery != null) {
                 unexpectedRequest += "?" + reqQuery;
             }
-            throw new ClientDriverInternalException("Unexpected request: " + unexpectedRequest, null);
+
+            this.unexpectedRequests.add(unexpectedRequest);
+
+            throw new ClientDriverInternalException("Unexpected request(s): " + unexpectedRequests, null);
         }
         
         if (matchedExpectation.isSatisfied()) {
@@ -147,9 +151,9 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     
     @Override
     public void checkForUnexpectedRequests() {
-        
-        if (unexpectedRequest != null) {
-            throw new ClientDriverFailedExpectationException("Unexpected request: " + unexpectedRequest, null);
+
+        if (!unexpectedRequests.isEmpty()) {
+            throw new ClientDriverFailedExpectationException("Unexpected request(s): " + unexpectedRequests, null);
         }
         
     }
