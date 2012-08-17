@@ -43,8 +43,8 @@ public class FailureReportingTest {
     public void clientDriverFailureIsReportedOverAssertionFailure() throws Exception {
         
         thrown.expect(ClientDriverFailedExpectationException.class);
-        thrown.expectMessage("Unexpected request: GET /two");
-        
+        thrown.expectMessage("Unexpected request(s): [GET /two]");
+
         clientDriver.addExpectation(onRequestTo("/one"), giveEmptyResponse());
         
         HttpClient client = new DefaultHttpClient();
