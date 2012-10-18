@@ -19,6 +19,11 @@ for MODULE in "rest-driver" "rest-client-driver" "rest-server-driver"; do
   done
 done
 
+perl -pi -e "s/\d+\.\d+\.\d+/$VERSION/g" README.md
+git add README.md
+git commit -m "Updating README.md to $VERSION"
+git push
+
 mkdir -p $WORKING_DIRECTORY
 cd $WORKING_DIRECTORY
 git clone git@github.com:rest-driver/rest-driver.wiki.git $WORKING_DIRECTORY/rest-driver.wiki
