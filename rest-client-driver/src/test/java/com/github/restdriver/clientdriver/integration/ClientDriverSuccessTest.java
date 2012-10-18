@@ -424,6 +424,21 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    public void emptyResponseHasNoContentType() throws Exception {
+        
+        driver.addExpectation(
+                onRequestTo("/foo"),
+                giveEmptyResponse().withStatus(200));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpMethodWithBody get = new HttpMethodWithBody("GET", driver.getBaseUrl() + "/foo");
+        HttpResponse response = client.execute(get);
+        
+        assertThat(response.getHeaders("Content-Type").length, is(0));
+        
+    }
+    
+    @Test
     public void bodyIsAllowedForDelete() throws Exception {
         
         driver.addExpectation(
