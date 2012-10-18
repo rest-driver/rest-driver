@@ -44,7 +44,16 @@ public class ClientDriverResponseTest {
         
         assertThat(response.getStatus(), is(200));
     }
-    
+
+    @Test
+    public void creatingEmptyResponseGivesNoContentType() {
+        
+        assertThat(new ClientDriverResponse().getContentType(), is(nullValue()));
+        assertThat(new ClientDriverResponse(null).getContentType(), is(nullValue()));
+        assertThat(new ClientDriverResponse("").getContentType(), is(nullValue()));
+        
+    }
+
     @Test
     public void usingHeaderCanOverrideContentType() {
         ClientDriverResponse response = new ClientDriverResponse("hello").withContentType("text/plain");

@@ -54,7 +54,6 @@ public class ResponseToStringAcceptanceTest {
         Response response = get(baseUrl);
         
         assertThat(response.toString(), containsString("HTTP/1.1 400 Bad Request"));
-        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
         assertThat(response.toString(), containsString("Content-Length: 0"));
         assertThat(response.toString(), containsString("Server: rest-client-driver("));
         

@@ -18,6 +18,7 @@ package com.github.restdriver.clientdriver;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import static org.apache.commons.lang.StringUtils.*;
 
 /**
  * Class for encapsulating an HTTP response.
@@ -56,8 +57,11 @@ public final class ClientDriverResponse {
     public ClientDriverResponse(String content) {
         this.content = content;
         this.status = statusCodeForContent(content);
-        this.contentType = DEFAULT_CONTENT_TYPE;
         headers = new HashMap<String, String>();
+        
+        if (isNotEmpty(content)) {
+            this.contentType = DEFAULT_CONTENT_TYPE;
+        }
     }
     
     private static int statusCodeForContent(String content) {
