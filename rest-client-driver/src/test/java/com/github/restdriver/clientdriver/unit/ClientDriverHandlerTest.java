@@ -106,14 +106,14 @@ public class ClientDriverHandlerTest {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
         } catch (ClientDriverInternalException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+            assertThat(e.getMessage(), equalTo("Unexpected request(s): [POST yarr?gooo=gredge]"));
         }
         
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+            assertThat(e.getMessage(), equalTo("Unexpected request(s): [POST yarr?gooo=gredge]"));
         }
         
     }
