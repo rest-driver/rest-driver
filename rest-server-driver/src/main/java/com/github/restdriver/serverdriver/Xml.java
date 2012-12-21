@@ -26,6 +26,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import com.github.restdriver.XmlUtil;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
@@ -51,30 +52,7 @@ public final class Xml {
      * @return The converted element
      */
     public static Element asXml(Response response) {
-        return asXml(response.getContent());
-    }
-    
-    /**
-     * Converts the given string to an XML element.
-     * 
-     * @param xml The XML string to be converted
-     * @return The converted element
-     */
-    public static Element asXml(String xml) {
-        
-        try {
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
-            
-        } catch (IOException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-            
-        } catch (SAXException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-            
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-        }
-        
+        return XmlUtil.asXml(response.getContent());
     }
     
     /**

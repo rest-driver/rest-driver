@@ -21,7 +21,11 @@ import org.hamcrest.TypeSafeMatcher;
 
 import com.google.common.base.Function;
 
+/**
+ * Used to convert a Matcher&lt;T&gt; to a Matcher &lt;U&gt; by using a provided Function&lt;U, T&gt;.
+ */
 public class HamcrestConverter<T, U> {
+
     private final Function<U, T> converter;
 
     public HamcrestConverter(Function<U, T> converter) {

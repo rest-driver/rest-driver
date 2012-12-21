@@ -20,6 +20,7 @@ import static com.github.restdriver.serverdriver.RestServerDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.github.restdriver.matchers.HasXPath;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,5 +54,18 @@ public class XPathAcceptanceTest {
         assertThat(response, hasStatusCode(200));
         assertThat(response.asXml(), hasXPath("/some/content/@type", is("awesome")));
     }
-    
+
+    @Test
+    public void xPathCanBeRunOnTextResponse() {
+
+        driver.addExpectation(
+                new ClientDriverRequest("/"),
+                new ClientDriverResponse("<some><content type='awesome'/></some>"));
+
+        Response response = get(baseUrl);
+
+        assertThat(response, hasStatusCode(200));
+        assertThat(response.asText(), HasXPath.hasXPath("/some/content/@type", is("awesome")));
+    }
+
 }
