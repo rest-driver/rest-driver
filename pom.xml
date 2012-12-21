@@ -34,14 +34,12 @@
         <developer>
             <name>Matthew Gilliard</name>
             <email>matthew.gilliard+rest-driver@gmail.com</email>
-            <organization>Nokia</organization>
-            <organizationUrl>http://music.ovi.com</organizationUrl>
         </developer>
         <developer>
             <name>Neil Prosser</name>
             <email>neil.prosser+rest-driver@gmail.com</email>
             <organization>Nokia</organization>
-            <organizationUrl>http://music.ovi.com</organizationUrl>
+            <organizationUrl>http://music.nokia.com</organizationUrl>
         </developer>
     </developers>
 
