@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.restdriver.XmlUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -129,7 +130,7 @@ public final class DefaultResponse implements Response {
     
     @Override
     public Element asXml() {
-        return Xml.asXml(this.getContent());
+        return XmlUtil.asXml(this.getContent());
     }
     
     @Override

@@ -18,6 +18,7 @@ package com.github.restdriver.serverdriver.acceptance;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.github.restdriver.XmlUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -33,13 +34,13 @@ public class XmlAcceptanceTest {
     
     @Test
     public void extractXPathValueExtractsSuccessfully() {
-        assertThat(Xml.extractXPathValue("/person/name/first", Xml.asXml(XML)), is("John"));
+        assertThat(Xml.extractXPathValue("/person/name/first", XmlUtil.asXml(XML)), is("John"));
     }
     
     @Test
     public void extractXPathValueThrowsRuntimeExceptionOnBadXPath() {
         thrown.expect(RuntimeException.class);
-        Xml.extractXPathValue("*&**gibberish", Xml.asXml(XML));
+        Xml.extractXPathValue("*&**gibberish", XmlUtil.asXml(XML));
     }
     
 }

@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.serverdriver.http;
 
+import com.github.restdriver.exception.RuntimeXmlParseException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.serverdriver.http.response.Response;
@@ -266,8 +267,8 @@ public class DefaultResponseTest {
             response.asXml();
             Assert.fail();
             
-        } catch (RuntimeMappingException rme) {
-            assertThat(rme.getMessage(), is("Can't parse XML.  Bad content >> This is not real..."));
+        } catch (RuntimeXmlParseException rxpe) {
+            assertThat(rxpe.getMessage(), is("Can't parse XML.  Bad content >> This is not real..."));
             
         }
         
