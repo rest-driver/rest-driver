@@ -60,12 +60,22 @@ public class Url {
         this.url = new StrBuilder(base);
         queryParams = new ArrayList<QueryParam>();
     }
-    
+
+    /**
+     * Copy constructor.  Creates a deep copy so no parts are shared.
+     *
+     * @param toBeCopied the Url to be copied
+     */
+    public Url(Url toBeCopied){
+        this.url = new StrBuilder(toBeCopied.url.toString());
+        this.queryParams = new ArrayList<QueryParam>(toBeCopied.queryParams);
+    }
+
     /**
      * Add a path to a url. This method ensures that there is always exactly one "/" character between segments (so you don't have to :).
      * 
      * @param path the path, eg "foo/bar"
-     * @return The new Url object (for chaining calls)
+     * @return The modified Url object (for chaining calls)
      */
     public final Url withPath(String path) {
         
@@ -95,8 +105,8 @@ public class Url {
     
     /**
      * You can pass this object to all the get/post/put/delete etc methods.
-     * 
-     * @return The Url, correctly formatted.
+     *
+     * @return The textual representation of the Url, correctly formatted.
      */
     public final String toString() {
         
