@@ -62,7 +62,7 @@ public class Url {
     }
     
     /**
-     * Add a path to a url. This method will ensure that there is always exactly one "/" character between segments (so you don't have to :).
+     * Add a path to a url. This method ensures that there is always exactly one "/" character between segments (so you don't have to :).
      * 
      * @param path the path, eg "foo/bar"
      * @return The new Url object (for chaining calls)
