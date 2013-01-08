@@ -15,6 +15,7 @@
  */
 package com.github.restdriver.clientdriver;
 
+import java.io.InputStream;
 import java.util.regex.Pattern;
 
 /**
@@ -52,6 +53,16 @@ public final class RestClientDriver {
      * @return The newly created response
      */
     public static ClientDriverResponse giveResponse(String content) {
+        return new ClientDriverResponse(content);
+    }
+    
+    /**
+     * Creates a new {@link ClientDriverResponse} object.
+     * 
+     * @param content The content to return
+     * @return The newly created response
+     */
+    public static ClientDriverResponse giveResponseAsBytes(InputStream content) {
         return new ClientDriverResponse(content);
     }
     

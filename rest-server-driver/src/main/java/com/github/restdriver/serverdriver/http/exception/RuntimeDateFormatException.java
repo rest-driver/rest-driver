@@ -24,6 +24,8 @@ import java.text.ParseException;
  */
 public class RuntimeDateFormatException extends RuntimeException {
     
+    private static final long serialVersionUID = 2177515119789644219L;
+    
     /**
      * Constructor which takes the original ParseException.
      * 
