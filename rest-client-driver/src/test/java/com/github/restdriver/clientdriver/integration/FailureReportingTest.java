@@ -59,6 +59,7 @@ public class FailureReportingTest {
     @Test
     public void assertionFailureIsReportedCorrectly() throws Exception {
         
+        thrown.handleAssertionErrors();
         thrown.expect(AssertionError.class);
         
         clientDriver.addExpectation(onRequestTo("/one"), giveEmptyResponse());
