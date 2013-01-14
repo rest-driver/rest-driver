@@ -52,7 +52,7 @@ public class FailureReportingTest {
         
         HttpResponse response = client.execute(get);
         
-        assertThat(response.getStatusLine().getStatusCode(), is(HttpStatus.SC_NO_CONTENT));
+        assertThat(response.getStatusLine().getStatusCode(), is(HttpStatus.SC_INTERNAL_SERVER_ERROR));
         
     }
     
@@ -67,7 +67,9 @@ public class FailureReportingTest {
         HttpGet get = new HttpGet(clientDriver.getBaseUrl() + "/one");
         
         HttpResponse response = client.execute(get);
-        
+
+        // We assert for a 500 response code rather than the 204 we've specified above to generate an AssertionError via Hamcrest.
+        // This AssertionError is then expected by the ExpectedException @Rule above.
         assertThat(response.getStatusLine().getStatusCode(), is(HttpStatus.SC_INTERNAL_SERVER_ERROR));
         
     }
