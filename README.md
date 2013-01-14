@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/rest-driver/rest-driver.png?branch=master)](http://travis-ci.org/rest-driver/rest-driver)
 
-Test Driver to test your RESTful services and clients
+Test Driver to test your RESTful services and clients.
 
 There are two libraries here:
 
@@ -46,3 +46,8 @@ The server will listen for a requests and respond with the replies you set.  Any
 You can also use the client-driver to mock out any remote services which your RESTful service uses.
 
 More info: [Client Driver](https://github.com/rest-driver/rest-driver/wiki/Client-driver)
+
+## Other languages
+
+* [rest-cljer](https://github.com/whostolebenfrog/rest-cljer), a convenient Clojure wrapper for REST client driver.
+
