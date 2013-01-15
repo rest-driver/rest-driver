@@ -37,6 +37,18 @@ public final class Xml {
     }
     
     /**
+     * Converts a string to an XML element.
+     * 
+     * @param content The content to be converted
+     * @return The converted element
+     * @deprecated Instead of doing asXml(response.getContent()) you can now do asXml(response).
+     */
+    @Deprecated
+    public static Element asXml(String content) {
+        return XmlUtil.asXml(content);
+    }
+    
+    /**
      * Converts the body of the given Response to an XML element.
      * 
      * @param response The response to be converted
