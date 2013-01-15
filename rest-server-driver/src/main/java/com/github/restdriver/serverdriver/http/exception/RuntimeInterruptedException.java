@@ -20,6 +20,8 @@ package com.github.restdriver.serverdriver.http.exception;
  */
 public class RuntimeInterruptedException extends RuntimeException {
     
+    private static final long serialVersionUID = -195098583427787238L;
+    
     /**
      * Constructor.
      * 

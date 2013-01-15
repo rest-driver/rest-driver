@@ -20,7 +20,9 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.regex.Pattern;
 
@@ -107,6 +109,26 @@ public class ClientDriverSuccessTest {
         
         assertThat(response.getStatusLine().getStatusCode(), is(500));
         assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
+        
+    }
+    
+    @Test
+    public void testJettyWorkingBinaryResponse() throws Exception {
+        
+        ClassLoader loader = ClientDriverSuccessTest.class.getClassLoader();
+        
+        byte[] binaryContent = IOUtils.toByteArray(loader.getResourceAsStream("example-binary.zip"));
+        InputStream stream = new ByteArrayInputStream(binaryContent);
+        
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(onRequestTo("/blah2"), giveResponseAsBytes(stream));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpGet getter = new HttpGet(baseUrl + "/blah2");
+        HttpResponse response = client.execute(getter);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(200));
+        assertThat(IOUtils.toByteArray(response.getEntity().getContent()), is(binaryContent));
         
     }
     

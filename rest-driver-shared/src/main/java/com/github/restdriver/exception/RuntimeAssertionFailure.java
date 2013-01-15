@@ -17,6 +17,8 @@ package com.github.restdriver.exception;
 
 public class RuntimeAssertionFailure extends RuntimeException {
     
+    private static final long serialVersionUID = 7196556387659644851L;
+    
     public RuntimeAssertionFailure(String message, Throwable cause) {
         super(message, cause);
     }

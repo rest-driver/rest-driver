@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.restdriver.XmlUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -33,8 +32,8 @@ import org.apache.http.HttpResponse;
 import org.w3c.dom.Element;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.github.restdriver.XmlUtil;
 import com.github.restdriver.serverdriver.Json;
-import com.github.restdriver.serverdriver.Xml;
 import com.github.restdriver.serverdriver.http.Header;
 
 /**
