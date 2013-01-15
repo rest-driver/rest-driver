@@ -16,19 +16,23 @@
 package com.github.restdriver.clientdriver.exception;
 
 /**
- * Exception which is thrown when an expectation is invalid.
+ * Runtime exception thrown when the client driver response cannot be created
  */
-public class ClientDriverInvalidExpectationException extends RuntimeException {
+public class ClientDriverResponseCreationException extends RuntimeException {
     
-    private static final long serialVersionUID = 3061242321188659386L;
+    private static final long serialVersionUID = 3273145415762614589L;
     
     /**
-     * Creates a new instance of the exception.
+     * Constructor.
      * 
-     * @param message The message
+     * @param message
+     *            The message
+     * @param cause
+     *            The throwable which we caught before throwing this one. Could
+     *            be null.
      */
-    public ClientDriverInvalidExpectationException(String message) {
-        super(message);
+    public ClientDriverResponseCreationException(String message, Throwable cause) {
+        super(message, cause);
     }
     
 }

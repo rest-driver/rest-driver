@@ -15,22 +15,15 @@
  */
 package com.github.restdriver.serverdriver;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import com.github.restdriver.XmlUtil;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.XmlUtil;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
@@ -39,8 +32,6 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * @author mjg
  */
 public final class Xml {
-    
-    private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
     
     private Xml() {
     }

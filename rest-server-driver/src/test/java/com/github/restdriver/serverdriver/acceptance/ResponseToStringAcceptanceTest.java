@@ -30,9 +30,7 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
- * User: mjg
- * Date: 07/05/11
- * Time: 21:29
+ * User: mjg Date: 07/05/11 Time: 21:29
  */
 public class ResponseToStringAcceptanceTest {
     
@@ -66,7 +64,7 @@ public class ResponseToStringAcceptanceTest {
         Response response = get(baseUrl);
         
         assertThat(response.toString(), containsString("HTTP/1.1 200 OK"));
-        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
+        assertThat(response.toString(), containsString("Content-Type: text/plain"));
         assertThat(response.toString(), containsString("Content-Length: 19"));
         assertThat(response.toString(), containsString("Server: rest-client-driver("));
         assertThat(response.toString(), containsString(n + "This is the content"));

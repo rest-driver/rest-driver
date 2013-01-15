@@ -21,6 +21,11 @@ package com.github.restdriver.exception;
 public class RuntimeJsonTypeMismatchException extends RuntimeException {
     
     /**
+     * 
+     */
+    private static final long serialVersionUID = 5947827084788598073L;
+    
+    /**
      * Constructor.
      * 
      * @param message The message.

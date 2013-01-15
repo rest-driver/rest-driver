@@ -26,6 +26,8 @@ import java.net.URISyntaxException;
  */
 public class RuntimeUriSyntaxException extends RuntimeException {
     
+    private static final long serialVersionUID = -8503822588074534959L;
+    
     /**
      * Constructor.
      * 
