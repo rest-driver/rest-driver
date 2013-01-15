@@ -16,13 +16,9 @@
 package com.github.restdriver.clientdriver.integration;
 
 import static com.github.restdriver.clientdriver.RestClientDriver.*;
-import static junit.framework.Assert.assertTrue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.HttpRealRequest;
-import com.github.restdriver.clientdriver.MatchedRequestHandler;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -32,7 +28,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.clientdriver.HttpRealRequest;
+import com.github.restdriver.clientdriver.MatchedRequestHandler;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class ClientDriverRuleTest {
@@ -97,7 +96,7 @@ public class ClientDriverRuleTest {
         post.setEntity(new StringEntity("body"));
         client.execute(post);
         
-        assertTrue(matched[0]);
+        assertThat(matched[0], is(true));
     }
     
 }
