@@ -18,11 +18,11 @@ package com.github.restdriver.serverdriver.acceptance;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import com.github.restdriver.XmlUtil;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.restdriver.XmlUtil;
 import com.github.restdriver.serverdriver.Xml;
 
 public class XmlAcceptanceTest {

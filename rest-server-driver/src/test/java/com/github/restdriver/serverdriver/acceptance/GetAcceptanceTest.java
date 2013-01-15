@@ -15,13 +15,12 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import com.github.restdriver.serverdriver.http.Url;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +28,7 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GetAcceptanceTest {

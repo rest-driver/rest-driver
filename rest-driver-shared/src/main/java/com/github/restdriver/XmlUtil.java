@@ -15,14 +15,16 @@
  */
 package com.github.restdriver;
 
-import com.github.restdriver.exception.RuntimeXmlParseException;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
+import com.github.restdriver.exception.RuntimeXmlParseException;
 
 public final class XmlUtil {
 

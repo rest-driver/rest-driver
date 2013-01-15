@@ -15,13 +15,14 @@
  */
 package com.github.restdriver.matchers;
 
-import com.github.restdriver.XmlUtil;
-import com.github.restdriver.matchers.util.HamcrestConverter;
-import com.google.common.base.Function;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 import org.w3c.dom.Node;
+
+import com.github.restdriver.XmlUtil;
+import com.github.restdriver.matchers.util.HamcrestConverter;
+import com.google.common.base.Function;
 
 public final class HasXPath {
 

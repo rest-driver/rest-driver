@@ -15,8 +15,7 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;

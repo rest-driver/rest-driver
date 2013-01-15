@@ -17,8 +17,8 @@ package com.github.restdriver;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.github.restdriver.exception.RuntimeConfigurationException;
 

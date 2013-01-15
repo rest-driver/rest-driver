@@ -15,26 +15,29 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import com.github.restdriver.exception.RuntimeXmlParseException;
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
-import com.github.restdriver.serverdriver.http.response.DefaultResponse;
-import com.github.restdriver.serverdriver.http.response.Response;
+import static com.github.restdriver.serverdriver.RestServerDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.message.BasicHeader;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import static com.github.restdriver.serverdriver.RestServerDriver.header;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import com.github.restdriver.exception.RuntimeXmlParseException;
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.serverdriver.http.response.DefaultResponse;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * User: mjg

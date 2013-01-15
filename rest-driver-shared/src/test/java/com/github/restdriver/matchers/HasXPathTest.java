@@ -15,13 +15,11 @@
  */
 package com.github.restdriver.matchers;
 
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
-
-import static com.github.restdriver.matchers.HasXPath.hasXPath;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
 
 public class HasXPathTest {
 
@@ -33,19 +31,20 @@ public class HasXPathTest {
 
     @Test
     public void xmlMatchesString() {
-        TypeSafeMatcher<String> xPathMatcher = hasXPath("//elementName");
+        TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("//elementName");
         assertThat(xPathMatcher.matches("<elementName>something else</elementName>"), is(true));
     }
 
     @Test
     public void xmlMatchesWithNestedMatcher() {
-        TypeSafeMatcher<String> xPathMatcher = hasXPath("//elementName", containsString("la"));
+        TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("//elementName", containsString("la"));
         assertThat(xPathMatcher.matches("<elementName>blah</elementName>"), is(true));
     }
 
     @Test
     public void xmlDoesNotMatch() {
-        TypeSafeMatcher<String> xPathMatcher = hasXPath("/node");
+        TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("/node");
         assertThat(xPathMatcher.matches("<cat><node></node></cat>"), is(false));
     }
+    
 }
