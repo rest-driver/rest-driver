@@ -51,7 +51,9 @@ public final class RestClientDriver {
      * 
      * @param content The content to return
      * @return The newly created response
+     * @deprecated Use {@link #giveResponse(String, String)} instead.
      */
+    @Deprecated
     public static ClientDriverResponse giveResponse(String content) {
         return new ClientDriverResponse(content);
     }
@@ -60,10 +62,22 @@ public final class RestClientDriver {
      * Creates a new {@link ClientDriverResponse} object.
      * 
      * @param content The content to return
+     * @param contentType The content-type of the response
      * @return The newly created response
      */
-    public static ClientDriverResponse giveResponseAsBytes(InputStream content) {
-        return new ClientDriverResponse(content);
+    public static ClientDriverResponse giveResponse(String content, String contentType) {
+        return new ClientDriverResponse(content, contentType);
+    }
+    
+    /**
+     * Creates a new {@link ClientDriverResponse} object.
+     * 
+     * @param content The content to return
+     * @param contentType The content-type of the response
+     * @return The newly created response
+     */
+    public static ClientDriverResponse giveResponseAsBytes(InputStream content, String contentType) {
+        return new ClientDriverResponse(content, contentType);
     }
     
     /**

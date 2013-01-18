@@ -44,7 +44,7 @@ public class BasicAuthAcceptanceTest {
     public void usingBasicAuthAddsCorrectHeader() {
         driver.addExpectation(
                 onRequestTo("/").withHeader("Authorization", "Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="),
-                giveResponse("Protected").withStatus(718));
+                giveResponse("Protected", "text/plain").withStatus(718));
         
         Response response = get(baseUrl, withBasicAuth("Aladdin", "open sesame"));
         

@@ -47,7 +47,7 @@ public class XPathAcceptanceTest {
         
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("<some><content type='awesome'/></some>"));
+                new ClientDriverResponse("<some><content type='awesome'/></some>", "text/xml"));
         
         Response response = get(baseUrl);
         
@@ -60,7 +60,7 @@ public class XPathAcceptanceTest {
 
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("<some><content type='awesome'/></some>"));
+                new ClientDriverResponse("<some><content type='awesome'/></some>", "text/xml"));
 
         Response response = get(baseUrl);
 

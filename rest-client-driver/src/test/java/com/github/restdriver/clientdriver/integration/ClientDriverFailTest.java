@@ -90,8 +90,8 @@ public class ClientDriverFailTest {
     public void testUnmatchedExpectation() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
         
-        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
-        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
+        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(200));
+        clientDriver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(404));
         
         // no requests made
         
@@ -109,7 +109,7 @@ public class ClientDriverFailTest {
         clientDriver = new ClientDriverFactory().createClientDriver();
         
         clientDriver.addExpectation(onRequestTo("/blah").withMethod(Method.POST).withParam("gang", "green"),
-                giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
+                giveResponse("OUCH!!", "text/plain").withStatus(200).withHeader("Server", "TestServer"));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -132,8 +132,7 @@ public class ClientDriverFailTest {
         clientDriver = new ClientDriverFactory().createClientDriver();
         
         clientDriver.addExpectation(onRequestTo(Pattern.compile("/b[a-z]{3}")).withMethod(Method.POST).withParam(
-                "gang", Pattern.compile("r")), giveResponse("OUCH!!").withStatus(200)
-                .withContentType("text/plain").withHeader("Server", "TestServer"));
+                "gang", Pattern.compile("r")), giveResponse("OUCH!!", "text/plain").withStatus(200).withHeader("Server", "TestServer"));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -205,7 +204,7 @@ public class ClientDriverFailTest {
         
         clientDriver.addExpectation(
                 onRequestTo("/testing").withMethod(Method.GET).withParam("key", "value1").withParam("key", "value2"),
-                giveResponse("something").withStatus(200));
+                giveResponse("something", "text/plain").withStatus(200));
         
         HttpClient client = new DefaultHttpClient();
         

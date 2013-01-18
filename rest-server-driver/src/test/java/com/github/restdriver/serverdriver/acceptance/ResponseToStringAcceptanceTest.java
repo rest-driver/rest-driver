@@ -47,7 +47,7 @@ public class ResponseToStringAcceptanceTest {
     
     @Test
     public void testToStringWithoutResponseBody() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("").withStatus(400));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("", null).withStatus(400));
         
         Response response = get(baseUrl);
         
@@ -59,7 +59,7 @@ public class ResponseToStringAcceptanceTest {
     
     @Test
     public void testToStringWithResponseBody() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("This is the content"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("This is the content", "text/plain"));
         
         Response response = get(baseUrl);
         

@@ -74,7 +74,7 @@ public class ClientDriverHandlerTest {
     @Test
     public void testUnmetExpectation() {
         
-        sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm"));
+        sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm", "text/plain"));
         
         sut.checkForUnexpectedRequests();
         
@@ -128,7 +128,7 @@ public class ClientDriverHandlerTest {
         HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
         
         ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withMethod(Method.GET).withParam("gooo", "gredge");
-        ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow").withHeader("hhh", "JJJ");
+        ClientDriverResponse realResponse = new ClientDriverResponse("lovely", "fhieow").withStatus(404).withHeader("hhh", "JJJ");
         
         when(mockHttpRequest.getMethod()).thenReturn("GET");
         when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));

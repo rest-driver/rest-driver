@@ -42,8 +42,8 @@ public class ClientDriverRuleChooseOwnPortTest {
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
         
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(200));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(404));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -56,7 +56,7 @@ public class ClientDriverRuleChooseOwnPortTest {
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
         
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("", null).withStatus(404));
         
         HttpClient client = new DefaultHttpClient();
         

@@ -46,7 +46,7 @@ public class ChooseOwnPortTest {
         int portNum = ClientDriver.getFreePort();
         
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
-        driver.addExpectation(onRequestTo("/url"), giveResponse("hello"));
+        driver.addExpectation(onRequestTo("/url"), giveResponse("hello", "text/plain"));
         
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet("http://localhost:" + portNum + "/url");

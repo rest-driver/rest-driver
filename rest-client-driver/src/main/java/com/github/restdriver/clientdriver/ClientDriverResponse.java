@@ -34,7 +34,6 @@ public final class ClientDriverResponse {
     private static final int EMPTY_RESPONSE_CODE = 204;
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String DEFAULT_TEXT_CONTENT_TYPE = "text/plain";
-    private static final String DEFAULT_BINARY_CONTENT_TYPE = "application/octet-stream";
     
     private int status;
     private final byte[] content;
@@ -51,7 +50,7 @@ public final class ClientDriverResponse {
      * no Content-Type.
      */
     public ClientDriverResponse() {
-        this(null, null);
+        this((String) null, null);
     }
     
     /**
@@ -62,22 +61,41 @@ public final class ClientDriverResponse {
      * 
      * @param content
      *            The content of the response
+     * @deprecated Use {@link #ClientDriverResponse(String, String)} instead.
      */
+    @Deprecated
     public ClientDriverResponse(String content) {
         this(convertStringToByteArray(content), DEFAULT_TEXT_CONTENT_TYPE);
     }
     
     /**
      * Creates a new response with the given body, a suitable default status
-     * code and a Content-Type of 'application/octet-stream'.
+     * code and a given content-type.
      * <p/>
      * If the content given is null a 204 status code is given, otherwise 200.
      * 
      * @param content
      *            The content of the response
+     * @param contentType
+     *            The content type
      */
-    public ClientDriverResponse(InputStream content) {
-        this(convertInputStreamToByteArray(content), DEFAULT_BINARY_CONTENT_TYPE);
+    public ClientDriverResponse(String content, String contentType) {
+        this(convertStringToByteArray(content), contentType);
+    }
+    
+    /**
+     * Creates a new response with the given body, a suitable default status
+     * code and a given content-type.
+     * <p/>
+     * If the content given is null a 204 status code is given, otherwise 200.
+     * 
+     * @param content
+     *            The content of the response
+     * @param contentType
+     *            The content type
+     */
+    public ClientDriverResponse(InputStream content, String contentType) {
+        this(convertInputStreamToByteArray(content), contentType);
     }
     
     private ClientDriverResponse(byte[] content, String contentType) {
@@ -201,9 +219,23 @@ public final class ClientDriverResponse {
      *            the contentType to set
      * @return the object you called the method on, so you can chain these
      *         calls.
+     * @deprecated You shouldn't need to use this method any more. Use one of
+     * the creator methods which specifies a content-type.
      */
+    @Deprecated
     public ClientDriverResponse withContentType(String withContentType) {
         this.contentType = withContentType;
+        return this;
+    }
+    
+    /**
+     * Cause this response to have no Content-Type.
+     * 
+     * @return the object you called the method on, so you can chain these
+     *         calls
+     */
+    public ClientDriverResponse withoutContentType() {
+        this.contentType = null;
         return this;
     }
     

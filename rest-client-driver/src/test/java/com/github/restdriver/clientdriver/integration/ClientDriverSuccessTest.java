@@ -64,9 +64,8 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/blah"),
-                giveResponse("OUCH!!")
+                giveResponse("OUCH!!", "text/plain")
                         .withStatus(200)
-                        .withContentType("text/plain")
                         .withHeader("Server", "TestServer"));
         
         HttpClient client = new DefaultHttpClient();
@@ -86,7 +85,7 @@ public class ClientDriverSuccessTest {
     public void testJettyWorking404() throws Exception {
         
         String baseUrl = driver.getBaseUrl();
-        driver.addExpectation(onRequestTo("/blah2"), giveResponse("o.O").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah2"), giveResponse("o.O", "text/plain").withStatus(404));
         
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -101,7 +100,7 @@ public class ClientDriverSuccessTest {
     public void testJettyWorking500() throws Exception {
         
         String baseUrl = driver.getBaseUrl();
-        driver.addExpectation(onRequestTo("/blah2"), giveResponse("___").withStatus(500));
+        driver.addExpectation(onRequestTo("/blah2"), giveResponse("___", "text/plain").withStatus(500));
         
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -121,7 +120,7 @@ public class ClientDriverSuccessTest {
         InputStream stream = new ByteArrayInputStream(binaryContent);
         
         String baseUrl = driver.getBaseUrl();
-        driver.addExpectation(onRequestTo("/blah2"), giveResponseAsBytes(stream));
+        driver.addExpectation(onRequestTo("/blah2"), giveResponseAsBytes(stream, "application/octet-stream"));
         
         HttpClient client = new DefaultHttpClient();
         HttpGet getter = new HttpGet(baseUrl + "/blah2");
@@ -136,8 +135,8 @@ public class ClientDriverSuccessTest {
     public void testJettyWorkingTwoRequests() throws Exception {
         
         String baseUrl = driver.getBaseUrl();
-        driver.addExpectation(onRequestTo("/blah123"), giveResponse("__2_").withStatus(200));
-        driver.addExpectation(onRequestTo("/blah456"), giveResponse("__7_").withStatus(300));
+        driver.addExpectation(onRequestTo("/blah123"), giveResponse("__2_", "text/plain").withStatus(200));
+        driver.addExpectation(onRequestTo("/blah456"), giveResponse("__7_", "text/plain").withStatus(300));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -157,8 +156,7 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/blah").withMethod(Method.DELETE).withParam("gang", "green"),
-                giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
-                        "TestServer"));
+                giveResponse("OUCH!!", "text/plain").withStatus(200).withHeader("Server", "TestServer"));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -179,7 +177,7 @@ public class ClientDriverSuccessTest {
         driver.addExpectation(
                 onRequestTo(Pattern.compile("/[a-z]l[a-z]{2}")).withMethod(Method.DELETE).withParam("gang",
                         Pattern.compile("gre[a-z]+")),
-                giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server",
+                giveResponse("OUCH!!", "text/plain").withStatus(200).withHeader("Server",
                         "TestServer"));
         
         HttpClient client = new DefaultHttpClient();
@@ -197,11 +195,11 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/blah"),
-                giveResponse("OUCH!!").withStatus(200).withContentType("text/plain").withHeader("Server", "TestServer"));
+                giveResponse("OUCH!!", "text/plain").withStatus(200).withHeader("Server", "TestServer"));
         
         driver.addExpectation(
                 onRequestTo("/blah"),
-                giveResponse("OUCH!!404").withStatus(404).withContentType("text/plain404").withHeader("Server", "TestServer404"));
+                giveResponse("OUCH!!404", "text/plain404").withStatus(404).withHeader("Server", "TestServer404"));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -229,7 +227,7 @@ public class ClientDriverSuccessTest {
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.PUT).withBody("Jack your body!", "text/plain"),
-                giveResponse("___").withStatus(501));
+                giveResponse("___", "text/plain").withStatus(501));
         
         HttpClient client = new DefaultHttpClient();
         HttpPut putter = new HttpPut(baseUrl + "/blah2");
@@ -247,7 +245,7 @@ public class ClientDriverSuccessTest {
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.PUT).withBody(Pattern.compile("Jack [\\w\\s]+!"),
-                        "text/plain"), giveResponse("___").withStatus(501));
+                        "text/plain"), giveResponse("___", "text/plain").withStatus(501));
         
         HttpClient client = new DefaultHttpClient();
         HttpPut putter = new HttpPut(baseUrl + "/blah2");
@@ -264,7 +262,7 @@ public class ClientDriverSuccessTest {
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.OPTIONS),
-                giveResponse(null).withStatus(200).withHeader("Allow", "POST, OPTIONS"));
+                giveResponse(null, null).withStatus(200).withHeader("Allow", "POST, OPTIONS"));
         
         HttpClient client = new DefaultHttpClient();
         HttpOptions options = new HttpOptions(baseUrl + "/blah2");
@@ -333,10 +331,10 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.GET),
-                giveResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
+                giveResponse("something", "text/plain").withStatus(200).withHeader("Allow", "GET, HEAD"));
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.HEAD),
-                giveResponse("something").withStatus(200).withHeader("Allow", "GET, HEAD"));
+                giveResponse("something", "text/plain").withStatus(200).withHeader("Allow", "GET, HEAD"));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -362,7 +360,7 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/testing").withMethod(Method.GET).withParam("key", startsWith("value")),
-                giveResponse("something").withStatus(200));
+                giveResponse("something", "text/plain").withStatus(200));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -379,7 +377,7 @@ public class ClientDriverSuccessTest {
         
         driver.addExpectation(
                 onRequestTo("/testing").withMethod(Method.GET).withParam("key", "value1").withParam("key", "value2"),
-                giveResponse("something").withStatus(200));
+                giveResponse("something", "text/plain").withStatus(200));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -396,7 +394,7 @@ public class ClientDriverSuccessTest {
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
                 onRequestTo("/blah2").withMethod(Method.TRACE),
-                giveResponse(null).withStatus(200));
+                giveResponse(null, null).withStatus(200));
         
         HttpClient client = new DefaultHttpClient();
         HttpTrace trace = new HttpTrace(baseUrl + "/blah2");
@@ -410,8 +408,8 @@ public class ClientDriverSuccessTest {
         // bug fix
         
         String baseUrl = driver.getBaseUrl();
-        driver.addExpectation(onRequestTo("/foo"), giveResponse("___").withStatus(417));
-        driver.addExpectation(onRequestTo("/blah2").withBody("<eh/>", "application/xml").withMethod(POST), giveResponse("___").withStatus(418));
+        driver.addExpectation(onRequestTo("/foo"), giveResponse("___", "text/plain").withStatus(417));
+        driver.addExpectation(onRequestTo("/blah2").withBody("<eh/>", "application/xml").withMethod(POST), giveResponse("___", "text/plain").withStatus(418));
         
         HttpClient postClient = new DefaultHttpClient();
         HttpPost poster = new HttpPost(baseUrl + "/blah2");

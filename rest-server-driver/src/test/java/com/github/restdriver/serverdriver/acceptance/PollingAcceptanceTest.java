@@ -46,11 +46,9 @@ public class PollingAcceptanceTest {
     @Before
     public void getServerDetails() {
         baseUrl = driver.getBaseUrl();
-        
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET..."));
-        
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOW!"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET...", "text/plain"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOT YET...", "text/plain"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("NOW!", "text/plain"));
     }
     
     @Test

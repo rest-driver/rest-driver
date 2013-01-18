@@ -46,7 +46,7 @@ public class DeleteAcceptanceTest {
         
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE),
-                new ClientDriverResponse("Content"));
+                new ClientDriverResponse("Content", "text/plain"));
         
         Response response = delete(baseUrl);
         
@@ -58,7 +58,7 @@ public class DeleteAcceptanceTest {
     public void deleteSendsHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE).withHeader("Accept", "Nothing"),
-                new ClientDriverResponse("Hello"));
+                new ClientDriverResponse("Hello", "text/plain"));
         
         Response response = delete(baseUrl, header("Accept", "Nothing"));
         assertThat(response.getContent(), is("Hello"));
@@ -68,7 +68,7 @@ public class DeleteAcceptanceTest {
     public void deleteAllowsBodyContent() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.DELETE).withBody("A BODY?", "text/plain"),
-                new ClientDriverResponse("Hurrah").withStatus(418));
+                new ClientDriverResponse("Hurrah", "text/plain").withStatus(418));
         
         Response response = delete(baseUrl, body("A BODY?", "text/plain"));
         assertThat(response.getStatusCode(), is(418));

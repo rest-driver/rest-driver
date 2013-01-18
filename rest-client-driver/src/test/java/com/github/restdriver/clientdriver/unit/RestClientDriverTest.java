@@ -40,7 +40,7 @@ public class RestClientDriverTest {
     @Test
     public void giveResponseWorks() {
         String content = "some wonderful content";
-        assertThat(giveResponse(content).getContent(), is(content));
+        assertThat(giveResponse(content, "text/plain").getContent(), is(content));
     }
     
     @Test

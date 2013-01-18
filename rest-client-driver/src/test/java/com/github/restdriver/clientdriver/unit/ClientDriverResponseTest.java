@@ -45,46 +45,47 @@ public class ClientDriverResponseTest {
     
     @Test
     public void creatingResponseWithStringContentGives200Status() {
-        ClientDriverResponse response = new ClientDriverResponse("content");
+        ClientDriverResponse response = new ClientDriverResponse("content", "text/plain");
         
         assertThat(response.getStatus(), is(200));
     }
     
     @Test
     public void creatingResponseWithInputStreamContentGives200Status() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("content"));
+        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("content"), "application/octet-stream");
         
         assertThat(response.getStatus(), is(200));
     }
     
     @Test
     public void creatingResponseWithEmptyStringContentGives200Status() {
-        ClientDriverResponse response = new ClientDriverResponse("");
+        ClientDriverResponse response = new ClientDriverResponse("", "text/plain");
         
         assertThat(response.getStatus(), is(200));
     }
     
     @Test
     public void creatingResponseWithEmptyInputStreamGives200Status() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream(""));
+        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream(""), "application/octet-stream");
         
         assertThat(response.getStatus(), is(200));
     }
     
     @Test
     public void creatingResponseWithNullStringGives204Status() {
-        ClientDriverResponse response = new ClientDriverResponse((String) null);
+        ClientDriverResponse response = new ClientDriverResponse((String) null, "text/plain");
         
         assertThat(response.getStatus(), is(204));
     }
     
     @Test
     public void creatingResponseWithNullInputStreamGives204Status() {
-        ClientDriverResponse response = new ClientDriverResponse((InputStream) null);
+        ClientDriverResponse response = new ClientDriverResponse((InputStream) null, "application/octet-stream");
         
         assertThat(response.getStatus(), is(204));
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void creatingResponseWithStringContentHasTextContentType() {
         ClientDriverResponse response = new ClientDriverResponse("content");
@@ -92,34 +93,28 @@ public class ClientDriverResponseTest {
         assertThat(response.getContentType(), is("text/plain"));
     }
     
-    @Test
-    public void creatingResponseWithInputStreamContentHasBinaryContentType() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("content"));
-        
-        assertThat(response.getContentType(), is("application/octet-stream"));
-    }
-    
+    @SuppressWarnings("deprecation")
     @Test
     public void creatingEmptyResponseGivesNoContentType() {
         
         assertThat(new ClientDriverResponse().getContentType(), is(nullValue()));
         assertThat(new ClientDriverResponse((String) null).getContentType(), is(nullValue()));
         assertThat(new ClientDriverResponse("").getContentType(), is(nullValue()));
-        assertThat(new ClientDriverResponse((InputStream) null).getContentType(), is(nullValue()));
-        assertThat(new ClientDriverResponse(IOUtils.toInputStream("")).getContentType(), is(nullValue()));
+        assertThat(new ClientDriverResponse((InputStream) null, null).getContentType(), is(nullValue()));
+        assertThat(new ClientDriverResponse(IOUtils.toInputStream(""), null).getContentType(), is(nullValue()));
         
     }
     
     @Test
     public void creatingResponseWithStringContentHasBody() {
-        ClientDriverResponse response = new ClientDriverResponse("content");
+        ClientDriverResponse response = new ClientDriverResponse("content", "text/plain");
         
         assertThat(response.hasBody(), is(true));
     }
     
     @Test
     public void creatingResponseWithInputStreamContentHasBody() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("content"));
+        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("content"), "application/octet-stream");
         
         assertThat(response.hasBody(), is(true));
     }
@@ -128,23 +123,23 @@ public class ClientDriverResponseTest {
     public void creatingEmptyResponseHasNoBody() {
         
         assertThat(new ClientDriverResponse().hasBody(), is(false));
-        assertThat(new ClientDriverResponse((String) null).hasBody(), is(false));
-        assertThat(new ClientDriverResponse("").hasBody(), is(false));
-        assertThat(new ClientDriverResponse((InputStream) null).hasBody(), is(false));
-        assertThat(new ClientDriverResponse(IOUtils.toInputStream("")).hasBody(), is(false));
+        assertThat(new ClientDriverResponse((String) null, null).hasBody(), is(false));
+        assertThat(new ClientDriverResponse("", null).hasBody(), is(false));
+        assertThat(new ClientDriverResponse((InputStream) null, null).hasBody(), is(false));
+        assertThat(new ClientDriverResponse(IOUtils.toInputStream(""), null).hasBody(), is(false));
         
     }
     
     @Test
     public void creatingResponseWithStringReturnsCorrectValueWhenFetchingContentAsString() {
-        ClientDriverResponse response = new ClientDriverResponse("some text");
+        ClientDriverResponse response = new ClientDriverResponse("some text", "text/plain");
         
         assertThat(response.getContent(), is("some text"));
     }
     
     @Test
     public void creatingResponseWithInputStreamReturnsCorrectValueWhenFetchingContentAsString() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"));
+        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"), "application/octet-stream");
         
         assertThat(response.getContent(), is("some text"));
     }
@@ -153,23 +148,23 @@ public class ClientDriverResponseTest {
     public void creatingEmptyResponseHasEmptyStringContentWhenFetchingContentAsString() {
         
         assertThat(new ClientDriverResponse().getContent(), is(""));
-        assertThat(new ClientDriverResponse((String) null).getContent(), is(""));
-        assertThat(new ClientDriverResponse("").getContent(), is(""));
-        assertThat(new ClientDriverResponse((InputStream) null).getContent(), is(""));
-        assertThat(new ClientDriverResponse(IOUtils.toInputStream("")).getContent(), is(""));
+        assertThat(new ClientDriverResponse((String) null, null).getContent(), is(""));
+        assertThat(new ClientDriverResponse("", null).getContent(), is(""));
+        assertThat(new ClientDriverResponse((InputStream) null, null).getContent(), is(""));
+        assertThat(new ClientDriverResponse(IOUtils.toInputStream(""), null).getContent(), is(""));
         
     }
     
     @Test
     public void creatingRepsonseWithStringReturnsCorrectByteArrayWhenFetchingContent() {
-        ClientDriverResponse response = new ClientDriverResponse("some text");
+        ClientDriverResponse response = new ClientDriverResponse("some text", "text/plain");
         
         assertThat(response.getContentAsBytes(), is(("some text").getBytes()));
     }
     
     @Test
     public void creatingResponseWithInputStreamReturnsCorrectByteArrayWhenFetchingContent() {
-        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"));
+        ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"), "application/octet-stream");
         
         assertThat(response.getContentAsBytes(), is(("some text").getBytes()));
     }
@@ -178,10 +173,10 @@ public class ClientDriverResponseTest {
     public void creatingEmptyResponseHasNullByteArrayWhenFetchingContent() {
         
         assertThat(new ClientDriverResponse().getContentAsBytes(), is(nullValue()));
-        assertThat(new ClientDriverResponse((String) null).getContentAsBytes(), is(nullValue()));
-        assertThat(new ClientDriverResponse("").getContentAsBytes(), is(nullValue()));
-        assertThat(new ClientDriverResponse((InputStream) null).getContentAsBytes(), is(nullValue()));
-        assertThat(new ClientDriverResponse(IOUtils.toInputStream("")).getContentAsBytes(), is(nullValue()));
+        assertThat(new ClientDriverResponse((String) null, null).getContentAsBytes(), is(nullValue()));
+        assertThat(new ClientDriverResponse("", null).getContentAsBytes(), is(nullValue()));
+        assertThat(new ClientDriverResponse((InputStream) null, null).getContentAsBytes(), is(nullValue()));
+        assertThat(new ClientDriverResponse(IOUtils.toInputStream(""), null).getContentAsBytes(), is(nullValue()));
         
     }
     
@@ -194,9 +189,10 @@ public class ClientDriverResponseTest {
         InputStream mockInputStream = mock(InputStream.class);
         when(mockInputStream.read((byte[]) anyObject())).thenThrow(new IOException("exception reading stream"));
         
-        new ClientDriverResponse(mockInputStream);
+        new ClientDriverResponse(mockInputStream, "application/octet-stream");
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void usingHeaderCanOverrideContentType() {
         ClientDriverResponse response = new ClientDriverResponse("hello").withContentType("text/plain");
@@ -208,6 +204,7 @@ public class ClientDriverResponseTest {
         assertThat(response.getContentType(), is("text/xml"));
     }
     
+    @SuppressWarnings("deprecation")
     @Test
     public void usingHeaderCanOverrideContentTypeIgnoringCase() {
         ClientDriverResponse response = new ClientDriverResponse("hello").withContentType("text/plain");

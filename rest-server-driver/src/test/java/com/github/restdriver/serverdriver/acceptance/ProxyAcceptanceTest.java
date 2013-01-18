@@ -55,14 +55,14 @@ public class ProxyAcceptanceTest {
     @Test
     public void testWithSpecifiedProxyFailsIfProxyIsNotAvailable() {
         thrown.expect(RuntimeHttpHostConnectException.class);
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()));
     }
     
     @Test
     public void testWithSpecifiedProxyPassesIfProxyIsAvailable() {
         startLocalProxy();
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", proxyPort));
         assertThat(proxyHits, is(1));
         stopLocalProxy();
@@ -70,14 +70,14 @@ public class ProxyAcceptanceTest {
     
     @Test
     public void testWithNoProxyDoesntTryToUseAProxy() {
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", notUsingProxy());
         assertThat(proxyHits, is(0));
     }
     
     @Test
     public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() {
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()), notUsingProxy());
         assertThat(proxyHits, is(0));
     }
@@ -85,7 +85,7 @@ public class ProxyAcceptanceTest {
     @Test
     public void whenMultipleProxiesAreSpecifiedLastOneWinsWithProxy() {
         startLocalProxy();
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", notUsingProxy(), usingProxy("localhost", proxyPort));
         stopLocalProxy();
         assertThat(proxyHits, is(1));
@@ -94,9 +94,9 @@ public class ProxyAcceptanceTest {
     @Test
     public void twoCallsWithOnlyOneProxiedOnlyUsesProxyOnce() {
         
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         startLocalProxy();
         
         get(driver.getBaseUrl() + "/foo");
@@ -119,7 +119,7 @@ public class ProxyAcceptanceTest {
         System.setProperty("http.proxyHost", "localhost");
         System.setProperty("http.proxyPort", "" + proxyPort);
         
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         
         get(driver.getBaseUrl() + "/foo", usingSystemProxy());
         assertThat(proxyHits, is(1));
@@ -134,7 +134,7 @@ public class ProxyAcceptanceTest {
         System.setProperty("http.proxyHost", "");
         System.setProperty("http.proxyPort", "");
         
-        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         
         get(driver.getBaseUrl() + "/foo", usingSystemProxy());
         assertThat(proxyHits, is(0));
