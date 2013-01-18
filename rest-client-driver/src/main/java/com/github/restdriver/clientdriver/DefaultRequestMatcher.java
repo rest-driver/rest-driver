@@ -15,159 +15,154 @@
  */
 package com.github.restdriver.clientdriver;
 
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-
 /**
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
  * path &amp; query string, and any body of the request.
  */
 public final class DefaultRequestMatcher implements RequestMatcher {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultRequestMatcher.class);
-    
+
     @Override
     public boolean isMatch(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
-        // TODO: Better diagnostics from this method. See https://github.com/rest-driver/rest-driver/issues/7
-        
-        boolean sameMethod = isSameMethod(realRequest, expectedRequest);
-        
-        if (!sameMethod) {
+
+        if (!isSameMethod(realRequest, expectedRequest)) {
             return false;
         }
-        
-        boolean sameBasePath = isSameBasePath(realRequest, expectedRequest);
-        
-        if (!sameBasePath) {
+
+        if (!isSameBasePath(realRequest, expectedRequest)) {
             return false;
         }
-        
-        boolean sameQueryString = hasSameQueryString(realRequest, expectedRequest);
-        
-        if (!sameQueryString) {
+
+        if (!hasSameQueryString(realRequest, expectedRequest)) {
             return false;
         }
-        
-        boolean sameHeaders = hasSameHeaders(realRequest, expectedRequest);
-        
-        if (!sameHeaders) {
+
+        if (!hasSameHeaders(realRequest, expectedRequest)) {
             return false;
         }
-        
-        boolean sameBody = hasSameBody(realRequest, expectedRequest);
-        
-        if (!sameBody) {
+
+        if (!hasSameBody(realRequest, expectedRequest)) {
             return false;
         }
-        
+
+        captureBodyIfRequired(realRequest, expectedRequest);
+
         return true;
     }
-    
+
+    private void captureBodyIfRequired(RealRequest realRequest, ClientDriverRequest expectedRequest) {
+        if (expectedRequest.getBodyCapture() != null) {
+            expectedRequest.getBodyCapture().setBody(realRequest.getBodyContent());
+        }
+    }
+
     private boolean isSameMethod(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
+
         if (realRequest.getMethod() != expectedRequest.getMethod()) {
             LOGGER.info("REJECTED on method: expected " + expectedRequest.getMethod() + " != " + realRequest.getMethod());
             return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean isSameBasePath(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
+
         if (!isStringOrPatternMatch(realRequest.getPath(), expectedRequest.getPath())) {
             LOGGER.info("REJECTED on path: expected " + expectedRequest.getPath() + " != " + realRequest.getPath());
             return false;
         }
-        
+
         return true;
     }
-    
+
     private boolean hasSameQueryString(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
+
         if (expectedRequest.getAnyParams()) {
             return true;
         }
-        
+
         Map<String, Collection<String>> actualParams = realRequest.getParams();
         Map<String, Collection<Matcher<? extends String>>> expectedParams = expectedRequest.getParams();
-        
+
         if (actualParams.size() != expectedParams.size()) {
             LOGGER.info("REJECTED on number of params: expected " + expectedParams.size() + " != " + actualParams.size());
             return false;
         }
-        
+
         for (String expectedKey : expectedParams.keySet()) {
-            
+
             Collection<String> actualParamValues = actualParams.get(expectedKey);
-            
+
             if (actualParamValues == null || actualParamValues.size() == 0) {
                 LOGGER.info("REJECTED on missing param key: expected " + expectedKey + "=" + expectedParams.get(expectedKey));
                 return false;
             }
-            
+
             Collection<Matcher<? extends String>> expectedParamValues = expectedParams.get(expectedKey);
-            
+
             if (expectedParamValues.size() != actualParamValues.size()) {
                 LOGGER.info("REJECTED on number of values for param '" + expectedKey + "': expected " + expectedParamValues.size() + " != " + actualParamValues.size());
                 return false;
             }
-            
+
             boolean sameParamValues = containsMatch(expectedKey, actualParamValues, expectedParamValues);
-            
+
             if (!sameParamValues) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     private boolean containsMatch(String expectedKey, Collection<String> actualParamValues, Collection<Matcher<? extends String>> expectedParamValues) {
-        
+
         for (Matcher<? extends String> expectedParamValue : expectedParamValues) {
-            
+
             boolean matched = false;
-            
+
             for (String actualParamValue : actualParamValues) {
                 if (expectedParamValue.matches(actualParamValue)) {
                     matched = true;
                     break;
                 }
             }
-            
+
             if (!matched) {
                 LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     @SuppressWarnings("unchecked")
     private boolean hasSameHeaders(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
+
         Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
         Map<String, Object> actualHeaders = realRequest.getHeaders();
-        
+
         for (String expectedHeaderName : expectedHeaders.keySet()) {
-            
+
             Object expectedHeaderValue = expectedHeaders.get(expectedHeaderName);
-            
+
             boolean matched = false;
-            
+
             for (Entry<String, Object> actualHeader : actualHeaders.entrySet()) {
                 Object value = actualHeader.getValue();
                 if (value instanceof Enumeration) {
@@ -179,16 +174,16 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                             break;
                         }
                     }
-                    
+
                 } else {
-                    
+
                     if (isStringOrPatternMatch((String) value, expectedHeaderValue)) {
                         matched = true;
                         break;
                     }
                 }
             }
-            
+
             if (!matched) {
                 if (expectedHeaderValue instanceof String) {
                     LOGGER.info("REJECTED on missing header: expected " + expectedHeaderName + "=" + (String) expectedHeaderValue);
@@ -197,26 +192,26 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 }
                 return false;
             }
-            
+
         }
-        
+
         return true;
     }
-    
+
     private boolean hasSameBody(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
+
         if (expectedRequest.getBodyContentType() != null) {
             String actualContentType = realRequest.getBodyContentType();
             if (actualContentType == null) {
                 return false;
             }
-            
+
             // this is needed because clients have a habit of putting
             // "text/html; charset=UTF-8" when you only ask for "text/html".
             if (actualContentType.contains(";")) {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
-            
+
             if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
                 if (expectedRequest.getBodyContentType() instanceof String) {
                     LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContentType() + ", actual " + (String) actualContentType);
@@ -226,12 +221,12 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 return false;
             }
         }
-        
+
         if (expectedRequest.getBodyContentMatcher() != null) {
             String actualContent = realRequest.getBodyContent();
-            
+
             boolean hasMatchingBodyContent = expectedRequest.getBodyContentMatcher().matches(actualContent);
-            
+
             if (!hasMatchingBodyContent) {
                 StringDescription description = new StringDescription();
                 expectedRequest.getBodyContentMatcher().describeTo(description);
@@ -240,30 +235,30 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 LOGGER.info("REJECTED on content: Expected {}", description.toString());
                 return false;
             }
-            
+
         }
-        
+
         return true;
     }
-    
+
     private boolean isStringOrPatternMatch(String actual, Object expected) {
         if (actual == null) {
             actual = "";
         }
-        
+
         if (expected instanceof String) {
-            
+
             return actual.equals(expected);
-            
+
         } else if (expected instanceof Pattern) {
-            
+
             Pattern pattern = (Pattern) expected;
             return pattern.matcher(actual).matches();
-            
+
         } else {
             throw new ClientDriverInternalException("DefaultRequestMatcher asked to match " + expected.getClass()
                     + ", but only knows String and Pattern.", null);
         }
     }
-    
+
 }
