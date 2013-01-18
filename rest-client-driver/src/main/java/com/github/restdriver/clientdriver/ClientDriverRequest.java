@@ -325,12 +325,26 @@ public final class ClientDriverRequest {
         return this;
     }
 
+    /**
+     * Setter for expecting body content and type, where content is in the form of a Matcher and type is in the form of
+     * a Pattern.
+     *
+     * @param bodyContentMatcher the Matcher&lt;String&gt; to use to set
+     * @param contentType        eg "text/plain"
+     * @return the object you called the method on, so you can chain these calls.
+     */
     public ClientDriverRequest withBody(Matcher<? extends String> bodyContentMatcher, String contentType) {
         this.bodyContentMatcher = bodyContentMatcher;
         this.bodyContentType = contentType;
         return this;
     }
 
+    /**
+     * Setter for adding a {@link BodyCapture} to the expectation for later assertions/debugging.
+     *
+     * @param bodyCapture the capturing object.
+     * @return this, for chaining.
+     */
     public ClientDriverRequest capturingBodyIn(BodyCapture bodyCapture) {
         this.bodyCapture = bodyCapture;
         return this;
