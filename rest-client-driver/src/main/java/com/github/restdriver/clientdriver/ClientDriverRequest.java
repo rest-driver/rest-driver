@@ -15,18 +15,23 @@
  */
 package com.github.restdriver.clientdriver;
 
-import com.github.restdriver.clientdriver.capture.BodyCapture;
-import com.github.restdriver.matchers.MatchesRegex;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsEqual;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
+import com.github.restdriver.clientdriver.capture.BodyCapture;
+import com.github.restdriver.matchers.MatchesRegex;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 
 /**
  * Class for encapsulating an HTTP request.
@@ -50,7 +55,7 @@ public final class ClientDriverRequest {
     private Matcher<? extends String> bodyContentMatcher;
     private Object bodyContentType;
     private boolean anyParams;
-    private BodyCapture bodyCapture;
+    private BodyCapture<?> bodyCapture;
 
     /**
      * Constructor taking String.
@@ -345,12 +350,12 @@ public final class ClientDriverRequest {
      * @param bodyCapture the capturing object.
      * @return this, for chaining.
      */
-    public ClientDriverRequest capturingBodyIn(BodyCapture bodyCapture) {
+    public ClientDriverRequest capturingBodyIn(BodyCapture<?> bodyCapture) {
         this.bodyCapture = bodyCapture;
         return this;
     }
 
-    public BodyCapture getBodyCapture() {
+    public BodyCapture<?> getBodyCapture() {
         return bodyCapture;
     }
 
