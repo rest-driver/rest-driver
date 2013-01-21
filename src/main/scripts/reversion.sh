@@ -22,7 +22,7 @@ done
 perl -pi -e "s/\d+\.\d+\.\d+/$VERSION/g" README.md
 git add README.md
 git commit -m "Updating README.md to $VERSION"
-git push
+git push origin master
 
 mkdir -p $WORKING_DIRECTORY
 cd $WORKING_DIRECTORY
@@ -31,7 +31,7 @@ cd $WORKING_DIRECTORY/rest-driver.wiki
 find . -name "*.md" -type f -exec perl -pi -e "s/\d+\.\d+\.\d+/$VERSION/g" {} \;
 git add .
 git commit -m "Updating version number in wiki pages to $VERSION"
-git push
+git push origin master
 cd ../..
 mvn clean javadoc:aggregate-jar
 git clone git@github.com:rest-driver/rest-driver.github.com.git $WORKING_DIRECTORY/rest-driver.github.com
@@ -43,4 +43,4 @@ cd $WORKING_DIRECTORY/rest-driver.github.com
 cp -R ../apidocs docs
 git add .
 git commit -m "Updating index page and JavaDoc to $VERSION"
-git push
+git push origin master
