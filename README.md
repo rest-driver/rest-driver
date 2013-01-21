@@ -38,7 +38,7 @@ We provide a mock-like interface which launches a real HTTP server and allows se
 
 ```java
 clientDriver.addExpectation(onRequestTo("/").withMethod(Method.GET), 
-                            giveResponse("some wonderful content").withHeader("Content-Type", "text/plain"));
+                            giveResponse("some wonderful content", "text/plain"));
 ```
 
 The server will listen for a requests and respond with the replies you set.  Any unexpected action or unmet expectation will fail your tests.
