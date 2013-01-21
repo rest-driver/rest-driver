@@ -229,17 +229,6 @@ public final class ClientDriverResponse {
     }
     
     /**
-     * Cause this response to have no Content-Type.
-     * 
-     * @return the object you called the method on, so you can chain these
-     *         calls
-     */
-    public ClientDriverResponse withoutContentType() {
-        this.contentType = null;
-        return this;
-    }
-    
-    /**
      * Set headers on the response.
      * 
      * @param name
