@@ -19,32 +19,56 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.junit.Test;
 
+import com.github.restdriver.clientdriver.capture.StringBodyCapture;
+
 public class RestClientDriverTest {
-    
+
     @Test
     public void onRequestToWithStringWorks() {
         String path = "/path";
         assertThat((String) onRequestTo(path).getPath(), is(path));
     }
-    
+
     @Test
     public void onRequestToWithPatternWorks() {
         Pattern path = Pattern.compile(".+");
         assertThat((Pattern) onRequestTo(path).getPath(), is(path));
     }
-    
+
     @Test
     public void giveResponseWorks() {
         String content = "some wonderful content";
         assertThat(giveResponse(content, "text/plain").getContent(), is(content));
     }
-    
+
     @Test
     public void giveEmptyResponseWorks() {
         assertThat(giveEmptyResponse().getContent(), is(""));
+    }
+
+    @Test
+    public void waitForReturnsImmediatelyIfCaptureBodyPopulated() throws Exception {
+        long start = System.currentTimeMillis();
+        StringBodyCapture bodyCapture = new StringBodyCapture();
+        bodyCapture.setBody("some body");
+
+        waitFor(bodyCapture, 5, TimeUnit.SECONDS);
+
+        assertThat(System.currentTimeMillis() - start, lessThan(100L));
+    }
+
+    @Test
+    public void waitForSpecifiedTimeIfCaptureBodyIsNotPopulated() throws Exception {
+        long start = System.currentTimeMillis();
+        StringBodyCapture bodyCapture = new StringBodyCapture();
+
+        waitFor(bodyCapture, 1, TimeUnit.SECONDS);
+
+        assertThat(System.currentTimeMillis() - start, greaterThan(1000L));
     }
 }
