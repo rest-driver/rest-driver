@@ -17,6 +17,7 @@ package com.github.restdriver.serverdriver.matchers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -41,7 +42,7 @@ public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
      * @return The DateTime object set to UTC.
      */
     public DateTime getDateTime(String rawString) {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.US);
         formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
         
         try {
