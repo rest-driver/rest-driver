@@ -84,16 +84,15 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
         response.setContentType(matchedResponse.getContentType());
         response.setStatus(matchedResponse.getStatus());
-        
-        if (matchedResponse.hasBody()) {
-            OutputStream output = response.getOutputStream();
-            output.write(matchedResponse.getContentAsBytes());
-        }
-        
         response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
         
         for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
+        }
+
+        if (matchedResponse.hasBody()) {
+            OutputStream output = response.getOutputStream();
+            output.write(matchedResponse.getContentAsBytes());
         }
         
         delayIfNecessary(matchingPair.getResponse());
