@@ -51,7 +51,6 @@ public class DefaultClientDriverJettyHandlerTest {
 		mockHttpResponse = mock(HttpServletResponse.class);
 	}
 
-	@SuppressWarnings("resource")
 	@Test
 	public void when_responseContainsBothBodyAndHeaders_headers_shouldBeSetBeforeBody_otherwise_theyWontBeSentAtAll() throws IOException, ServletException {
 		ServletInputStream servletInputStream = new DummyServletInputStream(new ReaderInputStream(new StringReader("")));
@@ -78,4 +77,5 @@ public class DefaultClientDriverJettyHandlerTest {
 		inOrder.verify(mockHttpResponse).setHeader("Test", "header-should-be-set-before-writing-body");
 		inOrder.verify(servletOutputStream).write("entity payload".getBytes("UTF-8"));
 	}
+	
 }
