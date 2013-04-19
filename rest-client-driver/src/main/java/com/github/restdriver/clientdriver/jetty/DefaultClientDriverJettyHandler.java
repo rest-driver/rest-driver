@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.clientdriver.ClientDriverExpectation;
@@ -45,6 +47,7 @@ import com.github.restdriver.clientdriver.exception.ClientDriverInternalExceptio
  */
 public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultClientDriverJettyHandler.class);
     private static final long DEFAULT_WAIT_INTERVAL = 500;
     
     private final List<ClientDriverExpectation> expectations;
@@ -76,6 +79,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      */
     @Override
     public synchronized void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        
+        LOGGER.info("Handling: {} {}", request.getMethod(), request.getPathInfo());
         
         ClientDriverRequestResponsePair matchingPair = getMatchingRequestPair(request);
         matchedResponses.add(matchingPair);

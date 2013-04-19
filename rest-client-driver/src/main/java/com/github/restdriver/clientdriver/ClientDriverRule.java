@@ -59,7 +59,7 @@ public final class ClientDriverRule implements TestRule {
      * @return The newly added expectation.
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
-        LOGGER.info("addExpectation: " + request.getPath());
+        LOGGER.info("addExpectation: {} {}", request.getMethod(), request.getPath());
         return clientDriver.addExpectation(request, response);
     }
     
