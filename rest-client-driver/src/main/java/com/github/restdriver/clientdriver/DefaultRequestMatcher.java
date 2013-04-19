@@ -72,7 +72,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     private boolean isSameMethod(RealRequest realRequest, ClientDriverRequest expectedRequest) {
 
         if (realRequest.getMethod() != expectedRequest.getMethod()) {
-            LOGGER.info("REJECTED on method: expected " + expectedRequest.getMethod() + " != " + realRequest.getMethod());
+            LOGGER.info("({} {}) REJECTED on method: expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getMethod(), realRequest.getMethod());
             return false;
         }
 
@@ -82,7 +82,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     private boolean isSameBasePath(RealRequest realRequest, ClientDriverRequest expectedRequest) {
 
         if (!isStringOrPatternMatch(realRequest.getPath(), expectedRequest.getPath())) {
-            LOGGER.info("REJECTED on path: expected " + expectedRequest.getPath() + " != " + realRequest.getPath());
+            LOGGER.info("({} {}) REJECTED on path: expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getPath(), realRequest.getPath());
             return false;
         }
 
@@ -99,7 +99,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         Map<String, Collection<Matcher<? extends String>>> expectedParams = expectedRequest.getParams();
 
         if (actualParams.size() != expectedParams.size()) {
-            LOGGER.info("REJECTED on number of params: expected " + expectedParams.size() + " != " + actualParams.size());
+            LOGGER.info("({} {}) REJECTED on number of params: expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedParams.size(), actualParams.size());
             return false;
         }
 
@@ -108,18 +108,18 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             Collection<String> actualParamValues = actualParams.get(expectedKey);
 
             if (actualParamValues == null || actualParamValues.size() == 0) {
-                LOGGER.info("REJECTED on missing param key: expected " + expectedKey + "=" + expectedParams.get(expectedKey));
+                LOGGER.info("({} {}) REJECTED on missing param key: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedKey, expectedParams.get(expectedKey));
                 return false;
             }
 
             Collection<Matcher<? extends String>> expectedParamValues = expectedParams.get(expectedKey);
 
             if (expectedParamValues.size() != actualParamValues.size()) {
-                LOGGER.info("REJECTED on number of values for param '" + expectedKey + "': expected " + expectedParamValues.size() + " != " + actualParamValues.size());
+                LOGGER.info("({} {}) REJECTED on number of values for param '{}': expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedKey, expectedParamValues.size(), actualParamValues.size());
                 return false;
             }
 
-            boolean sameParamValues = containsMatch(expectedKey, actualParamValues, expectedParamValues);
+            boolean sameParamValues = containsMatch(realRequest, expectedKey, actualParamValues, expectedParamValues);
 
             if (!sameParamValues) {
                 return false;
@@ -129,7 +129,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         return true;
     }
 
-    private boolean containsMatch(String expectedKey, Collection<String> actualParamValues, Collection<Matcher<? extends String>> expectedParamValues) {
+    private boolean containsMatch(RealRequest realRequest, String expectedKey, Collection<String> actualParamValues, Collection<Matcher<? extends String>> expectedParamValues) {
 
         for (Matcher<? extends String> expectedParamValue : expectedParamValues) {
 
@@ -143,7 +143,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
 
             if (!matched) {
-                LOGGER.info("REJECTED on unmatched params key: expected " + expectedKey + "=" + expectedParamValue);
+                LOGGER.info("({} {}) REJECTED on unmatched params key: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedKey, expectedParamValue);
                 return false;
             }
         }
@@ -186,9 +186,9 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
             if (!matched) {
                 if (expectedHeaderValue instanceof String) {
-                    LOGGER.info("REJECTED on missing header: expected " + expectedHeaderName + "=" + (String) expectedHeaderValue);
+                    LOGGER.info("({} {}) REJECTED on missing header: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedHeaderName, (String) expectedHeaderValue);
                 } else {
-                    LOGGER.info("REJECTED on missing header: expected " + expectedHeaderName + "=" + (Pattern) expectedHeaderValue);
+                    LOGGER.info("({} {}) REJECTED on missing header: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedHeaderName, ((Pattern) expectedHeaderValue).pattern());
                 }
                 return false;
             }
@@ -214,9 +214,9 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
             if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
                 if (expectedRequest.getBodyContentType() instanceof String) {
-                    LOGGER.info("REJECTED on content type: expected " + (String) expectedRequest.getBodyContentType() + ", actual " + (String) actualContentType);
+                    LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), (String) expectedRequest.getBodyContentType(), (String) actualContentType);
                 } else {
-                    LOGGER.info("REJECTED on content type: expected " + ((Pattern) expectedRequest.getBodyContentType()).pattern() + ", actual " + (String) actualContentType);
+                    LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), ((Pattern) expectedRequest.getBodyContentType()).pattern(), (String) actualContentType);
                 }
                 return false;
             }
@@ -232,7 +232,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 expectedRequest.getBodyContentMatcher().describeTo(description);
                 description.appendText(" ");
                 expectedRequest.getBodyContentMatcher().describeMismatch(actualContent, description);
-                LOGGER.info("REJECTED on content: Expected {}", description.toString());
+                LOGGER.info("({} {}) REJECTED on content: Expected {}", realRequest.getMethod(), realRequest.getPath(), description.toString());
                 return false;
             }
 
@@ -256,8 +256,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             return pattern.matcher(actual).matches();
 
         } else {
-            throw new ClientDriverInternalException("DefaultRequestMatcher asked to match " + expected.getClass()
-                    + ", but only knows String and Pattern.", null);
+            throw new ClientDriverInternalException("DefaultRequestMatcher asked to match " + expected.getClass() + ", but only knows String and Pattern.", null);
         }
     }
 
