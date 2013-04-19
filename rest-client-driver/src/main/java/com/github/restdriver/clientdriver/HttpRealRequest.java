@@ -40,7 +40,6 @@ public class HttpRealRequest implements RealRequest {
     private final String bodyContent;
     private final String bodyContentType;
     
-    @SuppressWarnings("unchecked")
     public HttpRealRequest(HttpServletRequest request) {
         this.path = request.getPathInfo();
         this.method = Enum.valueOf(Method.class, request.getMethod());

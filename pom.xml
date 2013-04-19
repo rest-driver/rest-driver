@@ -61,8 +61,8 @@
         <httpclient.version>4.2</httpclient.version>
         <httpcore.version>4.2</httpcore.version>
         <jackson.version>2.1.2</jackson.version>
-        <jetty.version>8.1.0.v20120127</jetty.version>
         <joda.time.version>2.1</joda.time.version>
+        <jetty.version>8.1.10.v20130312</jetty.version>
         <junit.version>4.11</junit.version>
         <jsonpath.version>0.8.1</jsonpath.version>
         <logback.version>1.0.11</logback.version>
