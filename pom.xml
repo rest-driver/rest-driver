@@ -65,6 +65,7 @@
         <joda.time.version>2.1</joda.time.version>
         <junit.version>4.11</junit.version>
         <jsonpath.version>0.8.1</jsonpath.version>
+        <logback.version>1.0.11</logback.version>
         <mockito.version>1.9.5</mockito.version>
         <servlet.api.version>2.5</servlet.api.version>
         <slf4j.version>1.7.2</slf4j.version>
