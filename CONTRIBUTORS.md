@@ -2,6 +2,7 @@
 * James Darley (jdarley)
 * Alistair Dutton (kelveden)
 * Matthew Gilliard (mjg123)
+* Henrik Johansson (hencjo)
 * Andrew Jones (ahjones)
 * Joe Littlejohn (joelittlejohn)
 * David Morrissey (davemorrissey)
