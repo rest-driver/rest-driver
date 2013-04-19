@@ -67,8 +67,8 @@
         <jsonpath.version>0.8.1</jsonpath.version>
         <logback.version>1.0.11</logback.version>
         <mockito.version>1.9.5</mockito.version>
-        <xmlunit.version>1.3</xmlunit.version>
         <slf4j.version>1.7.5</slf4j.version>
+        <xmlunit.version>1.4</xmlunit.version>
         
     </properties>
 
