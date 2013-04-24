@@ -112,6 +112,20 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    public void matchingPathWithMatcherSucceeds() throws Exception {
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo(containsString("hello")).withMethod(Method.GET),
+                giveEmptyResponse().withStatus(418).withHeader("Cache-Control", "no-cache"));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/this_url_can_be_anything_as_long_as_it_says_hello_somewhere");
+        HttpResponse response = client.execute(get);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(418));
+    }
+    
+    @Test
     public void testJettyWorkingBinaryResponse() throws Exception {
         
         ClassLoader loader = ClientDriverSuccessTest.class.getClassLoader();
@@ -315,6 +329,35 @@ public class ClientDriverSuccessTest {
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
                 onRequestTo("/header").withMethod(Method.GET).withHeader("X-FOO", "bar"),
+                giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/header");
+        get.addHeader(new BasicHeader("X-FOO", "baz"));
+        client.execute(get);
+    }
+    
+    @Test
+    public void matchingHeaderWithMatcherSucceeds() throws Exception {
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/header").withMethod(Method.GET).withHeader("Something", containsString("foo")),
+                giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/header");
+        get.addHeader(new BasicHeader("Something", "bar grep foo woof"));
+        client.execute(get);
+    }
+    
+    @Test
+    public void failedMatchingOnRequestHeaderWithPattern() throws Exception {
+        
+        thrown.expect(ClientDriverFailedExpectationException.class);
+        
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/header").withMethod(Method.GET).withHeader("X-FOO", is("bar")),
                 giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
         
         HttpClient client = new DefaultHttpClient();

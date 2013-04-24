@@ -29,22 +29,22 @@ public class ClientDriverRequestTest {
     public void usingWithHeaderCanOverrideBodyContentType() {
         ClientDriverRequest request = new ClientDriverRequest("/blah").withBody("BODY", "text/plain");
         
-        assertThat(request.getBodyContentType().toString(), is("text/plain"));
+        assertThat(request.getBodyContentType().matches("text/plain"), is(true));
         
         request.withHeader("Content-Type", "text/xml");
         
-        assertThat(request.getBodyContentType().toString(), is("text/xml"));
+        assertThat(request.getBodyContentType().matches("text/xml"), is(true));
     }
     
     @Test
     public void usingWithHeaderCanOverrideBodyContentTypeIgnoringCase() {
         ClientDriverRequest request = new ClientDriverRequest("/blah").withBody("BODY", "text/plain");
         
-        assertThat(request.getBodyContentType().toString(), is("text/plain"));
+        assertThat(request.getBodyContentType().matches("text/plain"), is(true));
         
         request.withHeader("content-type", "text/xml");
         
-        assertThat(request.getBodyContentType().toString(), is("text/xml"));
+        assertThat(request.getBodyContentType().matches("text/xml"), is(true));
     }
     
     @Test

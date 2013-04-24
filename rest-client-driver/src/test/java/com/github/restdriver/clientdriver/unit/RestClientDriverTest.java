@@ -28,13 +28,13 @@ public class RestClientDriverTest {
     @Test
     public void onRequestToWithStringWorks() {
         String path = "/path";
-        assertThat((String) onRequestTo(path).getPath(), is(path));
+        assertThat(onRequestTo(path).getPath().matches("/path"), is(true));
     }
     
     @Test
     public void onRequestToWithPatternWorks() {
         Pattern path = Pattern.compile(".+");
-        assertThat((Pattern) onRequestTo(path).getPath(), is(path));
+        assertThat(onRequestTo(path).getPath().matches("anything"), is(true));
     }
     
     @Test
@@ -47,4 +47,5 @@ public class RestClientDriverTest {
     public void giveEmptyResponseWorks() {
         assertThat(giveEmptyResponse().getContent(), is(""));
     }
+    
 }

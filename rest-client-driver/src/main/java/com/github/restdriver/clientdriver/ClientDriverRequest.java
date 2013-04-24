@@ -47,15 +47,28 @@ public final class ClientDriverRequest {
         GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE
     }
 
-    private final Object path;
+    private final Matcher<? extends String> path;
     private final Multimap<String, Matcher<? extends String>> params;
-    private final Map<String, Object> headers;
+    private final Map<String, Matcher<? extends String>> headers;
 
     private Method method;
     private Matcher<? extends String> bodyContentMatcher;
-    private Object bodyContentType;
+    private Matcher<? extends String> bodyContentType;
     private boolean anyParams;
     private BodyCapture<?> bodyCapture;
+    
+    /**
+     * Constructor taking String matcher.
+     *
+     * @param path The mandatory argument is the path which will be listened on
+     */
+    public ClientDriverRequest(Matcher<? extends String> path) {
+        this.path = path;
+        method = Method.GET;
+        params = HashMultimap.create();
+        headers = new HashMap<String, Matcher<? extends String>>();
+        anyParams = false;
+    }
 
     /**
      * Constructor taking String.
@@ -63,11 +76,7 @@ public final class ClientDriverRequest {
      * @param path The mandatory argument is the path which will be listened on
      */
     public ClientDriverRequest(String path) {
-        this.path = path;
-        method = Method.GET;
-        params = HashMultimap.create();
-        headers = new HashMap<String, Object>();
-        anyParams = false;
+        this(new IsEqual<String>(path));
     }
 
     /**
@@ -76,11 +85,7 @@ public final class ClientDriverRequest {
      * @param path The mandatory argument is the path which will be listened on
      */
     public ClientDriverRequest(Pattern path) {
-        this.path = path;
-        method = Method.GET;
-        params = HashMultimap.create();
-        headers = new HashMap<String, Object>();
-        anyParams = false;
+        this(new MatchesRegex(path));
     }
 
     /**
@@ -88,7 +93,7 @@ public final class ClientDriverRequest {
      *
      * @return the path which requests are expected on.
      */
-    public Object getPath() {
+    public Matcher<? extends String> getPath() {
         return path;
     }
 
@@ -270,7 +275,7 @@ public final class ClientDriverRequest {
     /**
      * @return the bodyContentType
      */
-    public Object getBodyContentType() {
+    public Matcher<? extends String> getBodyContentType() {
         return bodyContentType;
     }
 
@@ -284,7 +289,7 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withBody(String withBodyContent, String withContentType) {
         bodyContentMatcher = new IsEqual<String>(withBodyContent);
-        bodyContentType = withContentType;
+        bodyContentType = new IsEqual<String>(withContentType);
         return this;
     }
 
@@ -298,7 +303,7 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withBody(String withBodyContent, Pattern contentType) {
         bodyContentMatcher = new IsEqual<String>(withBodyContent);
-        bodyContentType = contentType;
+        bodyContentType = new MatchesRegex(contentType);
         return this;
     }
 
@@ -312,7 +317,7 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, String contentType) {
         bodyContentMatcher = new MatchesRegex(withBodyContent);
-        bodyContentType = contentType;
+        bodyContentType = new IsEqual<String>(contentType);
         return this;
     }
 
@@ -326,7 +331,7 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withBody(Pattern withBodyContent, Pattern contentType) {
         bodyContentMatcher = new MatchesRegex(withBodyContent);
-        bodyContentType = contentType;
+        bodyContentType = new MatchesRegex(contentType);
         return this;
     }
 
@@ -340,7 +345,7 @@ public final class ClientDriverRequest {
      */
     public ClientDriverRequest withBody(Matcher<? extends String> bodyContentMatcher, String contentType) {
         this.bodyContentMatcher = bodyContentMatcher;
-        this.bodyContentType = contentType;
+        this.bodyContentType = new IsEqual<String>(contentType);
         return this;
     }
 
@@ -358,7 +363,23 @@ public final class ClientDriverRequest {
     public BodyCapture<?> getBodyCapture() {
         return bodyCapture;
     }
-
+    
+    /**
+     * Setter for expecting a specific header name and value matcher.
+     *
+     * @param withHeaderName  the headerName to match on
+     * @param headerValueMatcher the matcher to use for the header value
+     * @return the object you called the method on, so you can chain these calls
+     */
+    public ClientDriverRequest withHeader(String withHeaderName, Matcher<? extends String> headerValueMatcher) {
+        if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
+            bodyContentType = headerValueMatcher;
+        } else {
+            headers.put(withHeaderName, headerValueMatcher);
+        }
+        return this;
+    }
+    
     /**
      * Setter for expecting a specific header name and value pair.
      *
@@ -367,12 +388,7 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls
      */
     public ClientDriverRequest withHeader(String withHeaderName, String withHeaderValue) {
-        if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
-            bodyContentType = withHeaderValue;
-        } else {
-            headers.put(withHeaderName, withHeaderValue);
-        }
-        return this;
+        return withHeader(withHeaderName, new IsEqual<String>(withHeaderValue));
     }
 
     /**
@@ -383,23 +399,18 @@ public final class ClientDriverRequest {
      * @return the object you called the method on, so you can chain these calls
      */
     public ClientDriverRequest withHeader(String withHeaderName, Pattern withHeaderValue) {
-        if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
-            bodyContentType = withHeaderValue;
-        } else {
-            headers.put(withHeaderName, withHeaderValue);
-        }
-        return this;
+        return withHeader(withHeaderName, new MatchesRegex(withHeaderValue));
     }
 
     public ClientDriverRequest withBasicAuth(String username, String password) {
-        headers.put("Authorization", "Basic " + base64(username + ":" + password));
+        headers.put("Authorization", new IsEqual<String>("Basic " + base64(username + ":" + password)));
         return this;
     }
 
     /**
      * @return the headers
      */
-    public Map<String, Object> getHeaders() {
+    public Map<String, Matcher<? extends String>> getHeaders() {
         return headers;
     }
 

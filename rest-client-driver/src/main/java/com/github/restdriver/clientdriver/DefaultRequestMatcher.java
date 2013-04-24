@@ -15,17 +15,15 @@
  */
 package com.github.restdriver.clientdriver;
 
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
+
+import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link RequestMatcher}. This implementation expects exact match in terms of the HTTP method, the
@@ -81,7 +79,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
 
     private boolean isSameBasePath(RealRequest realRequest, ClientDriverRequest expectedRequest) {
 
-        if (!isStringOrPatternMatch(realRequest.getPath(), expectedRequest.getPath())) {
+        if (!expectedRequest.getPath().matches(realRequest.getPath())) {
             LOGGER.info("({} {}) REJECTED on path: expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getPath(), realRequest.getPath());
             return false;
         }
@@ -154,12 +152,12 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     @SuppressWarnings("unchecked")
     private boolean hasSameHeaders(RealRequest realRequest, ClientDriverRequest expectedRequest) {
 
-        Map<String, Object> expectedHeaders = expectedRequest.getHeaders();
+        Map<String, Matcher<? extends String>> expectedHeaders = expectedRequest.getHeaders();
         Map<String, Object> actualHeaders = realRequest.getHeaders();
 
         for (String expectedHeaderName : expectedHeaders.keySet()) {
 
-            Object expectedHeaderValue = expectedHeaders.get(expectedHeaderName);
+            Matcher<? extends String> expectedHeaderValue = expectedHeaders.get(expectedHeaderName);
 
             boolean matched = false;
 
@@ -169,15 +167,14 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                     Enumeration<String> valueEnumeration = (Enumeration<String>) value;
                     while (valueEnumeration.hasMoreElements()) {
                         String currentValue = valueEnumeration.nextElement();
-                        if (isStringOrPatternMatch(currentValue, expectedHeaderValue)) {
+                        if (expectedHeaderValue.matches(currentValue)) {
                             matched = true;
                             break;
                         }
                     }
 
                 } else {
-
-                    if (isStringOrPatternMatch((String) value, expectedHeaderValue)) {
+                    if (expectedHeaderValue.matches((String) value)) {
                         matched = true;
                         break;
                     }
@@ -185,11 +182,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
 
             if (!matched) {
-                if (expectedHeaderValue instanceof String) {
-                    LOGGER.info("({} {}) REJECTED on missing header: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedHeaderName, (String) expectedHeaderValue);
-                } else {
-                    LOGGER.info("({} {}) REJECTED on missing header: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedHeaderName, ((Pattern) expectedHeaderValue).pattern());
-                }
+                LOGGER.info("({} {}) REJECTED on missing header: expected {} = {}", realRequest.getMethod(), realRequest.getPath(), expectedHeaderName, expectedHeaderValue);
                 return false;
             }
 
@@ -212,12 +205,8 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                 actualContentType = actualContentType.substring(0, actualContentType.indexOf(';'));
             }
 
-            if (!isStringOrPatternMatch(actualContentType, expectedRequest.getBodyContentType())) {
-                if (expectedRequest.getBodyContentType() instanceof String) {
-                    LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), (String) expectedRequest.getBodyContentType(), (String) actualContentType);
-                } else {
-                    LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), ((Pattern) expectedRequest.getBodyContentType()).pattern(), (String) actualContentType);
-                }
+            if (!expectedRequest.getBodyContentType().matches(actualContentType)) {
+                LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getBodyContentType(), (String) actualContentType);
                 return false;
             }
         }
@@ -239,25 +228,6 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         }
 
         return true;
-    }
-
-    private boolean isStringOrPatternMatch(String actual, Object expected) {
-        if (actual == null) {
-            actual = "";
-        }
-
-        if (expected instanceof String) {
-
-            return actual.equals(expected);
-
-        } else if (expected instanceof Pattern) {
-
-            Pattern pattern = (Pattern) expected;
-            return pattern.matcher(actual).matches();
-
-        } else {
-            throw new ClientDriverInternalException("DefaultRequestMatcher asked to match " + expected.getClass() + ", but only knows String and Pattern.", null);
-        }
     }
 
 }

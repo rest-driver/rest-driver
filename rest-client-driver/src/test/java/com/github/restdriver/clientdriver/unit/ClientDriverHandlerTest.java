@@ -82,7 +82,7 @@ public class ClientDriverHandlerTest {
             sut.checkForUnmatchedExpectations();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET hmm; expected: 1, actual: 0"));
+            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET \"hmm\"; expected: 1, actual: 0"));
         }
         
     }

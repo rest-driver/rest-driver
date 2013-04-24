@@ -82,7 +82,7 @@ public class SpecifyExpectationNumberTest {
     public void specifyingNumberOfTimesFailureHasDecentMessage() throws Exception {
         
         thrown.expect(ClientDriverFailedExpectationException.class);
-        thrown.expectMessage("1 unmatched expectation(s), first is: ClientDriverRequest: GET /request; expected: 2, actual: 1");
+        thrown.expectMessage("1 unmatched expectation(s), first is: ClientDriverRequest: GET \"/request\"; expected: 2, actual: 1");
         
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);

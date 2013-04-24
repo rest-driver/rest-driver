@@ -18,12 +18,24 @@ package com.github.restdriver.clientdriver;
 import java.io.InputStream;
 import java.util.regex.Pattern;
 
+import org.hamcrest.Matcher;
+
 /**
  * Helper class for fluent creation of Client Driver objects.
  */
 public final class RestClientDriver {
     
     private RestClientDriver() {
+    }
+    
+    /**
+     * Creates a new {@link ClientDriverRequest} object.
+     * 
+     * @param path The path to match
+     * @return The newly created request
+     */
+    public static ClientDriverRequest onRequestTo(Matcher<? extends String> path) {
+        return new ClientDriverRequest(path);
     }
     
     /**
