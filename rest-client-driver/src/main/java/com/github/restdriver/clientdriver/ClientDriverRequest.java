@@ -18,9 +18,11 @@ package com.github.restdriver.clientdriver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
@@ -50,6 +52,7 @@ public final class ClientDriverRequest {
     private final Matcher<? extends String> path;
     private final Multimap<String, Matcher<? extends String>> params;
     private final Map<String, Matcher<? extends String>> headers;
+    private final Set<String> excludedHeaders;
 
     private Method method;
     private Matcher<? extends String> bodyContentMatcher;
@@ -67,6 +70,7 @@ public final class ClientDriverRequest {
         method = Method.GET;
         params = HashMultimap.create();
         headers = new HashMap<String, Matcher<? extends String>>();
+        excludedHeaders = new HashSet<String>();
         anyParams = false;
     }
 
@@ -390,6 +394,17 @@ public final class ClientDriverRequest {
     public ClientDriverRequest withHeader(String withHeaderName, String withHeaderValue) {
         return withHeader(withHeaderName, new IsEqual<String>(withHeaderValue));
     }
+    
+    /**
+     * Setter for expecting a specific header name not to be present on the request.
+     * 
+     * @param withoutHeaderName the headerName to match on
+     * @return the object you called the method on, so you can chain these calls
+     */
+    public ClientDriverRequest withoutHeader(String withoutHeaderName) {
+        excludedHeaders.add(withoutHeaderName);
+        return this;
+    }
 
     /**
      * Setter for expecting a specific header name and value pair, where value is in the form of a Pattern.
@@ -412,6 +427,13 @@ public final class ClientDriverRequest {
      */
     public Map<String, Matcher<? extends String>> getHeaders() {
         return headers;
+    }
+    
+    /**
+     * @return the excluded headers
+     */
+    public Set<String> getExcludedHeaders() {
+        return excludedHeaders;
     }
 
     private static String base64(String content) {

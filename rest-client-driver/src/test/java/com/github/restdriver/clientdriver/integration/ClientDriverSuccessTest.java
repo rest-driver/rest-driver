@@ -322,6 +322,31 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    public void matchingOnRequestHeaderNotBeingPresent() throws Exception {
+        
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/without-header-test").withMethod(Method.GET).withoutHeader("Some Header"),
+                giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
+        driver.addExpectation(
+                onRequestTo("/without-header-test").withMethod(Method.GET).withHeader("Some Header", "hello"),
+                giveEmptyResponse().withStatus(418).withHeader("Cache-Control", "no-cache"));
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpGet get = new HttpGet(baseUrl + "/without-header-test");
+        HttpResponse response = client.execute(get);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(204));
+        
+        get = new HttpGet(baseUrl + "/without-header-test");
+        get.addHeader(new BasicHeader("Some Header", "hello"));
+        response = client.execute(get);
+        
+        assertThat(response.getStatusLine().getStatusCode(), is(418));
+        
+    }
+    
+    @Test
     public void failedMatchingOnRequestHeader() throws Exception {
         
         thrown.expect(ClientDriverFailedExpectationException.class);

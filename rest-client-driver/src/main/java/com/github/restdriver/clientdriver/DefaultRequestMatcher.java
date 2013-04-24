@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -45,6 +46,10 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         }
 
         if (!hasSameQueryString(realRequest, expectedRequest)) {
+            return false;
+        }
+        
+        if (hasExcludedHeaders(realRequest, expectedRequest)) {
             return false;
         }
 
@@ -147,6 +152,19 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         }
 
         return true;
+    }
+    
+    private boolean hasExcludedHeaders(RealRequest realRequest, ClientDriverRequest expectedRequest) {
+        Set<String> excludedHeaders = expectedRequest.getExcludedHeaders();
+        Map<String, Object> actualHeaders = realRequest.getHeaders();
+        
+        for (String excludedHeader : excludedHeaders) {
+            if (actualHeaders.containsKey(excludedHeader)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     @SuppressWarnings("unchecked")
