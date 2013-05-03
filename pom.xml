@@ -170,6 +170,7 @@
                         </goals>
                         <configuration>
                             <outputDirectory>${project.basedir}/apidocs</outputDirectory>
+                            <quiet>true</quiet>
                         </configuration>
                     </execution>
                 </executions>
