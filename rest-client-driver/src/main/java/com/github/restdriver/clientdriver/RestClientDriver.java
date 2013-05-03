@@ -16,22 +16,25 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.hamcrest.Matcher;
+import com.github.restdriver.clientdriver.capture.BodyCapture;
 
 /**
  * Helper class for fluent creation of Client Driver objects.
  */
 public final class RestClientDriver {
-    
+
     private RestClientDriver() {
     }
-    
+
     /**
      * Creates a new {@link ClientDriverRequest} object.
      * 
-     * @param path The path to match
+     * @param path
+     *            The path to match
      * @return The newly created request
      */
     public static ClientDriverRequest onRequestTo(Matcher<? extends String> path) {
@@ -47,21 +50,23 @@ public final class RestClientDriver {
     public static ClientDriverRequest onRequestTo(String path) {
         return new ClientDriverRequest(path);
     }
-    
+
     /**
      * Creates a new {@link ClientDriverRequest} object.
      * 
-     * @param path The path to match
+     * @param path
+     *            The path to match
      * @return The newly created request
      */
     public static ClientDriverRequest onRequestTo(Pattern path) {
         return new ClientDriverRequest(path);
     }
-    
+
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
-     * @param content The content to return
+     * @param content
+     *            The content to return
      * @return The newly created response
      * @deprecated Use {@link #giveResponse(String, String)} instead.
      */
@@ -69,29 +74,33 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveResponse(String content) {
         return new ClientDriverResponse(content);
     }
-    
+
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
-     * @param content The content to return
-     * @param contentType The content-type of the response
+     * @param content
+     *            The content to return
+     * @param contentType
+     *            The content-type of the response
      * @return The newly created response
      */
     public static ClientDriverResponse giveResponse(String content, String contentType) {
         return new ClientDriverResponse(content, contentType);
     }
-    
+
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
-     * @param content The content to return
-     * @param contentType The content-type of the response
+     * @param content
+     *            The content to return
+     * @param contentType
+     *            The content-type of the response
      * @return The newly created response
      */
     public static ClientDriverResponse giveResponseAsBytes(InputStream content, String contentType) {
         return new ClientDriverResponse(content, contentType);
     }
-    
+
     /**
      * Creates a new {@link ClientDriverResponse} object with no content.
      * 
@@ -100,5 +109,25 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveEmptyResponse() {
         return new ClientDriverResponse();
     }
-    
+
+    /**
+     * Waits for specified time for populated {@link BodyCapture} object.
+     * 
+     * @param bodyCapture
+     * @param time
+     * @param timeUnit
+     * @throws InterruptedException
+     */
+    public static void waitFor(BodyCapture<?> bodyCapture, long time, TimeUnit timeUnit) throws InterruptedException {
+        long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
+
+        while (waitUntil > System.currentTimeMillis()) {
+            if (bodyCapture.getContent() != null) {
+                break;
+            }
+            Thread.sleep(100);
+        }
+
+    }
+
 }
