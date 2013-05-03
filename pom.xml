@@ -53,7 +53,7 @@
     
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <commons.codec.version>1.7</commons.codec.version>
+        <commons.codec.version>1.8</commons.codec.version>
         <commons.io.version>2.4</commons.io.version>
         <commons.lang.version>2.6</commons.lang.version>
         <guava.version>14.0.1</guava.version>
