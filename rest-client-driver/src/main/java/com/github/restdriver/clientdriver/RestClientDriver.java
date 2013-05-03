@@ -20,7 +20,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.hamcrest.Matcher;
+
 import com.github.restdriver.clientdriver.capture.BodyCapture;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 /**
  * Helper class for fluent creation of Client Driver objects.
@@ -113,21 +115,26 @@ public final class RestClientDriver {
     /**
      * Waits for specified time for populated {@link BodyCapture} object.
      * 
-     * @param bodyCapture
-     * @param time
-     * @param timeUnit
-     * @throws InterruptedException
+     * @param bodyCapture The capture to wait for.
+     * @param time The number of units (given in timeUnit) to wait for.
+     * @param timeUnit The unit
      */
-    public static void waitFor(BodyCapture<?> bodyCapture, long time, TimeUnit timeUnit) throws InterruptedException {
+    public static void waitFor(BodyCapture<?> bodyCapture, long time, TimeUnit timeUnit) {
         long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
 
         while (waitUntil > System.currentTimeMillis()) {
             if (bodyCapture.getContent() != null) {
                 break;
             }
-            Thread.sleep(100);
+            
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new ClientDriverFailedExpectationException("Interrupted waiting for capture", e);
+            }
         }
 
     }
 
 }
+

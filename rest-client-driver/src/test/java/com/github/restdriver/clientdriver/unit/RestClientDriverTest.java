@@ -52,7 +52,7 @@ public class RestClientDriverTest {
     }
 
     @Test
-    public void waitForReturnsImmediatelyIfCaptureBodyPopulated() throws Exception {
+    public void waitForReturnsImmediatelyIfCaptureBodyPopulated() {
         long start = System.currentTimeMillis();
         StringBodyCapture bodyCapture = new StringBodyCapture();
         bodyCapture.setBody("some body");
@@ -63,7 +63,7 @@ public class RestClientDriverTest {
     }
 
     @Test
-    public void waitForSpecifiedTimeIfCaptureBodyIsNotPopulated() throws Exception {
+    public void waitForSpecifiedTimeIfCaptureBodyIsNotPopulated() {
         long start = System.currentTimeMillis();
         StringBodyCapture bodyCapture = new StringBodyCapture();
 
