@@ -120,7 +120,7 @@ public class ClientDriverExpectation {
      * When a call is matched call a handler
      * 
      * @param matchedRequestHandler called when the request is matched
-     * @return
+     * @return The expectation
      */
     public ClientDriverExpectation whenMatched(MatchedRequestHandler matchedRequestHandler) {
         this.matchedRequestHandler = matchedRequestHandler;
