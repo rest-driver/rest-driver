@@ -49,11 +49,7 @@ public class HttpRealRequestTest {
         
         when(mockRequest.getPathInfo()).thenReturn(expectedPathInfo);
         when(mockRequest.getMethod()).thenReturn(expectedMethod);
-        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {
-            {
-                put("hello", new String[] { "world" });
-            }
-        });
+        when(mockRequest.getQueryString()).thenReturn("hello=world");
         when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
         when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
         when(mockRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream(bodyContent)));
