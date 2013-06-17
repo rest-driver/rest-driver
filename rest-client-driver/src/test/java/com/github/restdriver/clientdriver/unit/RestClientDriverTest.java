@@ -69,7 +69,7 @@ public class RestClientDriverTest {
 
         waitFor(bodyCapture, 1, TimeUnit.SECONDS);
 
-        assertThat(System.currentTimeMillis() - start, greaterThan(1000L));
+        assertThat(System.currentTimeMillis() - start, greaterThanOrEqualTo(1000L));
     }
 
 }
