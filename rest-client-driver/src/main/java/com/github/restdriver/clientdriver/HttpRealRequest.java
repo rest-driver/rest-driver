@@ -16,8 +16,6 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -28,12 +26,12 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.util.MultiMap;
+import org.eclipse.jetty.util.UrlEncoded;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.eclipse.jetty.util.MultiMap;
-import org.eclipse.jetty.util.UrlEncoded;
 
 public class HttpRealRequest implements RealRequest {
     
