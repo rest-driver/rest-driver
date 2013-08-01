@@ -15,13 +15,12 @@
  */
 package com.github.restdriver.serverdriver.acceptance;
 
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static com.github.restdriver.serverdriver.Matchers.*;
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
-import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import com.github.restdriver.serverdriver.http.Url;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,6 +28,7 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class GetAcceptanceTest {
@@ -45,7 +45,7 @@ public class GetAcceptanceTest {
     
     @Test
     public void simpleGetRetrievesStatusAndContent() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("Content", "text/plain"));
         
         Response response = get(baseUrl);
         
@@ -57,7 +57,7 @@ public class GetAcceptanceTest {
     public void getRetrievesHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
+                new ClientDriverResponse("", null).withStatus(409).withHeader("X-foo", "barrr"));
         
         Response response = get(baseUrl);
         
@@ -70,7 +70,7 @@ public class GetAcceptanceTest {
     public void getIncludesResponseTime() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("Hello"));
+                new ClientDriverResponse("Hello", "text/plain"));
         
         Response response = get(baseUrl);
         
@@ -81,7 +81,7 @@ public class GetAcceptanceTest {
     public void getSendsHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withHeader("Accept", "Nothing"),
-                new ClientDriverResponse("Hello"));
+                new ClientDriverResponse("Hello", "text/plain"));
         
         Response response = get(baseUrl, header("Accept: Nothing"));
         
@@ -92,7 +92,7 @@ public class GetAcceptanceTest {
     public void getDoesntFollowRedirects() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("")
+                new ClientDriverResponse("", "text/plain")
                         .withStatus(303)
                         .withHeader("Location", "http://foobar"));
         
@@ -106,13 +106,24 @@ public class GetAcceptanceTest {
     public void getAllowsUrlObjects() {
         driver.addExpectation(
                 onRequestTo("/").withParam("a", "b"),
-                giveResponse("yooo").withStatus(404));
+                giveResponse("yooo", "text/plain").withStatus(404));
         
         Url url = url(baseUrl).withParam("a", "b");
         
         Response response = get(url);
         
         assertThat(response, hasStatusCode(404));
+    }
+    
+    @Test
+    public void getAllowsBodyContent() {
+        driver.addExpectation(
+                onRequestTo("/").withBody("BODIEZ!", "text/plain"),
+                giveEmptyResponse().withStatus(418));
+        
+        Response response = get(baseUrl, body("BODIEZ!", "text/plain"));
+        assertThat(response, hasStatusCode(418));
+        
     }
     
 }

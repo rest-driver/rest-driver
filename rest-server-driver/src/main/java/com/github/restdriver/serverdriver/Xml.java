@@ -15,16 +15,16 @@
  */
 package com.github.restdriver.serverdriver;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
-import com.github.restdriver.serverdriver.http.response.Response;
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import org.w3c.dom.Element;
+
+import com.github.restdriver.XmlUtil;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * Provides static helper methods for XML representations.
@@ -33,9 +33,19 @@ import java.io.IOException;
  */
 public final class Xml {
     
-    private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
-    
     private Xml() {
+    }
+    
+    /**
+     * Converts a string to an XML element.
+     * 
+     * @param content The content to be converted
+     * @return The converted element
+     * @deprecated Instead of doing asXml(response.getContent()) you can now do asXml(response).
+     */
+    @Deprecated
+    public static Element asXml(String content) {
+        return XmlUtil.asXml(content);
     }
     
     /**
@@ -45,30 +55,7 @@ public final class Xml {
      * @return The converted element
      */
     public static Element asXml(Response response) {
-        return asXml(response.getContent());
-    }
-    
-    /**
-     * Converts the given string to an XML element.
-     * 
-     * @param xml The XML string to be converted
-     * @return The converted element
-     */
-    public static Element asXml(String xml) {
-        
-        try {
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(xml.getBytes("UTF-8"))).getDocumentElement();
-            
-        } catch (IOException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-            
-        } catch (SAXException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-            
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeMappingException("Can't parse XML.  Bad content >> " + xml.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-        }
-        
+        return XmlUtil.asXml(response.getContent());
     }
     
     /**

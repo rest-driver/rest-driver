@@ -16,16 +16,22 @@
 package com.github.restdriver.clientdriver.integration;
 
 import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.clientdriver.HttpRealRequest;
+import com.github.restdriver.clientdriver.MatchedRequestHandler;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class ClientDriverRuleTest {
@@ -42,8 +48,8 @@ public class ClientDriverRuleTest {
         // We use ExpectedException to catch the exception we (hopefully) get because the expectations weren't met
         thrown.expect(ClientDriverFailedExpectationException.class);
         
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(200));
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(200));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("OUCH!!", "text/plain").withStatus(404));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -56,7 +62,7 @@ public class ClientDriverRuleTest {
     @Test
     public void letsTrySomethingThatWorks() throws Exception {
         
-        driver.addExpectation(onRequestTo("/blah"), giveResponse("").withStatus(404));
+        driver.addExpectation(onRequestTo("/blah"), giveResponse("", null).withStatus(404));
         
         HttpClient client = new DefaultHttpClient();
         
@@ -64,6 +70,33 @@ public class ClientDriverRuleTest {
         
         client.execute(get);
         
+    }
+    
+    @Test
+    public void letsTrySomethingThatShouldCallbackOnMatch() throws Exception {
+        
+        final boolean[] matched = new boolean[1];
+        
+        driver.addExpectation(
+                onRequestTo("/path").withMethod(ClientDriverRequest.Method.POST),
+                giveResponse("", null))
+                .anyTimes()
+                .whenMatched(new MatchedRequestHandler() {
+                    
+                    @Override
+                    public void onMatch(HttpRealRequest matchedRequest) {
+                        assertThat(matchedRequest.getBodyContent(), is("body"));
+                        matched[0] = true;
+                    }
+                    
+                });
+        
+        HttpClient client = new DefaultHttpClient();
+        HttpPost post = new HttpPost(driver.getBaseUrl() + "/path");
+        post.setEntity(new StringEntity("body"));
+        client.execute(post);
+        
+        assertThat(matched[0], is(true));
     }
     
 }

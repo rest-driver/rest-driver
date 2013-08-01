@@ -47,7 +47,7 @@ public class HeadersAcceptanceTest {
     public void getRetrievesHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("").withHeader("X-foo", "barrr"));
+                new ClientDriverResponse("", null).withHeader("X-foo", "barrr"));
         
         Response response = get(baseUrl);
         
@@ -74,9 +74,20 @@ public class HeadersAcceptanceTest {
     public void serverDriverSendsDefaultUserAgentWhenNoneIsSpecified() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withHeader("User-Agent", Pattern.compile("rest-server-driver/.*")),
-                new ClientDriverResponse("received header"));
+                new ClientDriverResponse("received header", "text/plain"));
         
         Response response = get(baseUrl);
+        
+        assertThat(response.asText(), is("received header"));
+    }
+    
+    @Test
+    public void serverDriverSendsSpecifiedUserAgentWhenGiven() {
+        driver.addExpectation(
+                new ClientDriverRequest("/").withHeader("User-Agent", "provided"),
+                new ClientDriverResponse("received header", "text/plain"));
+        
+        Response response = get(baseUrl, header("User-Agent", "provided"));
         
         assertThat(response.asText(), is("received header"));
     }

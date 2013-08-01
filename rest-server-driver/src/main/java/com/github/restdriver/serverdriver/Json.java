@@ -15,15 +15,20 @@
  */
 package com.github.restdriver.serverdriver;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
-import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.matchers.*;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import java.io.IOException;
+
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
-import java.io.IOException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.restdriver.matchers.ContainingValue;
+import com.github.restdriver.matchers.HasJsonArray;
+import com.github.restdriver.matchers.HasJsonValue;
+import com.github.restdriver.matchers.WithSize;
+import com.github.restdriver.matchers.WithValueAt;
+import com.github.restdriver.serverdriver.http.exception.RuntimeMappingException;
+import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
  * Class supplying static methods to help with JSON representations.

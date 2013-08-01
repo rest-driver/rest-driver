@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.matchers.HasXPath;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 public class XPathAcceptanceTest {
@@ -46,12 +47,25 @@ public class XPathAcceptanceTest {
         
         driver.addExpectation(
                 new ClientDriverRequest("/"),
-                new ClientDriverResponse("<some><content type='awesome'/></some>"));
+                new ClientDriverResponse("<some><content type='awesome'/></some>", "text/xml"));
         
         Response response = get(baseUrl);
         
         assertThat(response, hasStatusCode(200));
         assertThat(response.asXml(), hasXPath("/some/content/@type", is("awesome")));
     }
-    
+
+    @Test
+    public void xPathCanBeRunOnTextResponse() {
+
+        driver.addExpectation(
+                new ClientDriverRequest("/"),
+                new ClientDriverResponse("<some><content type='awesome'/></some>", "text/xml"));
+
+        Response response = get(baseUrl);
+
+        assertThat(response, hasStatusCode(200));
+        assertThat(response.asText(), HasXPath.hasXPath("/some/content/@type", is("awesome")));
+    }
+
 }

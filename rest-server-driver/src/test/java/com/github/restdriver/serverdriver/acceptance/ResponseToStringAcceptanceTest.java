@@ -30,9 +30,7 @@ import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
 
 /**
- * User: mjg
- * Date: 07/05/11
- * Time: 21:29
+ * User: mjg Date: 07/05/11 Time: 21:29
  */
 public class ResponseToStringAcceptanceTest {
     
@@ -49,12 +47,11 @@ public class ResponseToStringAcceptanceTest {
     
     @Test
     public void testToStringWithoutResponseBody() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("").withStatus(400));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("", null).withStatus(400));
         
         Response response = get(baseUrl);
         
         assertThat(response.toString(), containsString("HTTP/1.1 400 Bad Request"));
-        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
         assertThat(response.toString(), containsString("Content-Length: 0"));
         assertThat(response.toString(), containsString("Server: rest-client-driver("));
         
@@ -62,12 +59,12 @@ public class ResponseToStringAcceptanceTest {
     
     @Test
     public void testToStringWithResponseBody() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("This is the content"));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse("This is the content", "text/plain"));
         
         Response response = get(baseUrl);
         
         assertThat(response.toString(), containsString("HTTP/1.1 200 OK"));
-        assertThat(response.toString(), containsString("Content-Type: text/plain;charset=ISO-8859-1"));
+        assertThat(response.toString(), containsString("Content-Type: text/plain"));
         assertThat(response.toString(), containsString("Content-Length: 19"));
         assertThat(response.toString(), containsString("Server: rest-client-driver("));
         assertThat(response.toString(), containsString(n + "This is the content"));

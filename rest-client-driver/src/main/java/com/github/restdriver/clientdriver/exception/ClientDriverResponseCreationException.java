@@ -13,30 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.clientdriver.exception;
 
 /**
- * Runtime Exception class for errors when JSONpath returns a result of an unexpected type.
+ * Runtime exception thrown when the client driver response cannot be created
  */
-public class RuntimeJsonTypeMismatchException extends RuntimeException {
+public class ClientDriverResponseCreationException extends RuntimeException {
+    
+    private static final long serialVersionUID = 3273145415762614589L;
     
     /**
      * Constructor.
      * 
-     * @param message The message.
-     * @param ex The ClassCastException which we're wrapping.
+     * @param message
+     *            The message
+     * @param cause
+     *            The throwable which we caught before throwing this one. Could
+     *            be null.
      */
-    public RuntimeJsonTypeMismatchException(String message, ClassCastException ex) {
-        super(message, ex);
-    }
-    
-    /**
-     * Constructor.
-     * 
-     * @param message The message.
-     */
-    public RuntimeJsonTypeMismatchException(String message) {
-        super(message);
+    public ClientDriverResponseCreationException(String message, Throwable cause) {
+        super(message, cause);
     }
     
 }

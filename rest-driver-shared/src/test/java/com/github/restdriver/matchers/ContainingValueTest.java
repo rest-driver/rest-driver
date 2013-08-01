@@ -13,51 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.TextNode;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.junit.Before;
 import org.junit.Test;
 
-public class WithSizeTest {
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+
+public class ContainingValueTest {
     
     private static final ObjectMapper MAPPER = new ObjectMapper();
     
-    private WithSize matcher;
+    private ContainingValue matcher;
     
     @Before
     public void before() {
-        matcher = new WithSize(lessThan(2));
+        matcher = new ContainingValue(containsString("joy"));
     }
     
     @Test
-    public void matcherShouldDescribeItselfCorrectly() {
+    public void matcherShouldDescribesItselfCorrectly() {
         Description description = new StringDescription();
         matcher.describeTo(description);
-        
-        assertThat(description.toString(), is("A JSON array with size: a value less than <2>"));
+        assertThat(description.toString(), is("A JSON array containing: a string containing \"joy\""));
     }
     
     @Test
     public void matcherShouldFailWhenAskedToMatchNonArrayNode() {
-        assertThat(matcher.matches(new TextNode("something")), is(false));
+        assertThat(matcher.matches(new TextNode("foo")), is(false));
     }
     
     @Test
-    public void matcherShouldFailWhenMatcherFails() {
-        assertThat(matcher.matches(array("foo", "bar")), is(false));
+    public void matcherShouldFailWhenGivenEmptyArrayNode() {
+        assertThat(matcher.matches(array()), is(false));
     }
     
     @Test
-    public void matcherShouldPassWhenMatcherPasses() {
-        assertThat(matcher.matches(array("foo")), is(true));
+    public void matcherShouldFailWhenMatcherDoesntMatch() {
+        assertThat(matcher.matches(array("foobar")), is(false));
+    }
+    
+    @Test
+    public void matcherShouldPassWhenMatcherMatches() {
+        assertThat(matcher.matches(array("foobar", "enjoyment")), is(true));
     }
     
     private ArrayNode array(String... items) {
@@ -67,4 +72,5 @@ public class WithSizeTest {
         }
         return array;
     }
+    
 }

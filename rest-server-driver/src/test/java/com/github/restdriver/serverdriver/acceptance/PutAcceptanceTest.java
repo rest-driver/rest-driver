@@ -50,7 +50,7 @@ public class PutAcceptanceTest {
     public void postEmptyBody() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT),
-                new ClientDriverResponse("Content"));
+                new ClientDriverResponse("Content", "text/plain"));
         
         Response response = put(baseUrl);
         
@@ -62,7 +62,7 @@ public class PutAcceptanceTest {
     public void postWithTextPlainBody() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(ClientDriverRequest.Method.PUT).withBody("Your body", "text/plain"),
-                new ClientDriverResponse("Back at you").withStatus(202));
+                new ClientDriverResponse("Back at you", "text/plain").withStatus(202));
         
         Response response = put(baseUrl, body("Your body", "text/plain"));
         
@@ -76,7 +76,7 @@ public class PutAcceptanceTest {
                 new ClientDriverRequest("/")
                         .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
-                new ClientDriverResponse("Back at you").withStatus(202));
+                new ClientDriverResponse("Back at you", "text/plain").withStatus(202));
         
         Response response = put(baseUrl, body("<yo/>", "application/xml"));
         
@@ -91,7 +91,7 @@ public class PutAcceptanceTest {
                         .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml")
                         .withHeader("Accept", "Nothing"),
-                new ClientDriverResponse("Back at you").withStatus(202));
+                new ClientDriverResponse("Back at you", "text/plain").withStatus(202));
         
         Response response = put(baseUrl + "/jsons", body("<yo/>", "application/xml"), header("Accept", "Nothing"));
         
@@ -105,12 +105,26 @@ public class PutAcceptanceTest {
                 new ClientDriverRequest("/xml")
                         .withMethod(ClientDriverRequest.Method.PUT)
                         .withBody("<yo/>", "application/xml"),
-                new ClientDriverResponse("Back at you").withStatus(202));
+                new ClientDriverResponse("Back at you", "text/plain").withStatus(202));
         
         Response response = put(baseUrl + "/xml", body("{}", "application/json"), body("<yo/>", "application/xml"));
         
         assertThat(response, hasStatusCode(202));
         assertThat(response.getContent(), is("Back at you"));
+    }
+    
+    @Test
+    public void putWithByteArrayBody() {
+        driver.addExpectation(
+                new ClientDriverRequest("/bytes")
+                        .withMethod(ClientDriverRequest.Method.PUT)
+                        .withBody("some bytes", "application/pdf"),
+                new ClientDriverResponse("The response", "text/plain").withStatus(418));
+        
+        Response response = put(baseUrl + "/bytes", body("some bytes".getBytes(), "application/pdf"));
+        
+        assertThat(response, hasStatusCode(418));
+        assertThat(response.getContent(), is("The response"));
     }
     
 }

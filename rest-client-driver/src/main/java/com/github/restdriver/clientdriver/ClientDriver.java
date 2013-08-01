@@ -17,8 +17,12 @@ package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
@@ -29,8 +33,11 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
  */
 public final class ClientDriver {
     
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriver.class);
+    
     private final Server jettyServer;
     private final int port;
+    private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
     
     private final ClientDriverJettyHandler handler;
     
@@ -115,6 +122,7 @@ public final class ClientDriver {
      * If the verification fails, a {@link ClientDriverFailedExpectationException} is thrown with plenty of detail, and your test will fail!
      */
     public void verify() {
+        LOGGER.info("Beginning verification");
         handler.checkForUnexpectedRequests();
         handler.checkForUnmatchedExpectations();
     }
@@ -127,6 +135,8 @@ public final class ClientDriver {
             jettyServer.stop();
         } catch (Exception e) {
             throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
+        } finally {
+            completed();
         }
     }
     
@@ -150,5 +160,15 @@ public final class ClientDriver {
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         return handler.addExpectation(request, response);
+    }
+    
+    void addListener(ClientDriverListener listener) {
+        listeners.add(listener);
+    }
+    
+    private void completed() {
+        for (ClientDriverListener listener : listeners) {
+            listener.hasCompleted();
+        }
     }
 }

@@ -20,6 +20,8 @@ package com.github.restdriver.clientdriver.exception;
  */
 public class ClientDriverInvalidExpectationException extends RuntimeException {
     
+    private static final long serialVersionUID = 3061242321188659386L;
+    
     /**
      * Creates a new instance of the exception.
      * 

@@ -19,21 +19,19 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.RealRequest;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 
 public class HttpRealRequestTest {
     
@@ -47,17 +45,17 @@ public class HttpRealRequestTest {
         
         String bodyContent = "bodyContent";
         String expectedContentType = "contentType";
-
+        
         when(mockRequest.getPathInfo()).thenReturn(expectedPathInfo);
         when(mockRequest.getMethod()).thenReturn(expectedMethod);
-        when(mockRequest.getParameterMap()).thenReturn(new HashMap<String, String[]>() {{ put("hello", new String[] { "world" });}});
+        when(mockRequest.getQueryString()).thenReturn("hello=world");
         when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
         when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
-        when(mockRequest.getReader()).thenReturn(new BufferedReader(new StringReader(bodyContent)));
+        when(mockRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream(bodyContent)));
         when(mockRequest.getContentType()).thenReturn(expectedContentType);
-
+        
         RealRequest realRequest = new HttpRealRequest(mockRequest);
-
+        
         assertThat((String) realRequest.getPath(), is(expectedPathInfo));
         assertThat(realRequest.getMethod(), is(Method.GET));
         assertThat(realRequest.getParams().size(), is(1));

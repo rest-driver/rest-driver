@@ -46,7 +46,7 @@ public class OptionsAcceptanceTest {
     public void optionsRequestIsSuccessful() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.OPTIONS),
-                new ClientDriverResponse(null).withHeader("Allow", "GET, DELETE, OPTIONS"));
+                new ClientDriverResponse((String) null, null).withHeader("Allow", "GET, DELETE, OPTIONS"));
         
         Response response = options(baseUrl);
         

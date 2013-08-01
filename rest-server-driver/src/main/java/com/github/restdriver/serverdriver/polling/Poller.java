@@ -15,11 +15,11 @@
  */
 package com.github.restdriver.serverdriver.polling;
 
-import com.github.restdriver.serverdriver.http.exception.RuntimeInterruptedException;
+import static java.util.concurrent.TimeUnit.*;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.*;
+import com.github.restdriver.serverdriver.http.exception.RuntimeInterruptedException;
 
 /**
  * For making asynchronous assertions.

@@ -48,7 +48,7 @@ public class ResponseAsTextAcceptanceTest {
     
     @Test
     public void testToStringWithoutResponseBody() {
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(HEY_BUDDY).withStatus(400));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(HEY_BUDDY, "text/plain").withStatus(400));
         
         Response response = get(baseUrl);
         

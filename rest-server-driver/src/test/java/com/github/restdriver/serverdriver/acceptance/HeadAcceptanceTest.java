@@ -59,7 +59,7 @@ public class HeadAcceptanceTest {
     public void headIgnoresEntity() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.HEAD),
-                new ClientDriverResponse("some content"));
+                new ClientDriverResponse("some content", "text/plain"));
         
         Response response = headOf(baseUrl);
         
@@ -71,14 +71,14 @@ public class HeadAcceptanceTest {
         
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.HEAD),
-                new ClientDriverResponse("Content"));
+                new ClientDriverResponse("Content", "text/plain"));
         Response headResponse = doHeadOf(baseUrl);
         
         assertThat(headResponse, hasStatusCode(200));
         
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.GET),
-                new ClientDriverResponse("Content"));
+                new ClientDriverResponse("Content", "text/plain"));
         Response getResponse = get(baseUrl);
         
         assertThat(getResponse, hasStatusCode(200));
@@ -100,7 +100,7 @@ public class HeadAcceptanceTest {
     public void headRetrievesHeaders() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.HEAD),
-                new ClientDriverResponse("").withStatus(409).withHeader("X-foo", "barrr"));
+                new ClientDriverResponse("", null).withStatus(409).withHeader("X-foo", "barrr"));
         
         Response response = head(baseUrl);
         
@@ -126,7 +126,7 @@ public class HeadAcceptanceTest {
                 new ClientDriverRequest("/")
                         .withMethod(Method.HEAD)
                         .withHeader("Accept", "Nothing"),
-                new ClientDriverResponse("Hello"));
+                new ClientDriverResponse("Hello", "text/plain"));
         
         Response response = head(baseUrl, header("Accept: Nothing"));
         
@@ -137,7 +137,7 @@ public class HeadAcceptanceTest {
     public void headDoesntFollowRedirects() {
         driver.addExpectation(
                 new ClientDriverRequest("/").withMethod(Method.HEAD),
-                new ClientDriverResponse("")
+                new ClientDriverResponse("", null)
                         .withStatus(303)
                         .withHeader("Location", "http://foobar"));
         

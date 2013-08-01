@@ -31,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.server.Request;
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,7 +74,7 @@ public class ClientDriverHandlerTest {
     @Test
     public void testUnmetExpectation() {
         
-        sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm"));
+        sut.addExpectation(onRequestTo("hmm"), giveResponse("mmm", "text/plain"));
         
         sut.checkForUnexpectedRequests();
         
@@ -81,7 +82,7 @@ public class ClientDriverHandlerTest {
             sut.checkForUnmatchedExpectations();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET hmm; expected: 1, actual: 0"));
+            assertThat(bre.getMessage(), equalTo("1 unmatched expectation(s), first is: ClientDriverRequest: GET \"hmm\"; expected: 1, actual: 0"));
         }
         
     }
@@ -99,20 +100,20 @@ public class ClientDriverHandlerTest {
         when(mockHttpRequest.getMethod()).thenReturn("POST");
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
-        when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
+        when(mockHttpRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream("")));
         
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
         } catch (ClientDriverInternalException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+            assertThat(e.getMessage(), equalTo("Unexpected request(s): [POST yarr?gooo=gredge]"));
         }
         
         try {
             sut.checkForUnexpectedRequests();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request: POST yarr?gooo=gredge"));
+            assertThat(e.getMessage(), equalTo("Unexpected request(s): [POST yarr?gooo=gredge]"));
         }
         
     }
@@ -127,7 +128,7 @@ public class ClientDriverHandlerTest {
         HttpServletResponse mockHttpResponse = mock(HttpServletResponse.class);
         
         ClientDriverRequest realRequest = new ClientDriverRequest("yarr").withMethod(Method.GET).withParam("gooo", "gredge");
-        ClientDriverResponse realResponse = new ClientDriverResponse("lovely").withStatus(404).withContentType("fhieow").withHeader("hhh", "JJJ");
+        ClientDriverResponse realResponse = new ClientDriverResponse("lovely", "fhieow").withStatus(404).withHeader("hhh", "JJJ");
         
         when(mockHttpRequest.getMethod()).thenReturn("GET");
         when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
@@ -148,4 +149,5 @@ public class ClientDriverHandlerTest {
         printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
     }
+    
 }

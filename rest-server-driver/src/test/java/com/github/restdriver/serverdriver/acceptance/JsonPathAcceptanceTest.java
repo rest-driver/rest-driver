@@ -29,8 +29,8 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.exception.RuntimeJsonTypeMismatchException;
 import com.github.restdriver.serverdriver.http.response.Response;
-import com.github.restdriver.serverdriver.matchers.RuntimeJsonTypeMismatchException;
 
 public class JsonPathAcceptanceTest {
     
@@ -47,7 +47,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void jsonPathCanBeRunOverJsonResponse() {
         String jsonContent = makeJson(" { 'thing' : 'valuoid' } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", equalTo("valuoid")));
@@ -56,7 +56,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void matchingNumbers() {
         String jsonContent = makeJson(" { 'thing' : 5 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", is(5)));
@@ -65,7 +65,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void matchingNumbersAsLong() {
         String jsonContent = makeJson(" { 'thing' : 5 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", is(5L)));
@@ -74,7 +74,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void correctHandlingOfDouble_IntMismatch() {
         String jsonContent = makeJson(" { 'thing' : 5.00 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), not(hasJsonPath("$.thing", is(5)))); // it's 5.0, not 5 dammit!
@@ -83,7 +83,7 @@ public class JsonPathAcceptanceTest {
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void matchingIntWhenNumberOverflows() {
         String jsonContent = makeJson(" { 'thing' : 4294967294 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", greaterThan(5)));
@@ -92,7 +92,7 @@ public class JsonPathAcceptanceTest {
     @Test(expected = RuntimeJsonTypeMismatchException.class)
     public void matchingDoubleWhenNumberOverflows() {
         String jsonContent = makeJson(" { 'thing' : 4294967294 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", greaterThan(5.1)));
@@ -101,7 +101,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void matchingLongWhenNumberOverflowsIsOK() {
         String jsonContent = makeJson(" { 'thing' : 4294967294 } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.thing", greaterThan(5L)));
@@ -110,7 +110,7 @@ public class JsonPathAcceptanceTest {
     @Test
     public void moreComplexJsonPathCanBeRunOverJsonResponse() throws ParseException {
         String jsonContent = makeJson(" { 'thing' : { 'sub' : { 'subsub' : 'valutron' } } } ");
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$..subsub", hasItem(equalTo("valutron"))));
@@ -121,20 +121,20 @@ public class JsonPathAcceptanceTest {
         String jsonContent = makeJson(
 
         " { 'things' : " +
-                        "[ { 'thing' : { 'a': 'one', 'c' : 100 } } , " +
-                        "  { 'thing' : { 'a': 'two', 'c' : 150 } } ] } ");
+                        "[ { 'a': 'one', 'c' : 100 } , " +
+                        "  { 'a': 'two', 'c' : 150 } ] } ");
         
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
-        assertThat(response.asJson(), hasJsonPath("$.things.thing[?(@.c > 125)].a", hasItem(equalTo("two"))));
+        assertThat(response.asJson(), hasJsonPath("$.things[?(@.c > 125)].a", hasItem(equalTo("two"))));
     }
     
     @Test
     public void jsonPathWithoutMatcher() {
         String jsonContent = makeJson("{'this':'thing','that':3}");
         
-        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent));
+        driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse(jsonContent, "application/json"));
         Response response = get(baseUrl);
         
         assertThat(response.asJson(), hasJsonPath("$.that"));

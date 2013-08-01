@@ -15,9 +15,10 @@
  */
 package com.github.restdriver.clientdriver;
 
-import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
 /**
  * Main entry point to the Rest Client Driver.

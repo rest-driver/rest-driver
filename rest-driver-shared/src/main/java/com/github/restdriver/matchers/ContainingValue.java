@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
 import java.util.Iterator;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Matcher which checks that a JSON array contains the specified value.
@@ -51,11 +52,11 @@ public final class ContainingValue extends TypeSafeMatcher<JsonNode> {
             return false;
         }
         
-        Iterator<JsonNode> nodeIterator = node.getElements();
+        Iterator<JsonNode> nodeIterator = node.elements();
         
         while (nodeIterator.hasNext()) {
             
-            String value = nodeIterator.next().getTextValue();
+            String value = nodeIterator.next().textValue();
             
             if (matcher.matches(value)) {
                 return true;

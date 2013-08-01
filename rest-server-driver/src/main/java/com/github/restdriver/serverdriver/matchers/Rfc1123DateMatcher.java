@@ -15,15 +15,17 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.http.Header;
-import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
 
 /**
  * Matcher to check that headers contain dates which are spec-valid. All dates in HTTP headers (Date-header, caching, etc) should
@@ -40,7 +42,7 @@ public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
      * @return The DateTime object set to UTC.
      */
     public DateTime getDateTime(String rawString) {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.US);
         formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
         
         try {

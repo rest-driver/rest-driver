@@ -59,7 +59,7 @@ public final class ClientDriverRule implements TestRule {
      * @return The newly added expectation.
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
-        LOGGER.info("addExpectation: " + request.getPath());
+        LOGGER.info("addExpectation: {} {}", request.getMethod(), request.getPath());
         return clientDriver.addExpectation(request, response);
     }
     
@@ -70,6 +70,16 @@ public final class ClientDriverRule implements TestRule {
      */
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
+    }
+    
+    /**
+     * The given listener will be registered with the Client Driver and executes once execution has
+     * completed.
+     * 
+     * @param listener The listener
+     */
+    public void whenCompleted(ClientDriverCompletedListener listener) {
+        clientDriver.addListener(listener);
     }
     
     /**
@@ -86,14 +96,14 @@ public final class ClientDriverRule implements TestRule {
         @Override
         public void evaluate() throws Throwable {
             
-            AssertionError assertionError = null;
             try {
-                statement.evaluate();
-            } catch (AssertionError e) {
-                assertionError = e;
-            }
-            
-            try {
+                AssertionError assertionError = null;
+                try {
+                    statement.evaluate();
+                } catch (AssertionError e) {
+                    assertionError = e;
+                }
+                
                 clientDriver.verify();
                 if (assertionError != null) {
                     throw assertionError;

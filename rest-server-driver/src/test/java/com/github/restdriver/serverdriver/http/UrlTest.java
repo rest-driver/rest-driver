@@ -15,10 +15,10 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.junit.Test;
 
 /**
  * User: mjg
@@ -103,6 +103,17 @@ public class UrlTest {
     @Test
     public void assumesHttpAsScheme() {
         assertThat(new Url("localhost/").toString(), is("http://localhost/"));
+    }
+
+    @Test
+    public void copyConstructor(){
+        Url original = new Url("http://localhost").withPath("x").withPath("y").withParam("a", "b").withParam("c", "d");
+        Url copied = new Url(original);
+
+        copied.withPath("z").withParam("e","f");
+
+        assertThat(original.toString(), is("http://localhost/x/y?a=b&c=d"));
+        assertThat(copied.toString(), is("http://localhost/x/y/z?a=b&c=d&e=f"));
     }
     
 }

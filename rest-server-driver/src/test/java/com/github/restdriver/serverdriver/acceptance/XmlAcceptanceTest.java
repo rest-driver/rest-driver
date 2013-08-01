@@ -22,6 +22,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.github.restdriver.XmlUtil;
 import com.github.restdriver.serverdriver.Xml;
 
 public class XmlAcceptanceTest {
@@ -33,13 +34,13 @@ public class XmlAcceptanceTest {
     
     @Test
     public void extractXPathValueExtractsSuccessfully() {
-        assertThat(Xml.extractXPathValue("/person/name/first", Xml.asXml(XML)), is("John"));
+        assertThat(Xml.extractXPathValue("/person/name/first", XmlUtil.asXml(XML)), is("John"));
     }
     
     @Test
     public void extractXPathValueThrowsRuntimeExceptionOnBadXPath() {
         thrown.expect(RuntimeException.class);
-        Xml.extractXPathValue("*&**gibberish", Xml.asXml(XML));
+        Xml.extractXPathValue("*&**gibberish", XmlUtil.asXml(XML));
     }
     
 }

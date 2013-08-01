@@ -16,19 +16,20 @@
 package com.github.restdriver.serverdriver;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-import com.github.restdriver.serverdriver.http.*;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpOptions;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -36,9 +37,24 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.github.restdriver.RestDriverProperties;
+import com.github.restdriver.serverdriver.http.AnyRequestModifier;
+import com.github.restdriver.serverdriver.http.BasicAuth;
+import com.github.restdriver.serverdriver.http.ByteArrayRequestBody;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
+import com.github.restdriver.serverdriver.http.RequestBody;
+import com.github.restdriver.serverdriver.http.RequestConnectionTimeout;
+import com.github.restdriver.serverdriver.http.RequestProxy;
+import com.github.restdriver.serverdriver.http.RequestSocketTimeout;
+import com.github.restdriver.serverdriver.http.RequestTimeout;
+import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
+import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
+import com.github.restdriver.serverdriver.http.request.HttpDeleteWithEntity;
+import com.github.restdriver.serverdriver.http.request.HttpGetWithEntity;
 import com.github.restdriver.serverdriver.http.response.DefaultResponse;
 import com.github.restdriver.serverdriver.http.response.Response;
 
@@ -52,6 +68,9 @@ public final class RestServerDriver {
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
     public static final long DEFAULT_CONNECTION_TIMEOUT = 10000;
     public static final long DEFAULT_SOCKET_TIMEOUT = 10000;
+    
+    private static final String USER_AGENT = "User-Agent";
+    private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
     
     private RestServerDriver() {
     }
@@ -91,6 +110,66 @@ public final class RestServerDriver {
      */
     public static RequestBody body(String content, String contentType) {
         return new RequestBody(content, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from a byte array.
+     * 
+     * @param content Request body content as a byte array.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(byte[] content, String contentType) {
+        return new ByteArrayRequestBody(content, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from an {@link InputStream}.
+     * 
+     * @param content Request body content as an {@link InputStream}.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(InputStream content, String contentType) {
+        byte[] bytes;
+        
+        try {
+            bytes = IOUtils.toByteArray(content);
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting stream to bytes", e);
+        }
+        
+        return new ByteArrayRequestBody(bytes, contentType);
+    }
+    
+    /**
+     * Make a RequestBody from a {@link Reader}.
+     * 
+     * @param content Request body content as a {@link Reader}.
+     * @param contentType Content-Type eg application/pdf.
+     * @return The new request body instance.
+     */
+    public static ByteArrayRequestBody body(Reader content, String contentType) {
+        byte[] bytes;
+        
+        try {
+            bytes = IOUtils.toByteArray(content);
+        } catch (IOException e) {
+            throw new RuntimeException("Error converting reader to bytes", e);
+        }
+        
+        return new ByteArrayRequestBody(bytes, contentType);
+    }
+    
+    /**
+     * Use HTTP basic authentication.
+     * 
+     * @param username The username.
+     * @param password The password.
+     * @return The new BasicAuth instance.
+     */
+    public static BasicAuth withBasicAuth(String username, String password) {
+        return new BasicAuth(username, password);
     }
     
     /**
@@ -229,7 +308,7 @@ public final class RestServerDriver {
      * @return A Response encapsulating the server's reply.
      */
     public static Response get(Object url, AnyRequestModifier... modifiers) {
-        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpGet(url.toString()));
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpGetWithEntity(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
@@ -279,42 +358,42 @@ public final class RestServerDriver {
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response post(Object url, BodyableRequestModifier... modifiers) {
+    public static Response post(Object url, AnyRequestModifier... modifiers) {
         ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpPost(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response postOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response postOf(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response doPostOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response doPostOf(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #post(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #post(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response posting(Object url, BodyableRequestModifier... modifiers) {
+    public static Response posting(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
     
@@ -330,42 +409,42 @@ public final class RestServerDriver {
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response put(Object url, BodyableRequestModifier... modifiers) {
+    public static Response put(Object url, AnyRequestModifier... modifiers) {
         ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpPut(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response putOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response putOf(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response doPutOf(Object url, BodyableRequestModifier... modifiers) {
+    public static Response doPutOf(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
     /**
-     * Synonym for {@link #put(Object, BodyableRequestModifier...)}.
+     * Synonym for {@link #put(Object, AnyRequestModifier...)}.
      * 
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
      * @return Response encapsulating the server's reply
      */
-    public static Response putting(Object url, BodyableRequestModifier... modifiers) {
+    public static Response putting(Object url, AnyRequestModifier... modifiers) {
         return put(url, modifiers);
     }
     
@@ -382,7 +461,7 @@ public final class RestServerDriver {
      * @return Response encapsulating the server's reply
      */
     public static Response delete(Object url, AnyRequestModifier... modifiers) {
-        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpDelete(url.toString()));
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpDeleteWithEntity(url.toString()));
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
@@ -463,12 +542,12 @@ public final class RestServerDriver {
     /*
      * Internal methods for creating requests and responses
      */
-    private static void applyModifiersToRequest(BodyableRequestModifier[] modifiers, ServerDriverHttpUriRequest request) {
+    private static void applyModifiersToRequest(AnyRequestModifier[] modifiers, ServerDriverHttpUriRequest request) {
         if (modifiers == null) {
             return;
         }
         
-        for (BodyableRequestModifier modifier : modifiers) {
+        for (AnyRequestModifier modifier : modifiers) {
             modifier.applyTo(request);
         }
     }
@@ -489,11 +568,17 @@ public final class RestServerDriver {
             httpParams.setParameter(ConnRoutePNames.DEFAULT_PROXY, request.getProxyHost());
         }
         
+        HttpUriRequest httpUriRequest = request.getHttpUriRequest();
+        
+        if (!httpUriRequest.containsHeader(USER_AGENT)) {
+            httpUriRequest.addHeader(USER_AGENT, DEFAULT_USER_AGENT);
+        }
+        
         HttpResponse response;
         
         try {
             long startTime = System.currentTimeMillis();
-            response = httpClient.execute(request.getHttpUriRequest());
+            response = httpClient.execute(httpUriRequest);
             long endTime = System.currentTimeMillis();
             
             return new DefaultResponse(response, (endTime - startTime));

@@ -15,13 +15,14 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import com.github.restdriver.serverdriver.http.Header;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.serverdriver.http.Header;
 
 /**
  * User: mjg

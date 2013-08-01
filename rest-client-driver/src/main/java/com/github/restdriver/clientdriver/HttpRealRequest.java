@@ -26,6 +26,8 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.jetty.util.MultiMap;
+import org.eclipse.jetty.util.UrlEncoded;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.google.common.collect.HashMultimap;
@@ -40,20 +42,22 @@ public class HttpRealRequest implements RealRequest {
     private final String bodyContent;
     private final String bodyContentType;
     
-    @SuppressWarnings("unchecked")
     public HttpRealRequest(HttpServletRequest request) {
         this.path = request.getPathInfo();
         this.method = Enum.valueOf(Method.class, request.getMethod());
         this.params = HashMultimap.create();
-        
-        Map<String, String[]> parameterMap = request.getParameterMap();
-        for (Entry<String, String[]> paramEntry : parameterMap.entrySet()) {
-            String[] values = paramEntry.getValue();
-            for (String value : values) {
-                this.params.put(paramEntry.getKey(), value);
+
+        if (request.getQueryString() != null) {
+            MultiMap<String> parameterMap = new MultiMap<String>();
+            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, "UTF-8");
+            for (Entry<String, String[]> paramEntry : parameterMap.toStringArrayMap().entrySet()) {
+                String[] values = paramEntry.getValue();
+                for (String value : values) {
+                    this.params.put(paramEntry.getKey(), value);
+                }
             }
         }
-        
+
         headers = new HashMap<String, Object>();
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
@@ -64,7 +68,7 @@ public class HttpRealRequest implements RealRequest {
         }
         
         try {
-            this.bodyContent = IOUtils.toString(request.getReader());
+            this.bodyContent = IOUtils.toString(request.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read body of request", e);
         }

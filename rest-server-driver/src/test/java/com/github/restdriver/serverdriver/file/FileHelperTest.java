@@ -15,14 +15,13 @@
  */
 package com.github.restdriver.serverdriver.file;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import org.junit.Test;
 
 /**
  * User: mjg
@@ -59,16 +58,21 @@ public class FileHelperTest {
         String fileContent = FileHelper.fromFileWithParameters("parameter.txt").withParameter("name", "Andrew").toString();
         assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
     }
-
+    
     @Test
     public void replaceParameterInAscii() {
         String fileContent = FileHelper.fromFileWithParameters("parameter.txt", "ASCII").withParameter("name", "Andrew").toString();
         assertThat(fileContent, is("Hello Andrew\nGoodbye Andrew"));
     }
-
+    
     @Test
     public void replaceParameters() {
-        Map<String, String> parameters = new HashMap<String, String>() {{put("greeting", "Hello"); put("thing", "world");}};
+        Map<String, String> parameters = new HashMap<String, String>() {
+            {
+                put("greeting", "Hello");
+                put("thing", "world");
+            }
+        };
         String fileContent = FileHelper.fromFileWithParameters("parameters.txt").withParameters(parameters).toString();
         assertThat(fileContent, is("Hello, world!"));
     }

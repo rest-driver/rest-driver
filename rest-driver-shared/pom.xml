@@ -7,20 +7,40 @@
     <parent>
         <groupId>com.github.rest-driver</groupId>
         <artifactId>rest-driver</artifactId>
-        <version>1.1.18-SNAPSHOT</version>
+        <version>1.1.33-SNAPSHOT</version>
     </parent>
     
     <dependencies>
-    
+        
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
-            <scope>test</scope>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
         </dependency>
     
         <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-library</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
         </dependency>
     
     </dependencies>

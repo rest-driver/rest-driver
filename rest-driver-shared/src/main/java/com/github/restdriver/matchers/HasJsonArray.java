@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.matchers;
+package com.github.restdriver.matchers;
 
-import org.codehaus.jackson.JsonNode;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Matcher to verify that a JsonNode has an array with the specified field name.
