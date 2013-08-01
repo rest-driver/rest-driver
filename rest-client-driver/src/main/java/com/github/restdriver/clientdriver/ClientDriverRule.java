@@ -20,6 +20,7 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
@@ -28,7 +29,10 @@ public final class ClientDriverRule implements TestRule {
     
     private final ClientDriver clientDriver;
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriverRequest.class);
-    
+
+    private static final long IMMEDIATELY = 0;
+    private long expectedResponseTimeout = IMMEDIATELY;
+
     /**
      * Creates a new rule with a driver running on a free port.
      */
@@ -60,6 +64,11 @@ public final class ClientDriverRule implements TestRule {
      */
     public ClientDriverExpectation addExpectation(ClientDriverRequest request, ClientDriverResponse response) {
         LOGGER.info("addExpectation: {} {}", request.getMethod(), request.getPath());
+
+        if (!response.canExpire() && (expectedResponseTimeout > 0)) {
+            response.within(expectedResponseTimeout, TimeUnit.MILLISECONDS);
+        }
+
         return clientDriver.addExpectation(request, response);
     }
     
@@ -81,7 +90,28 @@ public final class ClientDriverRule implements TestRule {
     public void whenCompleted(ClientDriverCompletedListener listener) {
         clientDriver.addListener(listener);
     }
-    
+
+    /**
+     * <p>
+     * When ClientDriver comes to check for unmatched expectations, it will retry for the specified length of time before
+     * considering the expectation unmatched.
+     * </p>
+     * <p>
+     * Has the effect of calling {@link ClientDriverResponse#within(long, java.util.concurrent.TimeUnit)} against each
+     * {@link ClientDriverResponse} added as an expectation. (Note that a timeout set explicitly against the
+     * {@link ClientDriverResponse} overrides the value set here.)
+     * </p>
+     *
+     * @param timeout
+     *      The timeout expressed in the specified units.
+     * @param units
+     *      The {@link TimeUnit} that the timeout is expressed in.
+     */
+    public ClientDriverRule expectResponsesWithin(final int timeout, final TimeUnit units) {
+        expectedResponseTimeout = units.toMillis(timeout);
+        return this;
+    }
+
     /**
      * Statement which evaluates the given Statement and shuts down the client after evaluation.
      */
