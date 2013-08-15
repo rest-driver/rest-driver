@@ -417,6 +417,25 @@ public final class ClientDriverRequest {
         return withHeader(withHeaderName, new MatchesRegex(withHeaderValue));
     }
 
+    /**
+     * Setter for expecting a map of header name and value pairs.
+     *
+     * @param headers a map of header names to header values to match on
+     * @return the object you called the method on, so you can chain these calls
+     */
+    public ClientDriverRequest withHeaders(Map<String, Object> headers) {
+        for (Entry<String, Object> entry : headers.entrySet()) {
+            String headerName = entry.getKey();
+            Object headerValue = entry.getValue();
+            if (headerValue instanceof Pattern) {
+                withHeader(headerName, new MatchesRegex((Pattern)headerValue));
+            } else {
+                withHeader(headerName, new IsEqual<String>(headerValue.toString()));
+            }
+        }
+        return this;
+    }
+
     public ClientDriverRequest withBasicAuth(String username, String password) {
         headers.put("Authorization", new IsEqual<String>("Basic " + base64(username + ":" + password)));
         return this;
