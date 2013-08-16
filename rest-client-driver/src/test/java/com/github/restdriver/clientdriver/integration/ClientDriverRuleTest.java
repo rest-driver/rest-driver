@@ -19,6 +19,8 @@ import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
+import com.github.restdriver.clientdriver.*;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -27,12 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.clientdriver.HttpRealRequest;
-import com.github.restdriver.clientdriver.MatchedRequestHandler;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import java.util.concurrent.TimeUnit;
 
 public class ClientDriverRuleTest {
     
@@ -98,5 +95,56 @@ public class ClientDriverRuleTest {
         
         assertThat(matched[0], is(true));
     }
-    
+
+    @Test
+    public void responseExpectationTimeoutIsPropagatedToClientDriverResponse() {
+
+        // Given
+        final ClientDriverRule driver = new ClientDriverRule()
+                .expectResponsesWithin(5, TimeUnit.DAYS);
+        final ClientDriverResponse response = giveResponse("", null);
+
+        // When
+        driver.addExpectation(
+                onRequestTo("/path"),
+                response);
+
+        // Then
+        assertThat(response.hasNotExpired(), is(true));
+    }
+
+    @Test
+    public void responseExpectationTimeoutDefaultsToImmediately() {
+
+        // Given
+        final ClientDriverRule driver = new ClientDriverRule();
+        final ClientDriverResponse response = giveResponse("", null);
+
+        // When
+        driver.addExpectation(
+                onRequestTo("/path"),
+                response);
+
+        // Then
+        assertThat(response.canExpire(), is(false));
+    }
+
+    @Test
+    public void responseTimeoutOverridesClientDriverRuleExpectationTimeout() throws InterruptedException {
+
+        // Given
+        final ClientDriverRule driver = new ClientDriverRule()
+                .expectResponsesWithin(5, TimeUnit.MINUTES);
+        final ClientDriverResponse response = giveResponse("", null);
+
+        // When
+        driver.addExpectation(
+                onRequestTo("/path"),
+                response.within(1, TimeUnit.MILLISECONDS));
+
+        Thread.sleep(5);
+
+        // Then
+        assertThat(response.hasNotExpired(), is(false));
+    }
 }
