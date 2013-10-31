@@ -2,6 +2,7 @@
 * James Darley (jdarley)
 * Alistair Dutton (kelveden)
 * Matthew Gilliard (mjg123)
+* Bill Hedworth (Bigsy)
 * Victor Heng (bakavic)
 * Henrik Johansson (hencjo)
 * Andrew Jones (ahjones)
