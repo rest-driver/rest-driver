@@ -82,7 +82,7 @@ public class ClientDriverRuleTest {
                     
                     @Override
                     public void onMatch(HttpRealRequest matchedRequest) {
-                        assertThat(matchedRequest.getBodyContent(), is("body"));
+                        assertThat(new String(matchedRequest.getBodyContent()), is("body"));
                         matched[0] = true;
                     }
                     

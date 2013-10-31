@@ -230,7 +230,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
         }
 
         if (expectedRequest.getBodyContentMatcher() != null) {
-            String actualContent = realRequest.getBodyContent();
+            String actualContent = new String(realRequest.getBodyContent());
 
             boolean hasMatchingBodyContent = expectedRequest.getBodyContentMatcher().matches(actualContent);
 

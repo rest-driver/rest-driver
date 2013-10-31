@@ -18,7 +18,7 @@ package com.github.restdriver.clientdriver.capture;
 import com.github.restdriver.clientdriver.capture.BodyCapture;
 
 /**
- * Implementation of BodyCapture which just keeps the body as a String.
+ * Implementation of BodyCapture which gives the body as a String.
  */
 public class StringBodyCapture implements BodyCapture<String> {
 
@@ -30,7 +30,7 @@ public class StringBodyCapture implements BodyCapture<String> {
     }
 
     @Override
-    public void setBody(String content) {
-        this.content = content;
+    public void setBody(byte[] content) {
+        this.content = new String(content);
     }
 }

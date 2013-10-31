@@ -42,7 +42,7 @@ public class DefaultRequestMatcherTest {
     
     private Map<String, Object> headers;
     private Map<String, Collection<String>> params;
-    private String content;
+    private byte[] content;
     private String contentType;
     
     private DefaultRequestMatcher sut;
@@ -57,7 +57,7 @@ public class DefaultRequestMatcherTest {
     }
     
     private RealRequest mockRealRequest(String path, Method method, Map<String, Object> headers,
-            Map<String, Collection<String>> params, String content, String contentType) {
+            Map<String, Collection<String>> params, byte[] content, String contentType) {
         RealRequest real = mock(RealRequest.class);
         when(real.getPath()).thenReturn(path);
         when(real.getMethod()).thenReturn(method);
@@ -358,7 +358,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBody() throws IOException {
         
-        content = "ooooh";
+        content = "ooooh".getBytes();
         contentType = "text/junk";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
@@ -370,7 +370,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBodyPattern() throws IOException {
         
-        content = "ooooh";
+        content = "ooooh".getBytes();
         contentType = "text/junk";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
@@ -382,7 +382,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBodyWrongType() throws IOException {
         
-        content = "ooooh";
+        content = "ooooh".getBytes();
         contentType = "text/jnkular";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
@@ -394,7 +394,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBodyWrongTypePattern() throws IOException {
         
-        content = "ooooh";
+        content = "ooooh".getBytes();
         contentType = "text/jnkular";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
@@ -406,7 +406,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBodyWrongContent() throws IOException {
         
-        content = "ooook";
+        content = "ooook".getBytes();
         contentType = "texy/junk";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
@@ -418,7 +418,7 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWithRequestBodyWrongContentPattern() throws IOException {
         
-        content = "ooook";
+        content = "ooook".getBytes();
         contentType = "text/junk";
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);

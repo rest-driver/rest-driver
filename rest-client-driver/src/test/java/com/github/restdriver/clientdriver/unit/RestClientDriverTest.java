@@ -55,7 +55,7 @@ public class RestClientDriverTest {
     public void waitForReturnsImmediatelyIfCaptureBodyPopulated() {
         long start = System.currentTimeMillis();
         StringBodyCapture bodyCapture = new StringBodyCapture();
-        bodyCapture.setBody("some body");
+        bodyCapture.setBody("some body".getBytes());
 
         waitFor(bodyCapture, 5, TimeUnit.SECONDS);
 

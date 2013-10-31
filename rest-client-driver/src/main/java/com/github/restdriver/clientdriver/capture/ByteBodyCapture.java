@@ -16,12 +16,19 @@
 package com.github.restdriver.clientdriver.capture;
 
 /**
- * For capturing the body of a request.  Implementations can marshall the response into whatever
- * type they like - XML or JSON for example.
+ * Implementation of BodyCapture which just keeps the body as a byte array.
  */
-public interface BodyCapture<T> {
+public class ByteBodyCapture implements BodyCapture<byte[]> {
 
-    T getContent();
+    private byte[] content;
 
-    void setBody(byte[] content);
+    @Override
+    public byte[] getContent() {
+        return content;
+    }
+
+    @Override
+    public void setBody(byte[] content) {
+        this.content = content;
+    }
 }

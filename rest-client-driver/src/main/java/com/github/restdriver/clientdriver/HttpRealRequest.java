@@ -39,7 +39,7 @@ public class HttpRealRequest implements RealRequest {
     private final String path;
     private final Multimap<String, String> params;
     private final Map<String, Object> headers;
-    private final String bodyContent;
+    private final byte[] bodyContent;
     private final String bodyContentType;
     
     public HttpRealRequest(HttpServletRequest request) {
@@ -68,7 +68,7 @@ public class HttpRealRequest implements RealRequest {
         }
         
         try {
-            this.bodyContent = IOUtils.toString(request.getInputStream());
+            this.bodyContent = IOUtils.toByteArray(request.getInputStream());
         } catch (IOException e) {
             throw new RuntimeException("Failed to read body of request", e);
         }
@@ -103,7 +103,7 @@ public class HttpRealRequest implements RealRequest {
     }
     
     @Override
-    public final String getBodyContent() {
+    public final byte[] getBodyContent() {
         return bodyContent;
     }
     
