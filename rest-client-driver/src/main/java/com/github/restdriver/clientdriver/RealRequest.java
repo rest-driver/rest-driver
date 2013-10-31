@@ -31,7 +31,7 @@ public interface RealRequest {
     Map<String, Object> getHeaders();
     
     String getBodyContentType();
-    
-    String getBodyContent();
+
+    byte[] getBodyContent();
     
 }

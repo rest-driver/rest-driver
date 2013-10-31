@@ -37,12 +37,12 @@ public class JsonBodyCapture implements BodyCapture<JsonNode> {
     }
 
     @Override
-    public void setBody(String json) {
+    public void setBody(byte[] json) {
         try {
             this.content = MAPPER.readTree(json);
 
         } catch (IOException e) {
-            throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + json.substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
+            throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + new String(json).substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
 
         }
     }
