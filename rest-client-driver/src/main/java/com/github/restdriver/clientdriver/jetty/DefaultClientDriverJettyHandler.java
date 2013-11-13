@@ -78,7 +78,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      * {@link ClientDriverInternalException} is thrown.
      */
     @Override
-    public synchronized void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         
         LOGGER.info("Handling: {} {}", request.getMethod(), request.getPathInfo());
         
@@ -120,7 +120,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
     }
     
-    private ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
+    private synchronized ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
         
         ClientDriverExpectation matchedExpectation = null;
         HttpRealRequest realRequest = new HttpRealRequest(request);
