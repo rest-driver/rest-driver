@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 import org.hamcrest.Matcher;
 
 import com.github.restdriver.clientdriver.capture.BodyCapture;
+import com.github.restdriver.clientdriver.capture.LatchBodyCapture;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 /**
@@ -120,20 +121,28 @@ public final class RestClientDriver {
      * @param timeUnit The unit
      */
     public static void waitFor(BodyCapture<?> bodyCapture, long time, TimeUnit timeUnit) {
-        long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
-
-        while (waitUntil > System.currentTimeMillis()) {
-            if (bodyCapture.getContent() != null) {
-                break;
-            }
-            
+        if (bodyCapture instanceof LatchBodyCapture) {
             try {
-                Thread.sleep(500);
+                ((LatchBodyCapture<?>) bodyCapture).getLatch().await(time,
+                        timeUnit);
             } catch (InterruptedException e) {
                 throw new ClientDriverFailedExpectationException("Interrupted waiting for capture", e);
             }
-        }
+        } else {
+            long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
 
+            while (waitUntil > System.currentTimeMillis()) {
+                if (bodyCapture.getContent() != null) {
+                    break;
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    throw new ClientDriverFailedExpectationException("Interrupted waiting for capture", e);
+                }
+            }
+        }
     }
 
 }
