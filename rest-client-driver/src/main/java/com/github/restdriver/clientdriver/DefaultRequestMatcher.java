@@ -61,15 +61,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             return false;
         }
 
-        captureBodyIfRequired(realRequest, expectedRequest);
-
         return true;
-    }
-
-    private void captureBodyIfRequired(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        if (expectedRequest.getBodyCapture() != null) {
-            expectedRequest.getBodyCapture().setBody(realRequest.getBodyContent());
-        }
     }
 
     private boolean isSameMethod(RealRequest realRequest, ClientDriverRequest expectedRequest) {
@@ -192,7 +184,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
                     }
 
                 } else {
-                    if (expectedHeaderValue.matches((String) value)) {
+                    if (expectedHeaderValue.matches(value)) {
                         matched = true;
                         break;
                     }
@@ -224,7 +216,7 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             }
 
             if (!expectedRequest.getBodyContentType().matches(actualContentType)) {
-                LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getBodyContentType(), (String) actualContentType);
+                LOGGER.info("({} {}) REJECTED on content type: expected {}, actual {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getBodyContentType(), actualContentType);
                 return false;
             }
         }
