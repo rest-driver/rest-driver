@@ -158,8 +158,18 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             expectations.remove(index);
         }
         
+        captureBodyIfRequired(realRequest, matchedExpectation);
+
         return matchedExpectation.getPair();
     }
+
+	private void captureBodyIfRequired(HttpRealRequest realRequest,
+			ClientDriverExpectation matchedExpectation) {
+		ClientDriverRequest request = matchedExpectation.getPair().getRequest();
+		if (request.getBodyCapture() != null) {
+			request.getBodyCapture().setBody(realRequest.getBodyContent());
+		}
+	}
     
     @Override
     public void checkForUnexpectedRequests() {
