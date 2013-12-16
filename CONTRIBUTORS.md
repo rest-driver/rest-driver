@@ -10,4 +10,5 @@
 * David Morrissey (davemorrissey)
 * Mark Pope (scobal)
 * Neil Prosser (neilprosser)
+* Le Trong Dao (Dao007forever)
 * Jaroslaw Zawila (jaroslawZawila)
