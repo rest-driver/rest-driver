@@ -147,7 +147,11 @@ public final class ClientDriver {
         shutdownQuietly();
         verify();
     }
-    
+
+    public void reset() {
+        handler.reset();
+    }
+
     /**
      * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
      * 

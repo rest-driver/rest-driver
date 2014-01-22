@@ -46,5 +46,9 @@ public interface ClientDriverJettyHandler extends Handler {
      * This method will throw a ClientDriverFailedExpectationException if any expectations have not been met.
      */
     void checkForUnmatchedExpectations();
-    
+
+    /**
+     * Resets the expectations so the current ClientDriver instance can be reused.
+     */
+    void reset();
 }
