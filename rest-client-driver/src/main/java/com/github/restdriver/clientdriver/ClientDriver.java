@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +77,9 @@ public final class ClientDriver {
         
         try {
             jettyServer.setHandler(handler);
+            for (Connector connector : jettyServer.getConnectors()) {
+                connector.setHost("0.0.0.0");
+            }
             jettyServer.start();
             
         } catch (Exception e) {
