@@ -50,11 +50,11 @@ public final class ClientDriver {
      *            The {@link ClientDriverJettyHandler} to use.
      */
     public ClientDriver(ClientDriverJettyHandler handler) {
-        this(handler, getFreePort());
+        this(handler, 0);
     }
     
     /**
-     * Constructor. This will find a free port, bind to it and start the server
+     * Constructor. This will bind to the given port and start the server
      * up before it returns.
      * 
      * @param handler
@@ -65,12 +65,12 @@ public final class ClientDriver {
      */
     public ClientDriver(ClientDriverJettyHandler handler, int port) {
         
-        this.port = port;
         this.handler = handler;
-        
         jettyServer = new Server(port);
         
         startJetty();
+
+        this.port = jettyServer.getConnectors()[0].getLocalPort();
     }
     
     private void startJetty() {
