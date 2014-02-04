@@ -104,7 +104,7 @@ public final class ClientDriver {
         }
         
         throw new ClientDriverSetupException(
-                "Error starting jetty on port " + port + " after " + tries + " retries", null);
+                "Error starting jetty on port " + port + " after " + tries + " tries", null);
     }
     
     private int triesForPort(int port) {
