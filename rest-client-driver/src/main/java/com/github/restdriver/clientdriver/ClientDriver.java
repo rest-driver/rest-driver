@@ -95,13 +95,8 @@ public final class ClientDriver {
                 return jetty;
             } catch (BindException e) {
                 if (retries < tries - 1) {
-                    LOGGER.warn("Could not bind to port; trying again after sleeping");
-                    
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {
-                        // Cannot handle this exception, so just go to the next retry
-                    }
+                    LOGGER.warn("Could not bind to port; trying again");
+
                 }
             } catch (Exception e) {
                 throw new ClientDriverSetupException(
