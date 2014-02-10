@@ -20,6 +20,8 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jetty.server.AbstractNetworkConnector;
+import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Connector;
 import org.slf4j.Logger;
@@ -70,7 +72,13 @@ public final class ClientDriver {
         
         startJetty();
 
-        this.port = jettyServer.getConnectors()[0].getLocalPort();
+        for(Connector connector: jettyServer.getConnectors()){
+            if(connector instanceof NetworkConnector){
+                this.port = ((NetworkConnector)connector).getLocalPort();
+                return;
+            }
+        }
+        this.port = port;
     }
     
     private void startJetty() {
@@ -78,7 +86,8 @@ public final class ClientDriver {
         try {
             jettyServer.setHandler(handler);
             for (Connector connector : jettyServer.getConnectors()) {
-                connector.setHost("0.0.0.0");
+                if(connector instanceof AbstractNetworkConnector)
+                    ((AbstractNetworkConnector)connector).setHost("0.0.0.0");
             }
             jettyServer.start();
             
