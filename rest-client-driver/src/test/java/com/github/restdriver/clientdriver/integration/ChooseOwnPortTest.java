@@ -60,18 +60,18 @@ public class ChooseOwnPortTest {
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
         
         int portNum = ClientDriver.getFreePort();
-
+        
         // one of these must throw an exception.
         new ClientDriverFactory().createClientDriver(portNum);
         new ClientDriverFactory().createClientDriver(portNum);
         
     }
-
+    
     @Test
     public void jettyFindsFreePortItself() {
-
+        
         new ClientDriverFactory().createClientDriver();
         new ClientDriverFactory().createClientDriver();
-
+        
     }
 }

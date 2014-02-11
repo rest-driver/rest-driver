@@ -72,9 +72,9 @@ public final class RestServerDriver {
     
     private static final String USER_AGENT = "User-Agent";
     private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
-
-	private static ClientConnectionManager ccm = null;
-	private static HttpParams httpParams = null;
+    
+    private static ClientConnectionManager ccm = null;
+    private static HttpParams httpParams = null;
     
     private RestServerDriver() {
     }
@@ -83,7 +83,7 @@ public final class RestServerDriver {
      * Helper methods to make value objects *
      * ****************************************************************************
      */
-
+    
     /**
      * Make a Header.
      * 
@@ -277,7 +277,7 @@ public final class RestServerDriver {
      * HTTP OPTIONS methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform an HTTP OPTIONS on a resource.
      * 
@@ -303,7 +303,7 @@ public final class RestServerDriver {
      * HTTP GET methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform an HTTP GET on a resource.
      * 
@@ -354,7 +354,7 @@ public final class RestServerDriver {
      * HTTP POST methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform an HTTP POST to the given URL.
      * 
@@ -405,7 +405,7 @@ public final class RestServerDriver {
      * HTTP PUT methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform an HTTP PUT to the given URL.
      * 
@@ -456,7 +456,7 @@ public final class RestServerDriver {
      * HTTP DELETE methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Send an HTTP delete.
      * 
@@ -507,7 +507,7 @@ public final class RestServerDriver {
      * HTTP HEAD methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform an HTTP HEAD on a resource.
      * 
@@ -561,8 +561,8 @@ public final class RestServerDriver {
      */
     private static Response doHttpRequest(ServerDriverHttpUriRequest request) {
         
-    	HttpClient httpClient = new DefaultHttpClient(RestServerDriver.ccm,
-				RestServerDriver.httpParams);
+        HttpClient httpClient = new DefaultHttpClient(RestServerDriver.ccm,
+                RestServerDriver.httpParams);
         
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, (int) request.getConnectionTimeout());
@@ -604,24 +604,24 @@ public final class RestServerDriver {
         }
         
     }
-
-	/**
-	 * Set the default ClientConnectionManager for all HTTP requests. <br>
-	 * Pass null to use default ClientConnectionManager
-	 * 
-	 * @param ccm
-	 */
-	public static void setClientConnectionManager(ClientConnectionManager ccm) {
-		RestServerDriver.ccm = ccm;
-	}
-
-	/**
-	 * Set the default HttpParams for all HTTP requests. <br>
-	 * Pass null to use default HttpParams
-	 * 
-	 * @param httpParams
-	 */
-	public static void getHttpParams(HttpParams httpParams) {
-		RestServerDriver.httpParams = httpParams;
-	}
+    
+    /**
+     * Set the default ClientConnectionManager for all HTTP requests. <br>
+     * Pass null to use default ClientConnectionManager
+     * 
+     * @param ccm
+     */
+    public static void setClientConnectionManager(ClientConnectionManager ccm) {
+        RestServerDriver.ccm = ccm;
+    }
+    
+    /**
+     * Set the default HttpParams for all HTTP requests. <br>
+     * Pass null to use default HttpParams
+     * 
+     * @param httpParams
+     */
+    public static void getHttpParams(HttpParams httpParams) {
+        RestServerDriver.httpParams = httpParams;
+    }
 }

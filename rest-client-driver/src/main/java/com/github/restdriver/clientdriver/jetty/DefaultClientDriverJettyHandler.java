@@ -94,7 +94,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
             response.setHeader(thisHeader.getKey(), thisHeader.getValue());
         }
-
+        
         if (matchedResponse.hasBody()) {
             OutputStream output = response.getOutputStream();
             output.write(matchedResponse.getContentAsBytes());
@@ -159,17 +159,17 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         captureBodyIfRequired(realRequest, matchedExpectation);
-
+        
         return matchedExpectation.getPair();
     }
-
-	private void captureBodyIfRequired(HttpRealRequest realRequest,
-			ClientDriverExpectation matchedExpectation) {
-		ClientDriverRequest request = matchedExpectation.getPair().getRequest();
-		if (request.getBodyCapture() != null) {
-			request.getBodyCapture().setBody(realRequest.getBodyContent());
-		}
-	}
+    
+    private void captureBodyIfRequired(HttpRealRequest realRequest,
+            ClientDriverExpectation matchedExpectation) {
+        ClientDriverRequest request = matchedExpectation.getPair().getRequest();
+        if (request.getBodyCapture() != null) {
+            request.getBodyCapture().setBody(realRequest.getBodyContent());
+        }
+    }
     
     @Override
     public void checkForUnexpectedRequests() {
@@ -226,14 +226,14 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
     }
-
+    
     @Override
     public void reset() {
         expectations.clear();
         matchedResponses.clear();
         unexpectedRequests.clear();
     }
-
+    
     private void waitFor(long time) {
         try {
             Thread.sleep(time);

@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jetty.server.AbstractNetworkConnector;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.Connector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public final class ClientDriver {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriver.class);
     private static final int MAX_TRIES = 3;
-
+    
     private final Server jettyServer;
     private int port;
     private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
@@ -70,10 +70,10 @@ public final class ClientDriver {
         this.handler = handler;
         this.jettyServer = createAndStartJetty(port);
     }
-
+    
     private Server createAndStartJetty(int port) {
         int tries = triesForPort(port);
-
+        
         for (int retries = 0; retries < tries; retries++) {
             Server jetty = new Server(port);
             jetty.setHandler(handler);
@@ -83,7 +83,7 @@ public final class ClientDriver {
                     ((AbstractNetworkConnector) connector).setHost("0.0.0.0");
                 }
             }
-
+            
             try {
                 jetty.start();
                 for (Connector connector : jetty.getConnectors()) {
@@ -96,7 +96,7 @@ public final class ClientDriver {
             } catch (BindException e) {
                 if (retries < tries - 1) {
                     LOGGER.warn("Could not bind to port; trying again after sleeping");
-
+                    
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e1) {
@@ -105,19 +105,19 @@ public final class ClientDriver {
                 }
             } catch (Exception e) {
                 throw new ClientDriverSetupException(
-                    "Error starting jetty on port " + port, e);
-
+                        "Error starting jetty on port " + port, e);
+                
             }
         }
-
+        
         throw new ClientDriverSetupException(
-            "Error starting jetty on port " + port + " after " + tries + " retries", null);
+                "Error starting jetty on port " + port + " after " + tries + " retries", null);
     }
-
+    
     private int triesForPort(int port) {
         return port == 0 ? MAX_TRIES : 1;
     }
-
+    
     public int getPort() {
         return port;
     }
@@ -184,11 +184,11 @@ public final class ClientDriver {
         shutdownQuietly();
         verify();
     }
-
+    
     public void reset() {
         handler.reset();
     }
-
+    
     /**
      * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
      * 

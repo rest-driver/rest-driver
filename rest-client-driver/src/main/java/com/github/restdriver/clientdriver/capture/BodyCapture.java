@@ -16,12 +16,12 @@
 package com.github.restdriver.clientdriver.capture;
 
 /**
- * For capturing the body of a request.  Implementations can marshall the response into whatever
+ * For capturing the body of a request. Implementations can marshall the response into whatever
  * type they like - XML or JSON for example.
  */
 public interface BodyCapture<T> {
-
+    
     T getContent();
-
+    
     void setBody(byte[] content);
 }

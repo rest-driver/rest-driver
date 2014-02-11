@@ -29,10 +29,10 @@ import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectatio
  * Helper class for fluent creation of Client Driver objects.
  */
 public final class RestClientDriver {
-
+    
     private RestClientDriver() {
     }
-
+    
     /**
      * Creates a new {@link ClientDriverRequest} object.
      * 
@@ -53,7 +53,7 @@ public final class RestClientDriver {
     public static ClientDriverRequest onRequestTo(String path) {
         return new ClientDriverRequest(path);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverRequest} object.
      * 
@@ -64,7 +64,7 @@ public final class RestClientDriver {
     public static ClientDriverRequest onRequestTo(Pattern path) {
         return new ClientDriverRequest(path);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
@@ -77,7 +77,7 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveResponse(String content) {
         return new ClientDriverResponse(content);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
@@ -90,7 +90,7 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveResponse(String content, String contentType) {
         return new ClientDriverResponse(content, contentType);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object.
      * 
@@ -103,7 +103,7 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveResponseAsBytes(InputStream content, String contentType) {
         return new ClientDriverResponse(content, contentType);
     }
-
+    
     /**
      * Creates a new {@link ClientDriverResponse} object with no content.
      * 
@@ -112,7 +112,7 @@ public final class RestClientDriver {
     public static ClientDriverResponse giveEmptyResponse() {
         return new ClientDriverResponse();
     }
-
+    
     /**
      * Waits for specified time for populated {@link BodyCapture} object.
      * 
@@ -130,12 +130,12 @@ public final class RestClientDriver {
             }
         } else {
             long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
-
+            
             while (waitUntil > System.currentTimeMillis()) {
                 if (bodyCapture.getContent() != null) {
                     break;
                 }
-
+                
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
@@ -144,6 +144,5 @@ public final class RestClientDriver {
             }
         }
     }
-
+    
 }
-

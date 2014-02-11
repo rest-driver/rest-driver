@@ -119,8 +119,8 @@ public class JsonPathAcceptanceTest {
     @Test
     public void jsonPathWithConditional() {
         String jsonContent = makeJson(
-
-        " { 'things' : " +
+                
+                " { 'things' : " +
                         "[ { 'a': 'one', 'c' : 100 } , " +
                         "  { 'a': 'two', 'c' : 150 } ] } ");
         

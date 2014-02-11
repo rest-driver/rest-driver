@@ -27,49 +27,49 @@ import org.junit.Test;
 import com.github.restdriver.clientdriver.capture.StringBodyCapture;
 
 public class RestClientDriverTest {
-
+    
     @Test
     public void onRequestToWithStringWorks() {
         String path = "/path";
         assertThat(onRequestTo(path).getPath().matches("/path"), is(true));
     }
-
+    
     @Test
     public void onRequestToWithPatternWorks() {
         Pattern path = Pattern.compile(".+");
         assertThat(onRequestTo(path).getPath().matches("anything"), is(true));
     }
-
+    
     @Test
     public void giveResponseWorks() {
         String content = "some wonderful content";
         assertThat(giveResponse(content, "text/plain").getContent(), is(content));
     }
-
+    
     @Test
     public void giveEmptyResponseWorks() {
         assertThat(giveEmptyResponse().getContent(), is(""));
     }
-
+    
     @Test
     public void waitForReturnsImmediatelyIfCaptureBodyPopulated() {
         long start = System.currentTimeMillis();
         StringBodyCapture bodyCapture = new StringBodyCapture();
         bodyCapture.setBody("some body".getBytes());
-
+        
         waitFor(bodyCapture, 5, TimeUnit.SECONDS);
-
+        
         assertThat(System.currentTimeMillis() - start, lessThan(100L));
     }
-
+    
     @Test
     public void waitForSpecifiedTimeIfCaptureBodyIsNotPopulated() {
         long start = System.currentTimeMillis();
         StringBodyCapture bodyCapture = new StringBodyCapture();
-
+        
         waitFor(bodyCapture, 1, TimeUnit.SECONDS);
-
+        
         assertThat(System.currentTimeMillis() - start, greaterThanOrEqualTo(1000L));
     }
-
+    
 }

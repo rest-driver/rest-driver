@@ -19,14 +19,14 @@ package com.github.restdriver.clientdriver.capture;
  * Implementation of BodyCapture which just keeps the body as a byte array.
  */
 public class ByteBodyCapture implements BodyCapture<byte[]> {
-
+    
     private byte[] content;
-
+    
     @Override
     public byte[] getContent() {
         return content;
     }
-
+    
     @Override
     public void setBody(byte[] content) {
         this.content = content;

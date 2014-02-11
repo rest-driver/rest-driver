@@ -16,35 +16,36 @@
 package com.github.restdriver.serverdriver.http;
 
 /**
- * Immutable version of the {@link Url} class.  Methods do not modify the url but return new modified copies.
+ * Immutable version of the {@link Url} class. Methods do not modify the url but return new modified copies.
+ * 
  * @author mjg
- * 21/12/2012
+ *         21/12/2012
  */
 public final class ImmutableUrl {
-
+    
     private final Url mutableUrl;
-
+    
     /**
      * Setup an ImmutableUrl with a base path, like "http://localhost:8080". You can also supply just "localhost" and the
      * "http" will be inferred.
-     *
+     * 
      * @param base the base Url.
      */
-    public ImmutableUrl(String base){
+    public ImmutableUrl(String base) {
         mutableUrl = new Url(base);
     }
-
+    
     /**
-     * Private constructor to be called by "modifying" methods.  This is private so we don't expose our dependency
+     * Private constructor to be called by "modifying" methods. This is private so we don't expose our dependency
      * on the Url class.
      */
-    private ImmutableUrl(Url url){
+    private ImmutableUrl(Url url) {
         this.mutableUrl = url;
     }
-
+    
     /**
      * Add a path to a url. This method ensures that there is always exactly one "/" character between segments (so you don't have to :).
-     *
+     * 
      * @param path the path, eg "foo/bar"
      * @return The new ImmutableUrl object (for chaining calls)
      */
@@ -52,10 +53,10 @@ public final class ImmutableUrl {
         Url newMutableUrl = new Url(mutableUrl).withPath(path);
         return new ImmutableUrl(newMutableUrl);
     }
-
+    
     /**
      * Adds a query-string parameter to the end of the url, like ?key=val.
-     *
+     * 
      * @param key The key for the query string.
      * @param value The value for the query string.
      * @return The Url with the query string param added (for chaining calls)
@@ -64,13 +65,13 @@ public final class ImmutableUrl {
         Url newMutableUrl = new Url(mutableUrl).withParam(key, value);
         return new ImmutableUrl(newMutableUrl);
     }
-
+    
     /**
      * You can pass this object to all the get/post/put/delete etc methods.
-     *
+     * 
      * @return The textual representation of the Url, correctly formatted.
      */
-    public String toString(){
+    public String toString() {
         return mutableUrl.toString();
     }
 }

@@ -93,9 +93,9 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("kk", "vv")
-                                        .withParam("k2", "v2");
+                .withMethod(Method.GET)
+                .withParam("kk", "vv")
+                .withParam("k2", "v2");
         
         assertThat(sut.isMatch(real, expected), is(true));
     }
@@ -107,8 +107,8 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("kk", Pattern.compile("[v]{2}")).withParam("k2", Pattern.compile("v[0-9]"));
+                .withMethod(Method.GET)
+                .withParam("kk", Pattern.compile("[v]{2}")).withParam("k2", Pattern.compile("v[0-9]"));
         
         assertThat(sut.isMatch(real, expected), is(true));
     }
@@ -120,8 +120,8 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("number", 10);
+                .withMethod(Method.GET)
+                .withParam("number", 10);
         
         assertThat(sut.isMatch(real, expected), is(true));
         
@@ -134,8 +134,8 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("number", 10L);
+                .withMethod(Method.GET)
+                .withParam("number", 10L);
         
         assertThat(sut.isMatch(real, expected), is(true));
         
@@ -148,8 +148,8 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("number", true);
+                .withMethod(Method.GET)
+                .withParam("number", true);
         
         assertThat(sut.isMatch(real, expected), is(true));
         
@@ -164,8 +164,8 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("number", param);
+                .withMethod(Method.GET)
+                .withParam("number", param);
         
         assertThat(sut.isMatch(real, expected), is(true));
         
@@ -211,9 +211,9 @@ public class DefaultRequestMatcherTest {
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa")
-                                        .withMethod(Method.GET)
-                                        .withParam("kk", "vv")
-                                        .withParam("k2", "v2");
+                .withMethod(Method.GET)
+                .withParam("kk", "vv")
+                .withParam("k2", "v2");
         assertThat(sut.isMatch(real, expected), is(false));
     }
     
@@ -296,36 +296,36 @@ public class DefaultRequestMatcherTest {
     
     @Test
     public void testSuccessfulMatchAnyParamsWithNone() {
-    
+        
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withAnyParams();
         
         assertThat(sut.isMatch(real, expected), is(true));
-    
+        
     }
     
     @Test
     public void testSuccessfulMatchAnyParamsWithOne() {
-    
+        
         params = asMap("kk", asStringList("v1", "v2"));
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withAnyParams();
         
         assertThat(sut.isMatch(real, expected), is(true));
-    
+        
     }
     
     @Test
     public void testSuccessfulMatchAnyParamsWithRedundantExpectedParameter() {
-    
+        
         params = asMap("kk", asStringList("v1", "v2"));
         
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withParam("mm", "x").withAnyParams();
         
         assertThat(sut.isMatch(real, expected), is(true));
-    
+        
     }
     
     @Test

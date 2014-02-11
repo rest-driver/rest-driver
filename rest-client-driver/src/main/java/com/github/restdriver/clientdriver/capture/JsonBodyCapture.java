@@ -15,35 +15,35 @@
  */
 package com.github.restdriver.clientdriver.capture;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.restdriver.exception.RuntimeMappingException;
-
-import java.io.IOException;
 
 /**
  * Implementation of BodyCapture which marshalls the body into a {@link JsonNode}.
  */
 public class JsonBodyCapture implements BodyCapture<JsonNode> {
-
+    
     private static final ObjectMapper MAPPER = new ObjectMapper();
     private static final int PARSE_ERROR_EXCERPT_LENGTH = 16;
-
+    
     private JsonNode content;
-
+    
     @Override
     public JsonNode getContent() {
         return content;
     }
-
+    
     @Override
     public void setBody(byte[] json) {
         try {
             this.content = MAPPER.readTree(json);
-
+            
         } catch (IOException e) {
             throw new RuntimeMappingException("Can't parse JSON.  Bad content >> " + new String(json).substring(0, PARSE_ERROR_EXCERPT_LENGTH) + "...", e);
-
+            
         }
     }
 }

@@ -54,18 +54,18 @@ public class XPathAcceptanceTest {
         assertThat(response, hasStatusCode(200));
         assertThat(response.asXml(), hasXPath("/some/content/@type", is("awesome")));
     }
-
+    
     @Test
     public void xPathCanBeRunOnTextResponse() {
-
+        
         driver.addExpectation(
                 new ClientDriverRequest("/"),
                 new ClientDriverResponse("<some><content type='awesome'/></some>", "text/xml"));
-
+        
         Response response = get(baseUrl);
-
+        
         assertThat(response, hasStatusCode(200));
         assertThat(response.asText(), HasXPath.hasXPath("/some/content/@type", is("awesome")));
     }
-
+    
 }

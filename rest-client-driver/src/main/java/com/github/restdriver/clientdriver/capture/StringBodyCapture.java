@@ -15,20 +15,19 @@
  */
 package com.github.restdriver.clientdriver.capture;
 
-import com.github.restdriver.clientdriver.capture.BodyCapture;
 
 /**
  * Implementation of BodyCapture which gives the body as a String.
  */
 public class StringBodyCapture implements BodyCapture<String> {
-
+    
     private String content;
-
+    
     @Override
     public String getContent() {
         return content;
     }
-
+    
     @Override
     public void setBody(byte[] content) {
         this.content = new String(content);

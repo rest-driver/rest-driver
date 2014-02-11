@@ -25,7 +25,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.Test;
 
 public class RequestBodyTest {
-
+    
     @Test
     public void bodyAppliesItselfToRequest() throws Exception {
         HttpPost request = new HttpPost();
@@ -35,7 +35,7 @@ public class RequestBodyTest {
         assertThat(request.getEntity().getContentType().getValue(), is("content/type; charset=UTF-8"));
         assertThat(request.getFirstHeader("Content-type").getValue(), is("content/type"));
     }
-
+    
     @Test
     public void bodyAppliesItselfToRequestWhenContentTypeIncludesCharset() throws Exception {
         HttpPost request = new HttpPost();
@@ -45,19 +45,19 @@ public class RequestBodyTest {
         assertThat(request.getEntity().getContentType().getValue(), is("text/plain; charset=UTF-8"));
         assertThat(request.getFirstHeader("Content-type").getValue(), is("text/plain;charset=UTF-8"));
     }
-
+    
     @Test(expected = IllegalArgumentException.class)
     public void applyToThrowsExceptionWhenContentTypeIsInvalid() throws Exception {
         HttpPost request = new HttpPost();
         RequestBody body = new RequestBody("content", "invalid;;;;");
         body.applyTo(new ServerDriverHttpUriRequest(request));
     }
-
+    
     @Test
     public void applyToHandlesRequestWhichCannotHaveBody() {
         HttpUriRequest request = new HttpGet();
         RequestBody body = new RequestBody("content", "contentType");
         body.applyTo(new ServerDriverHttpUriRequest(request));
     }
-
+    
 }

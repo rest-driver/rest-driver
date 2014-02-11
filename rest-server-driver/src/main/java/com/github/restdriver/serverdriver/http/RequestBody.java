@@ -29,12 +29,12 @@ import org.apache.http.entity.StringEntity;
  * Encapsulates a Request body for a method.
  */
 public final class RequestBody implements AnyRequestModifier {
-
+    
     private static final String DEFAULT_CONTENT_ENCODING = "UTF-8";
-
+    
     private final String content;
     private final String contentType;
-
+    
     /**
      * Creates a new request body instance.
      * 
@@ -47,7 +47,7 @@ public final class RequestBody implements AnyRequestModifier {
         this.content = content;
         this.contentType = contentType;
     }
-
+    
     /**
      * Gets the content of this request body.
      * 
@@ -60,7 +60,7 @@ public final class RequestBody implements AnyRequestModifier {
     public String getContent() {
         return content;
     }
-
+    
     /**
      * Gets the content-type of this request body.
      * 
@@ -73,36 +73,36 @@ public final class RequestBody implements AnyRequestModifier {
     public String getContentType() {
         return contentType;
     }
-
+    
     @Override
     public void applyTo(ServerDriverHttpUriRequest request) {
-
+        
         HttpUriRequest internalRequest = request.getHttpUriRequest();
-
+        
         if (!(internalRequest instanceof HttpEntityEnclosingRequest)) {
             return;
         }
-
+        
         HttpEntityEnclosingRequest entityRequest = (HttpEntityEnclosingRequest) internalRequest;
-
+        
         entityRequest.setHeader("Content-type", contentType);
         entityRequest.setEntity(new StringEntity(content, createContentType(contentType)));
-
+        
     }
-
+    
     private ContentType createContentType(String contentType) {
         try {
-
+            
             MimeType mimeType = new MimeType(contentType);
-
+            
             String mediaType = mimeType.getBaseType();
             String charset = defaultString(mimeType.getParameter("charset"), DEFAULT_CONTENT_ENCODING);
-
+            
             return ContentType.create(mediaType, charset);
-
+            
         } catch (MimeTypeParseException e) {
             throw new IllegalArgumentException("Invalid content type: " + contentType, e);
         }
     }
-
+    
 }

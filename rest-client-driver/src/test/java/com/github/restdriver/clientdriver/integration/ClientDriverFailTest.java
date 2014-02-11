@@ -60,32 +60,32 @@ public class ClientDriverFailTest {
         }
         
     }
-
+    
     @Test
     public void testUnexpectedMultipleUnexpectedCalls() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();
-
+        
         // No expectations defined
-
+        
         HttpClient client = new DefaultHttpClient();
-
+        
         HttpGet getter = new HttpGet(clientDriver.getBaseUrl() + "/blah?foo=bar");
         HttpResponse getResponse = client.execute(getter);
         EntityUtils.consume(getResponse.getEntity());
-
+        
         HttpPost poster = new HttpPost(clientDriver.getBaseUrl() + "/baz/qux");
         HttpResponse postResponse = client.execute(poster);
         EntityUtils.consume(postResponse.getEntity());
-
+        
         try {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /blah?foo=bar, POST /baz/qux]"));
         }
-
+        
     }
-
+    
     @Test
     public void testUnmatchedExpectation() throws Exception {
         clientDriver = new ClientDriverFactory().createClientDriver();

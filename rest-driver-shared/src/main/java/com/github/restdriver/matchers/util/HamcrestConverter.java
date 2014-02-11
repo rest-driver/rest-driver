@@ -25,32 +25,32 @@ import com.google.common.base.Function;
  * Used to convert a Matcher&lt;T&gt; to a Matcher &lt;U&gt; by using a provided Function&lt;U, T&gt;.
  */
 public class HamcrestConverter<T, U> {
-
+    
     private final Function<U, T> converter;
-
+    
     public HamcrestConverter(Function<U, T> converter) {
         this.converter = converter;
     }
-
+    
     public TypeSafeMatcher<U> convert(Matcher<T> matcher) {
         return new ConverterMatcher<T, U>(matcher, this.converter);
     }
-
+    
     private static class ConverterMatcher<V, W> extends TypeSafeMatcher<W> {
-
+        
         private final Matcher<V> matcher;
         private final Function<W, V> converter;
-
+        
         public ConverterMatcher(Matcher<V> matcher, Function<W, V> converter) {
             this.matcher = matcher;
             this.converter = converter;
         }
-
+        
         @Override
         protected boolean matchesSafely(W item) {
             return this.matcher.matches(this.converter.apply(item));
         }
-
+        
         @Override
         public void describeTo(Description description) {
             this.matcher.describeTo(description);

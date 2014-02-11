@@ -25,12 +25,13 @@ import com.github.restdriver.matchers.util.HamcrestConverter;
 import com.google.common.base.Function;
 
 public final class HasXPath {
-
+    
     private HasXPath() {
     }
-
+    
     /**
      * For wrapping the Node Matcher
+     * 
      * @see HamcrestConverter
      */
     private static final HamcrestConverter<Node, String> NODE_TO_STRING_MATCHER = new HamcrestConverter<Node, String>(new Function<String, Node>() {
@@ -39,21 +40,21 @@ public final class HasXPath {
             return XmlUtil.asXml(s);
         }
     });
-
+    
     /**
      * Returns a Matcher&lt;String&gt; (presumably for matching a string containing XML) which checks that the given xPath is matched by the matcher.
-     *
-     * @param xPath   The XPath to check
+     * 
+     * @param xPath The XPath to check
      * @param matcher The matcher to verify
      * @return The matcher
      */
     public static TypeSafeMatcher<String> hasXPath(String xPath, Matcher<String> matcher) {
         return NODE_TO_STRING_MATCHER.convert(Matchers.hasXPath(xPath, matcher));
     }
-
+    
     /**
      * Returns a Matcher&lt;String&gt; (presumably for matching a string containing XML) which checks that the given xPath exists (ie doesn't return null).
-     *
+     * 
      * @param xPath The XPath to check
      * @return The matcher
      */

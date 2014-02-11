@@ -22,25 +22,25 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 
 public class HasXPathTest {
-
+    
     @Test
     public void xmlMatchesStringWithValue() {
         TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("//elementName", is("value"));
         assertThat(xPathMatcher.matches("<elementName>value</elementName>"), is(true));
     }
-
+    
     @Test
     public void xmlMatchesString() {
         TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("//elementName");
         assertThat(xPathMatcher.matches("<elementName>something else</elementName>"), is(true));
     }
-
+    
     @Test
     public void xmlMatchesWithNestedMatcher() {
         TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("//elementName", containsString("la"));
         assertThat(xPathMatcher.matches("<elementName>blah</elementName>"), is(true));
     }
-
+    
     @Test
     public void xmlDoesNotMatch() {
         TypeSafeMatcher<String> xPathMatcher = HasXPath.hasXPath("/node");

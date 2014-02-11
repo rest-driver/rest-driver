@@ -46,7 +46,7 @@ public class HttpRealRequest implements RealRequest {
         this.path = request.getPathInfo();
         this.method = Enum.valueOf(Method.class, request.getMethod());
         this.params = HashMultimap.create();
-
+        
         if (request.getQueryString() != null) {
             MultiMap<String> parameterMap = new MultiMap<String>();
             UrlEncoded.decodeTo(request.getQueryString(), parameterMap, "UTF-8", 0);
@@ -57,7 +57,7 @@ public class HttpRealRequest implements RealRequest {
                 }
             }
         }
-
+        
         headers = new HashMap<String, Object>();
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {

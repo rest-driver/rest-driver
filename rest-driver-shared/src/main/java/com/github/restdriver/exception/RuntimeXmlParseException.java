@@ -16,9 +16,9 @@
 package com.github.restdriver.exception;
 
 public class RuntimeXmlParseException extends RuntimeException {
-
+    
     private static final long serialVersionUID = -8998669008887196143L;
-
+    
     public RuntimeXmlParseException(String message, Exception exception) {
         super(message, exception);
     }

@@ -24,9 +24,10 @@ import javax.servlet.ServletInputStream;
 public class DummyServletInputStream extends ServletInputStream {
     
     private final InputStream inputStream;
+    @SuppressWarnings("unused")
     private ReadListener readListener;
     private boolean eofReached = false;
-
+    
     public DummyServletInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
     }
@@ -34,20 +35,20 @@ public class DummyServletInputStream extends ServletInputStream {
     @Override
     public int read() throws IOException {
         int result = inputStream.read();
-        eofReached = result==-1;
+        eofReached = result == -1;
         return result;
     }
-
+    
     @Override
     public boolean isFinished() {
         return !eofReached;
     }
-
+    
     @Override
     public boolean isReady() {
         return false;
     }
-
+    
     @Override
     public void setReadListener(ReadListener readListener) {
         this.readListener = readListener;

@@ -83,7 +83,7 @@ public class VerifyWithinTest {
         clientDriver.addExpectation(
                 onRequestTo("/foo"),
                 giveEmptyResponse().within(2000, TimeUnit.MILLISECONDS));
-
+        
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {

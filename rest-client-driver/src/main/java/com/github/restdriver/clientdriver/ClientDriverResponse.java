@@ -220,7 +220,7 @@ public final class ClientDriverResponse {
      * @return the object you called the method on, so you can chain these
      *         calls.
      * @deprecated You shouldn't need to use this method any more. Use one of
-     * the creator methods which specifies a content-type.
+     *             the creator methods which specifies a content-type.
      */
     @Deprecated
     public ClientDriverResponse withContentType(String withContentType) {
