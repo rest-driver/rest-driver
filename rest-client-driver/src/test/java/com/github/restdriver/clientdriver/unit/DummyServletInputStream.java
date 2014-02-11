@@ -18,19 +18,38 @@ package com.github.restdriver.clientdriver.unit;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 
 public class DummyServletInputStream extends ServletInputStream {
     
     private final InputStream inputStream;
-    
+    private ReadListener readListener;
+    private boolean eofReached = false;
+
     public DummyServletInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
     }
     
     @Override
     public int read() throws IOException {
-        return inputStream.read();
+        int result = inputStream.read();
+        eofReached = result==-1;
+        return result;
     }
-    
+
+    @Override
+    public boolean isFinished() {
+        return !eofReached;
+    }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
+
+    @Override
+    public void setReadListener(ReadListener readListener) {
+        this.readListener = readListener;
+    }
 }

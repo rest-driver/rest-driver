@@ -28,7 +28,7 @@ import javax.servlet.ServletResponse;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.servlets.ProxyServlet;
+import org.eclipse.jetty.proxy.ProxyServlet;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -155,7 +155,7 @@ public class ProxyAcceptanceTest {
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
             context.setContextPath("/");
             proxyServer.setHandler(context);
-            context.addServlet(new ServletHolder(new CountingProxyServlet()), "/*");
+            context.addServlet(new ServletHolder("CountingProxyServlet", new CountingProxyServlet()), "/*");
             proxyServer.start();
             
             proxyPort = port;
