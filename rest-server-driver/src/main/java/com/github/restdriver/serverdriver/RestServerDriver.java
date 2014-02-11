@@ -31,6 +31,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -71,6 +72,9 @@ public final class RestServerDriver {
     
     private static final String USER_AGENT = "User-Agent";
     private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
+
+	private static ClientConnectionManager ccm = null;
+	private static HttpParams httpParams = null;
     
     private RestServerDriver() {
     }
@@ -557,7 +561,8 @@ public final class RestServerDriver {
      */
     private static Response doHttpRequest(ServerDriverHttpUriRequest request) {
         
-        HttpClient httpClient = new DefaultHttpClient();
+    	HttpClient httpClient = new DefaultHttpClient(RestServerDriver.ccm,
+				RestServerDriver.httpParams);
         
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, (int) request.getConnectionTimeout());
@@ -599,4 +604,24 @@ public final class RestServerDriver {
         }
         
     }
+
+	/**
+	 * Set the default ClientConnectionManager for all HTTP requests. <br>
+	 * Pass null to use default ClientConnectionManager
+	 * 
+	 * @param ccm
+	 */
+	public static void setClientConnectionManager(ClientConnectionManager ccm) {
+		RestServerDriver.ccm = ccm;
+	}
+
+	/**
+	 * Set the default HttpParams for all HTTP requests. <br>
+	 * Pass null to use default HttpParams
+	 * 
+	 * @param httpParams
+	 */
+	public static void getHttpParams(HttpParams httpParams) {
+		RestServerDriver.httpParams = httpParams;
+	}
 }
