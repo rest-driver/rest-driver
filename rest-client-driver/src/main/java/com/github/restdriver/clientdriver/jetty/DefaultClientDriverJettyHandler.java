@@ -226,7 +226,14 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
     }
-    
+
+    @Override
+    public void reset() {
+        expectations.clear();
+        matchedResponses.clear();
+        unexpectedRequests.clear();
+    }
+
     private void waitFor(long time) {
         try {
             Thread.sleep(time);

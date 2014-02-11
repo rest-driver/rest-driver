@@ -17,6 +17,7 @@ package com.github.restdriver.clientdriver.jetty;
 
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -35,6 +36,7 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.RealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import com.github.restdriver.clientdriver.unit.DummyServletInputStream;
 
 public class DefaultClientDriverJettyHandlerTest {
@@ -42,29 +44,31 @@ public class DefaultClientDriverJettyHandlerTest {
 	private Request mockRequest;
 	private HttpServletRequest mockHttpRequest;
 	private HttpServletResponse mockHttpResponse;
+	private ServletOutputStream mockServletOutputStream;
+	private ServletInputStream servletInputStream;
+	private ClientDriverRequest realRequest;
+	private ClientDriverResponse realResponse;
 
 	@Before
-	public void before() {
+	public void before() throws IOException {
 		mockRequestMatcher = mock(RequestMatcher.class);
 		mockRequest = mock(Request.class);
 		mockHttpRequest = mock(Request.class);
 		mockHttpResponse = mock(HttpServletResponse.class);
+		mockServletOutputStream = mock(ServletOutputStream.class);
+		servletInputStream = new DummyServletInputStream(new ReaderInputStream(new StringReader("")));
+		realRequest = new ClientDriverRequest("/").withMethod(Method.GET);
+		realResponse = new ClientDriverResponse("entity payload", "text/plain").withStatus(200).withHeader("Test", "header-should-be-set-before-writing-body");
+
+		when(mockHttpRequest.getInputStream()).thenReturn(servletInputStream);
+		when(mockHttpRequest.getMethod()).thenReturn("GET");
+		when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
+		when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
+		when(mockHttpResponse.getOutputStream()).thenReturn(mockServletOutputStream);
 	}
 
 	@Test
 	public void when_responseContainsBothBodyAndHeaders_headers_shouldBeSetBeforeBody_otherwise_theyWontBeSentAtAll() throws IOException, ServletException {
-		ServletInputStream servletInputStream = new DummyServletInputStream(new ReaderInputStream(new StringReader("")));
-		when(mockHttpRequest.getInputStream()).thenReturn(servletInputStream);
-
-		ClientDriverRequest realRequest = new ClientDriverRequest("/").withMethod(Method.GET);
-		ClientDriverResponse realResponse = new ClientDriverResponse("entity payload", "text/plain").withStatus(200).withHeader("Test", "header-should-be-set-before-writing-body");
-
-		when(mockHttpRequest.getMethod()).thenReturn("GET");
-		when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
-		when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
-
-		ServletOutputStream servletOutputStream = mock(ServletOutputStream.class);
-		when(mockHttpResponse.getOutputStream()).thenReturn(servletOutputStream);
 
 		DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
 		sut.addExpectation(realRequest, realResponse);
@@ -72,10 +76,28 @@ public class DefaultClientDriverJettyHandlerTest {
 
 		verify(mockHttpResponse).setStatus(200);
 
-		InOrder inOrder = inOrder(mockHttpResponse, servletOutputStream);
+		InOrder inOrder = inOrder(mockHttpResponse, mockServletOutputStream);
 		inOrder.verify(mockHttpResponse).setContentType("text/plain");
 		inOrder.verify(mockHttpResponse).setHeader("Test", "header-should-be-set-before-writing-body");
-		inOrder.verify(servletOutputStream).write("entity payload".getBytes("UTF-8"));
+		inOrder.verify(mockServletOutputStream).write("entity payload".getBytes("UTF-8"));
 	}
-	
+
+	@Test
+	public void reset_should_make_ready_for_new_run() throws IOException, ServletException {
+
+		DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
+		sut.addExpectation(realRequest, realResponse);
+		sut.reset();
+
+		try {
+			sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+			fail("Should throw exception as expectations are reset");
+		} catch (ClientDriverInternalException e) {
+			// Should happen
+		}
+
+		sut.addExpectation(realRequest, realResponse);
+		sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+		verify(mockHttpResponse).setStatus(200);
+	}
 }
