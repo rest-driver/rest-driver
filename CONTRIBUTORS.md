@@ -7,6 +7,7 @@
 * Henrik Johansson (hencjo)
 * Andrew Jones (ahjones)
 * Stig Kleppe-Jørgensen (stigkj)
+* Pawel Limanowka (plimanowka)
 * Joe Littlejohn (joelittlejohn)
 * David Morrissey (davemorrissey)
 * Shine Paul (shinep)
@@ -14,3 +15,4 @@
 * Neil Prosser (neilprosser)
 * Le Trong Dao (Dao007forever)
 * Jaroslaw Zawila (jaroslawZawila)
+* (martinrleon)
