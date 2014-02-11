@@ -16,6 +16,7 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +36,11 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 public final class ClientDriver {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriver.class);
-    
+    private static final int MAX_TRIES = 3;
+
     private final Server jettyServer;
-    private final int port;
+    private int port;
     private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
-    
     private final ClientDriverJettyHandler handler;
     
     /**
@@ -64,29 +65,53 @@ public final class ClientDriver {
      *            not free.
      */
     public ClientDriver(ClientDriverJettyHandler handler, int port) {
-        
         this.handler = handler;
-        jettyServer = new Server(port);
-        
-        startJetty();
-
-        this.port = jettyServer.getConnectors()[0].getLocalPort();
+        this.jettyServer = createAndStartJetty(port);
     }
-    
-    private void startJetty() {
-        
-        try {
-            jettyServer.setHandler(handler);
-            for (Connector connector : jettyServer.getConnectors()) {
+
+    private Server createAndStartJetty(int port) {
+        int tries = triesForPort(port);
+
+        for (int retries = 0; retries < tries; retries++) {
+            Server jetty = new Server(port);
+            jetty.setHandler(handler);
+            
+            for (Connector connector : jetty.getConnectors()) {
                 connector.setHost("0.0.0.0");
             }
-            jettyServer.start();
-            
-        } catch (Exception e) {
-            throw new ClientDriverSetupException(
+
+            try {
+                jetty.start();
+                this.port = jetty.getConnectors()[0].getLocalPort();
+
+                return jetty;
+            } catch (BindException e) {
+                if (retries < tries - 1) {
+                    LOGGER.warn("Could not bind to port; trying again after sleeping");
+
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e1) {
+                        // Cannot handle this exception, so just go to the next retry
+                    }
+                }
+            } catch (Exception e) {
+                throw new ClientDriverSetupException(
                     "Error starting jetty on port " + port, e);
-            
+
+            }
         }
+
+        throw new ClientDriverSetupException(
+            "Error starting jetty on port " + port + " after " + tries + " retries", null);
+    }
+
+    private int triesForPort(int port) {
+        return port == 0 ? MAX_TRIES : 1;
+    }
+
+    public int getPort() {
+        return port;
     }
     
     /**

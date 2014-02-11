@@ -20,7 +20,6 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
-import java.net.BindException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -57,22 +56,22 @@ public class ChooseOwnPortTest {
         
     }
     
-    @Test
+    @Test(expected = ClientDriverSetupException.class)
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
         
         int portNum = ClientDriver.getFreePort();
-        
-        try {
-            // one of these must throw an exception.
-            new ClientDriverFactory().createClientDriver(portNum);
-            new ClientDriverFactory().createClientDriver(portNum);
-            
-        } catch (ClientDriverSetupException cdse) {
-            
-            assertThat(cdse.getCause(), instanceOf(BindException.class));
-            
-        }
+
+        // one of these must throw an exception.
+        new ClientDriverFactory().createClientDriver(portNum);
+        new ClientDriverFactory().createClientDriver(portNum);
         
     }
-    
+
+    @Test
+    public void jettyFindsFreePortItself() {
+
+        new ClientDriverFactory().createClientDriver();
+        new ClientDriverFactory().createClientDriver();
+
+    }
 }
