@@ -41,7 +41,7 @@ public final class ClientDriver {
     private static final int MAX_TRIES = 3;
     
     private final Server jettyServer;
-    private int port;
+    private int port = -1;
     private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
     private final ClientDriverJettyHandler handler;
     
@@ -92,6 +92,11 @@ public final class ClientDriver {
                         break;
                     }
                 }
+
+                if (this.port == -1) {
+                    throw new IllegalStateException("Local port was not set");
+                }
+
                 return jetty;
             } catch (BindException e) {
                 if (retries < tries - 1) {
