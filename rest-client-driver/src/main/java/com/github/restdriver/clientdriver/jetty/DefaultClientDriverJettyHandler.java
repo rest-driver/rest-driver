@@ -151,7 +151,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             
             this.unexpectedRequests.add(unexpectedRequest);
             
-            throw new ClientDriverInternalException("Unexpected request(s): " + unexpectedRequests, null);
+            throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
         }
         
         if (matchedExpectation.isSatisfied()) {

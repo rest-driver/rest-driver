@@ -23,7 +23,7 @@ import org.hamcrest.Matcher;
 
 import com.github.restdriver.clientdriver.capture.BodyCapture;
 import com.github.restdriver.clientdriver.capture.LatchBodyCapture;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 
 /**
  * Helper class for fluent creation of Client Driver objects.
@@ -126,7 +126,7 @@ public final class RestClientDriver {
                 ((LatchBodyCapture<?>) bodyCapture).getLatch().await(time,
                         timeUnit);
             } catch (InterruptedException e) {
-                throw new ClientDriverFailedExpectationException("Interrupted waiting for capture", e);
+                throw new ClientDriverInternalException("Interrupted waiting for capture", e);
             }
         } else {
             long waitUntil = System.currentTimeMillis() + timeUnit.toMillis(time);
@@ -139,7 +139,7 @@ public final class RestClientDriver {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    throw new ClientDriverFailedExpectationException("Interrupted waiting for capture", e);
+                    throw new ClientDriverInternalException("Interrupted waiting for capture", e);
                 }
             }
         }

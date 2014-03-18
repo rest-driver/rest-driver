@@ -40,7 +40,7 @@ import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.RealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.unit.DummyServletInputStream;
 
 public class DefaultClientDriverJettyHandlerTest {
@@ -96,7 +96,7 @@ public class DefaultClientDriverJettyHandlerTest {
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             fail("Should throw exception as expectations are reset");
-        } catch (ClientDriverInternalException e) {
+        } catch (ClientDriverFailedExpectationException e) {
             // Should happen
         }
         

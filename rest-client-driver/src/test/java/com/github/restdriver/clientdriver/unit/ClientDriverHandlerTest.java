@@ -43,7 +43,6 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.RealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import com.github.restdriver.clientdriver.jetty.DefaultClientDriverJettyHandler;
 
 public class ClientDriverHandlerTest {
@@ -105,7 +104,7 @@ public class ClientDriverHandlerTest {
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
-        } catch (ClientDriverInternalException e) {
+        } catch (ClientDriverFailedExpectationException e) {
             assertThat(e.getMessage(), equalTo("Unexpected request(s): [POST yarr?gooo=gredge]"));
         }
         
