@@ -88,17 +88,11 @@ public class HttpRealRequest implements RealRequest {
     
     @Override
     public final Map<String, Collection<String>> getParams() {
-        if (params == null) {
-            return null;
-        }
         return Collections.unmodifiableMap(params.asMap());
     }
     
     @Override
     public final Map<String, Object> getHeaders() {
-        if (headers == null) {
-            return null;
-        }
         return Collections.unmodifiableMap(headers);
     }
     
