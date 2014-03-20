@@ -81,7 +81,16 @@ public final class ClientDriverRule implements TestRule {
     public String getBaseUrl() {
         return clientDriver.getBaseUrl();
     }
-    
+
+    /**
+     * The port that the underlying ClientDriver is listening too.
+     *
+     * @return the listening port.
+     */
+    public int getPort() {
+        return clientDriver.getPort();
+    }
+
     /**
      * The given listener will be registered with the Client Driver and executes once execution has
      * completed.
