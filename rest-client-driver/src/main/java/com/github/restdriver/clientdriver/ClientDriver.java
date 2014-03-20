@@ -38,7 +38,7 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 public final class ClientDriver {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriver.class);
-    private static final int MAX_TRIES = 3;
+    private static final int MAX_TRIES = 10;
     
     private final Server jettyServer;
     private int port;
@@ -95,23 +95,16 @@ public final class ClientDriver {
                 return jetty;
             } catch (BindException e) {
                 if (retries < tries - 1) {
-                    LOGGER.warn("Could not bind to port; trying again after sleeping");
-                    
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e1) {
-                        // Cannot handle this exception, so just go to the next retry
-                    }
+                    LOGGER.warn("Could not bind to port; trying again");
                 }
             } catch (Exception e) {
                 throw new ClientDriverSetupException(
                         "Error starting jetty on port " + port, e);
-                
             }
         }
         
         throw new ClientDriverSetupException(
-                "Error starting jetty on port " + port + " after " + tries + " retries", null);
+                "Error starting jetty on port " + port + " after " + tries + " tries", null);
     }
     
     private int triesForPort(int port) {
