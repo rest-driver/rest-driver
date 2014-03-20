@@ -15,13 +15,12 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
 import java.net.URI;
 import java.util.regex.Pattern;
-
+import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.clientdriver.ClientDriverFactory;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -32,10 +31,11 @@ import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.github.restdriver.clientdriver.ClientDriver;
-import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
+import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
+import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 public class ClientDriverFailTest {
     
@@ -56,7 +56,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /blah?foo=bar]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("GET /blah; PARAMS: [foo=[bar]];"));
         }
         
     }
@@ -81,7 +82,9 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /blah?foo=bar, POST /baz/qux]"));
+            assertThat(bre.getMessage(), containsString("2 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("GET /blah; PARAMS: [foo=[bar]];"));
+            assertThat(bre.getMessage(), containsString("POST /baz/qux;"));
         }
         
     }
@@ -99,7 +102,9 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("2 unmatched expectation(s), first is: ClientDriverRequest: GET \"/blah\"; expected: 1, actual: 0"));
+            assertThat(bre.getMessage(), containsString("2 unmatched expectation(s)"));
+            assertThat(bre.getMessage(), containsString("expected: 1, actual: 0"));
+            assertThat(bre.getMessage(), containsString("GET \"/blah\""));
         }
         
     }
@@ -122,7 +127,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [POST /blah?gang=groon]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("POST /blah; PARAMS: [gang=[groon]];"));
         }
         
     }
@@ -145,7 +151,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [POST /blah?gang=goon]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("POST /blah; PARAMS: [gang=[goon]]"));
         }
         
     }
@@ -169,7 +176,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /test]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("GET /test;"));
         }
     }
     
@@ -192,7 +200,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /test]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("GET /test"));
         }
     }
     
@@ -215,7 +224,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
-            assertThat(bre.getMessage(), equalTo("Unexpected request(s): [GET /testing?key=value3&key=value2]"));
+            assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(bre.getMessage(), containsString("GET /testing; PARAMS: [key=[value3, value2]]; "));
         }
         
     }
@@ -236,7 +246,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request(s): [GET /foo]"));
+            assertThat(e.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(e.getMessage(), containsString("GET /foo;"));
         }
     }
     
@@ -256,7 +267,8 @@ public class ClientDriverFailTest {
             clientDriver.shutdown();
             Assert.fail();
         } catch (ClientDriverFailedExpectationException e) {
-            assertThat(e.getMessage(), equalTo("Unexpected request(s): [DELETE /foo]"));
+            assertThat(e.getMessage(), containsString("1 unexpected request(s):"));
+            assertThat(e.getMessage(), containsString("DELETE /foo;"));
         }
     }
     
