@@ -22,12 +22,15 @@ import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.io.StringReader;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -101,7 +104,7 @@ public class ClientDriverHandlerTest {
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
         when(mockHttpRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream("")));
-        
+
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
@@ -109,20 +112,12 @@ public class ClientDriverHandlerTest {
             assertThat(e.getMessage(), containsString("1 unexpected request(s):"));
             assertThat(e.getMessage(), containsString("POST yarr; PARAMS: [gooo=[gredge]];"));
         }
-        
-        try {
-            sut.checkForUnexpectedRequests();
-            Assert.fail();
-        } catch (ClientDriverFailedExpectationException e) {
-            assertThat(e.getMessage(), containsString("1 unexpected request(s):"));
-            assertThat(e.getMessage(), containsString("POST yarr; PARAMS: [gooo=[gredge]];"));
-        }
-        
     }
     
     /**
      * with an expectation set, and a request made, the handler checks for a match and returns the match if one is found
      */
+    @Test
     public void testExpectedRequest() throws IOException, ServletException {
         
         Request mockRequest = mock(Request.class);
@@ -134,22 +129,41 @@ public class ClientDriverHandlerTest {
         
         when(mockHttpRequest.getMethod()).thenReturn("GET");
         when(mockHttpRequest.getReader()).thenReturn(new BufferedReader(new StringReader("")));
+        when(mockHttpRequest.getInputStream()).thenReturn(new DummyServletInputStream(new ByteArrayInputStream("".getBytes())));
         when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
         
         mockHttpResponse.setContentType("fhieow");
         mockHttpResponse.setStatus(404);
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintWriter printWriter = new PrintWriter(baos);
-        
-        when(mockHttpResponse.getWriter()).thenReturn(printWriter);
-        mockHttpResponse.setHeader("hhh", "JJJ");
-        
+        when(mockHttpResponse.getOutputStream()).thenReturn(new DummyServletOutputStream(baos));
+
         sut.addExpectation(realRequest, realResponse);
         sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
         
-        printWriter.close();
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
     }
-    
+
+    private static class DummyServletOutputStream extends ServletOutputStream {
+        private final OutputStream outputStream;
+
+        public DummyServletOutputStream(OutputStream baos) {
+            outputStream = baos;
+        }
+
+        @Override
+        public boolean isReady() {
+            return false;
+        }
+
+        @Override
+        public void setWriteListener(WriteListener writeListener) {
+
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            outputStream.write(b);
+        }
+    }
 }
