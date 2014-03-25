@@ -162,7 +162,21 @@ public final class ClientDriver {
         handler.checkForUnexpectedRequests();
         handler.checkForUnmatchedExpectations();
     }
-    
+
+    /**
+     * Make the mock not fail fast on an unexpected request.
+     */
+    public void noFailFastOnUnexpectedRequest() {
+        handler.noFailFastOnUnexpectedRequest();
+    }
+
+    /**
+     * Resets the expectations and requests in the handler.
+     */
+    public void reset() {
+        handler.reset();
+    }
+
     /**
      * Shutdown the server without verifying expectations.
      */
@@ -175,7 +189,7 @@ public final class ClientDriver {
             completed();
         }
     }
-    
+
     /**
      * Shutdown the server and calls {@link #verify()}.
      */
@@ -183,11 +197,7 @@ public final class ClientDriver {
         shutdownQuietly();
         verify();
     }
-    
-    public void reset() {
-        handler.reset();
-    }
-    
+
     /**
      * Add in an expected {@link ClientDriverRequest}/{@link ClientDriverResponse} pair.
      * 
