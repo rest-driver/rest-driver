@@ -15,28 +15,30 @@
  */
 package com.github.restdriver.clientdriver.exception;
 
+import static com.google.common.collect.Lists.*;
+import static java.util.Collections.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Matchers.*;
+import static org.mockito.Mockito.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
+
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
+
+import org.hamcrest.Matchers;
+import org.junit.Test;
+
 import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
 import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.unit.DummyServletInputStream;
-import org.junit.Test;
-
-import static java.util.Collections.enumeration;
-import static com.google.common.collect.Lists.newArrayList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class ClientDriverFailedExpectationExceptionTest {
     @Test
@@ -54,7 +56,7 @@ public class ClientDriverFailedExpectationExceptionTest {
             assertThat(e.getMessage(), containsString("containing \"body\""));
         }
     }
-
+    
     @Test
     public void should_include_unexpected_requests_and_expectations_in_output() throws Exception {
         try {
@@ -66,66 +68,64 @@ public class ClientDriverFailedExpectationExceptionTest {
             assertThat(e.getMessage(), containsString("header1: h_val1"));
             assertThat(e.getMessage(), containsString("TYPE app"));
             assertThat(e.getMessage(), containsString("TYPE app"));
-
+            
             assertThat(e.getMessage(), containsString("/ok\";"));
             assertThat(e.getMessage(), containsString("/fail\";"));
         }
     }
-
+    
     private List<ClientDriverExpectation> createExpectations() {
         return newArrayList(
-            createExpectation("/ok"),
-            createExpectation("/fail")
-        );
+                createExpectation("/ok"),
+                createExpectation("/fail"));
     }
-
+    
     private ClientDriverExpectation createExpectation(String path) {
         return new ClientDriverExpectation(createPair(path));
     }
-
+    
     private ClientDriverRequestResponsePair createPair(String path) {
         return new ClientDriverRequestResponsePair(createRequest(path), null);
     }
-
+    
     private ClientDriverRequest createRequest(String path) {
         return new ClientDriverRequest(path)
-            .withMethod(Method.PUT)
-            .withHeader("header", endsWith("h_test"))
-            .withoutHeader("header-not-here")
-            .withParam("param", containsString("p_test"))
-            .withBody(containsString("body"), "content_type");
+                .withMethod(Method.PUT)
+                .withHeader("header", Matchers.endsWith("h_test"))
+                .withoutHeader("header-not-here")
+                .withParam("param", containsString("p_test"))
+                .withBody(containsString("body"), "content_type");
     }
-
+    
     private List<HttpRealRequest> createUnexpectedRequests() {
         return newArrayList(
-            createUnexpectedRequest("/ok"),
-            createUnexpectedRequest("/fail")
-        );
+                createUnexpectedRequest("/ok"),
+                createUnexpectedRequest("/fail"));
     }
-
+    
     private HttpRealRequest createUnexpectedRequest(String path) {
         HttpServletRequest mock = mock(HttpServletRequest.class);
-
+        
         when(mock.getPathInfo()).thenReturn(path);
         when(mock.getMethod()).thenReturn("POST");
         when(mock.getQueryString()).thenReturn("p1=test1&p2=test2");
         when(mock.getHeaderNames()).thenReturn(createHeaderNames());
         when(mock.getHeader(anyString())).thenReturn("h_val1", "h_val2");
         when(mock.getContentType()).thenReturn("application/text");
-
+        
         try {
             when(mock.getInputStream()).thenReturn(createInputStream());
         } catch (IOException e) {
             // Should never happen
         }
-
+        
         return new HttpRealRequest(mock);
     }
-
+    
     private Enumeration<String> createHeaderNames() {
         return enumeration(newArrayList("header1", "header2"));
     }
-
+    
     private ServletInputStream createInputStream() {
         return new DummyServletInputStream(new ByteArrayInputStream("test".getBytes()));
     }

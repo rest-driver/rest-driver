@@ -21,7 +21,6 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NetworkConnector;
@@ -30,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
 import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 
@@ -93,11 +93,11 @@ public final class ClientDriver {
                         break;
                     }
                 }
-
+                
                 if (this.port == -1) {
                     throw new IllegalStateException("Local port was not set");
                 }
-
+                
                 return jetty;
             } catch (BindException e) {
                 if (retries < tries - 1) {

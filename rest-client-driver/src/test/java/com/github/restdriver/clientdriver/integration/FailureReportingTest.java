@@ -15,8 +15,10 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -26,10 +28,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriverRule;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 
 public class FailureReportingTest {
     
@@ -45,7 +45,7 @@ public class FailureReportingTest {
         thrown.expect(ClientDriverFailedExpectationException.class);
         thrown.expectMessage("1 unexpected request(s):");
         thrown.expectMessage("GET /two");
-
+        
         clientDriver.addExpectation(onRequestTo("/one"), giveEmptyResponse());
         
         HttpClient client = new DefaultHttpClient();

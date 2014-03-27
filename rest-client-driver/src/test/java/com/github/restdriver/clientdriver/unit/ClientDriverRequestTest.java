@@ -15,14 +15,13 @@
  */
 package com.github.restdriver.clientdriver.unit;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
 
 public class ClientDriverRequestTest {
     
@@ -52,7 +51,7 @@ public class ClientDriverRequestTest {
     public void toStringIncludesPath() {
         ClientDriverRequest request = new ClientDriverRequest("/blah");
         assertThat(request.toString(), containsString("/blah"));
-
+        
         request = new ClientDriverRequest(containsString("/lalame"));
         assertThat(request.toString(), containsString("string containing \"/lalame\""));
     }
@@ -67,18 +66,18 @@ public class ClientDriverRequestTest {
     public void toStringIncludesParams() {
         ClientDriverRequest request = new ClientDriverRequest("/blah").withParam("q", "something").withParam("rows", "10");
         assertThat(request.toString(), containsString("PARAMS: [q=[\"something\"],rows=[\"10\"]]"));
-
+        
         request = new ClientDriverRequest("/blah").withParam("q", containsString("something"));
         assertThat(request.toString(), containsString("PARAMS: [q=[a string containing \"something\"]]"));
     }
-
+    
     @Test
     public void toStringIncludesHeaders() {
         ClientDriverRequest request =
-            new ClientDriverRequest("/blah")
-                .withHeader("test-me", startsWith("more_test"))
-                .withoutHeader("excluded-header");
-
+                new ClientDriverRequest("/blah")
+                        .withHeader("test-me", startsWith("more_test"))
+                        .withoutHeader("excluded-header");
+        
         assertThat(request.toString(), containsString("HEADERS: [test-me: a string starting with \"more_test\""));
         assertThat(request.toString(), containsString("NOT HEADERS: [excluded-header"));
     }

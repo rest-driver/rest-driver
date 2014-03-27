@@ -25,12 +25,12 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.google.common.base.Joiner;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.util.MultiMap;
 import org.eclipse.jetty.util.UrlEncoded;
 
 import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
@@ -106,23 +106,23 @@ public class HttpRealRequest implements RealRequest {
     public final String getBodyContentType() {
         return bodyContentType;
     }
-
+    
     /**
      * toString.
-     *
+     * 
      * @return a String representation of the request
      */
     @Override
     public String toString() {
-
+        
         String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").join(params.asMap());
         String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").join(headers);
-
+        
         return "HttpRealRequest: "
-            + method + " " + path + "; "
-            + "PARAMS: [" + paramsJoined + "]; "
-            + "HEADERS: [" + headersJoined + "]; "
-            + "CONTENT TYPE " + bodyContentType + "; "
-            + "BODY " + new String(bodyContent) + ";";
+                + method + " " + path + "; "
+                + "PARAMS: [" + paramsJoined + "]; "
+                + "HEADERS: [" + headersJoined + "]; "
+                + "CONTENT TYPE " + bodyContentType + "; "
+                + "BODY " + new String(bodyContent) + ";";
     }
 }

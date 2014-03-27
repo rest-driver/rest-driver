@@ -15,7 +15,6 @@
  */
 package com.github.restdriver.clientdriver.capture;
 
-
 /**
  * Implementation of BodyCapture which gives the body as a String.
  */

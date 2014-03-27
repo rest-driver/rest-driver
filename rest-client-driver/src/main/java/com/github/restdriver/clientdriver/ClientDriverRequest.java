@@ -22,14 +22,16 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.commons.codec.binary.Base64;
+import org.hamcrest.Matcher;
+import org.hamcrest.core.IsEqual;
+
 import com.github.restdriver.clientdriver.capture.BodyCapture;
 import com.github.restdriver.matchers.MatchesRegex;
 import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.apache.commons.codec.binary.Base64;
-import org.hamcrest.Matcher;
-import org.hamcrest.core.IsEqual;
 
 /**
  * Class for encapsulating an HTTP request.
@@ -244,21 +246,21 @@ public final class ClientDriverRequest {
      */
     @Override
     public String toString() {
-
+        
         String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").join(params.asMap());
         String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").join(headers);
         String excludedHeadersJoined = Joiner.on(",").join(excludedHeaders);
-
+        
         return "ClientDriverRequest: "
-            + method + " " + path.toString() + "; "
-            + "ANY PARAMS: " + anyParams + "; "
-            + "PARAMS: [" + paramsJoined + "]; "
-            + "HEADERS: [" + headersJoined + "]; "
-            + "NOT HEADERS: [" + excludedHeadersJoined + "]; "
-            + "CONTENT TYPE " + bodyContentType + "; "
-            + "BODY " + bodyContentMatcher + ";";
+                + method + " " + path.toString() + "; "
+                + "ANY PARAMS: " + anyParams + "; "
+                + "PARAMS: [" + paramsJoined + "]; "
+                + "HEADERS: [" + headersJoined + "]; "
+                + "NOT HEADERS: [" + excludedHeadersJoined + "]; "
+                + "CONTENT TYPE " + bodyContentType + "; "
+                + "BODY " + bodyContentMatcher + ";";
     }
-
+    
     /**
      * @return The body content matcher
      */

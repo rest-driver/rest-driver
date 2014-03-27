@@ -25,7 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.common.collect.Lists;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -40,6 +39,7 @@ import com.github.restdriver.clientdriver.HttpRealRequest;
 import com.github.restdriver.clientdriver.RequestMatcher;
 import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.google.common.collect.Lists;
 
 /**
  * Class which acts as a Jetty Handler to see if the actual incoming HTTP
@@ -182,7 +182,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
         long period = 0;
         List<ClientDriverExpectation> failedExpectations = Lists.newArrayList();
-
+        
         while (true) {
             
             if (period > 0) {
@@ -195,14 +195,14 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
                 if (expectation.shouldMatchAnyTimes()) {
                     continue;
                 }
-
+                
                 ClientDriverResponse response = expectation.getPair().getResponse();
-
+                
                 if (response.canExpire() && response.hasNotExpired()) {
                     period = DEFAULT_WAIT_INTERVAL;
                     break;
                 }
-
+                
                 failedExpectations.add(expectation);
             }
             
