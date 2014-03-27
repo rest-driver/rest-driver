@@ -15,33 +15,35 @@
  */
 package com.github.restdriver.clientdriver.jetty;
 
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
-
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import com.github.restdriver.clientdriver.ClientDriverRequest;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.ClientDriverResponse;
+import com.github.restdriver.clientdriver.RealRequest;
+import com.github.restdriver.clientdriver.RequestMatcher;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.unit.DummyServletInputStream;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.eclipse.jetty.server.Request;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.RealRequest;
-import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-import com.github.restdriver.clientdriver.unit.DummyServletInputStream;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class DefaultClientDriverJettyHandlerTest {
     private RequestMatcher mockRequestMatcher;
@@ -70,10 +72,28 @@ public class DefaultClientDriverJettyHandlerTest {
         when(mockRequestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(true);
         when(mockHttpResponse.getOutputStream()).thenReturn(mockServletOutputStream);
     }
-    
+
+    @Test
+    public void unexpected_request_error_should_include_expectations() throws IOException, ServletException {
+        RequestMatcher requestMatcher = mock(RequestMatcher.class);
+        when(requestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(false);
+
+        DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(requestMatcher);
+        sut.addExpectation(new ClientDriverRequest("/not_matched").withMethod(Method.POST), realResponse);
+
+        try {
+            sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
+            fail("ClientDriverFailedExpectationException should have been thrown");
+        } catch (ClientDriverFailedExpectationException e) {
+            assertThat(e.getMessage(), containsString("GET"));
+            assertThat(e.getMessage(), containsString("POST"));
+            assertThat(e.getMessage(), containsString("not_matched"));
+        }
+    }
+
     @Test
     public void when_responseContainsBothBodyAndHeaders_headers_shouldBeSetBeforeBody_otherwise_theyWontBeSentAtAll() throws IOException, ServletException {
-        
+
         DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
         sut.addExpectation(realRequest, realResponse);
         sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
@@ -96,7 +116,7 @@ public class DefaultClientDriverJettyHandlerTest {
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             fail("Should throw exception as expectations are reset");
-        } catch (ClientDriverInternalException e) {
+        } catch (ClientDriverFailedExpectationException e) {
             // Should happen
         }
         

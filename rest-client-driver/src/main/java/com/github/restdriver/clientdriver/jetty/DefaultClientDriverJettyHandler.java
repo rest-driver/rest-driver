@@ -25,6 +25,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
-    private final List<String> unexpectedRequests;
+    private final List<HttpRealRequest> unexpectedRequests;
     
     /**
      * Constructor which accepts a {@link RequestMatcher}.
@@ -65,7 +66,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
         expectations = new ArrayList<ClientDriverExpectation>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
-        unexpectedRequests = new ArrayList<String>();
+        unexpectedRequests = new ArrayList<HttpRealRequest>();
         
         this.matcher = matcher;
         
@@ -141,17 +142,9 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         if (matchedExpectation == null) {
-            String unexpectedRequest = request.getMethod() + " " + request.getPathInfo();
+            this.unexpectedRequests.add(new HttpRealRequest(request));
             
-            String reqQuery = request.getQueryString();
-            
-            if (reqQuery != null) {
-                unexpectedRequest += "?" + reqQuery;
-            }
-            
-            this.unexpectedRequests.add(unexpectedRequest);
-            
-            throw new ClientDriverInternalException("Unexpected request(s): " + unexpectedRequests, null);
+            throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
         }
         
         if (matchedExpectation.isSatisfied()) {
@@ -175,7 +168,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     public void checkForUnexpectedRequests() {
         
         if (!unexpectedRequests.isEmpty()) {
-            throw new ClientDriverFailedExpectationException("Unexpected request(s): " + unexpectedRequests, null);
+            throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
         }
         
     }
@@ -188,8 +181,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         }
         
         long period = 0;
-        ClientDriverExpectation failedExpectation = null;
-        
+        List<ClientDriverExpectation> failedExpectations = Lists.newArrayList();
+
         while (true) {
             
             if (period > 0) {
@@ -199,32 +192,30 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             
             for (ClientDriverExpectation expectation : expectations) {
                 
-                ClientDriverResponse response = expectation.getPair().getResponse();
-                
                 if (expectation.shouldMatchAnyTimes()) {
                     continue;
                 }
-                
+
+                ClientDriverResponse response = expectation.getPair().getResponse();
+
                 if (response.canExpire() && response.hasNotExpired()) {
                     period = DEFAULT_WAIT_INTERVAL;
                     break;
                 }
-                
-                failedExpectation = expectation;
+
+                failedExpectations.add(expectation);
             }
             
             if (period > 0) {
                 continue;
             }
             
-            if (failedExpectation != null) {
-                throw new ClientDriverFailedExpectationException(expectations.size() + " unmatched expectation(s), first is: "
-                        + failedExpectation.getPair().getRequest() + failedExpectation.getStatusString(), null);
+            if (!failedExpectations.isEmpty()) {
+                throw new ClientDriverFailedExpectationException(failedExpectations);
             }
             
             break;
         }
-        
     }
     
     @Override

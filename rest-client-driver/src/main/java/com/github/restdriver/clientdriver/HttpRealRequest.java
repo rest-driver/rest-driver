@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Joiner;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.util.MultiMap;
 import org.eclipse.jetty.util.UrlEncoded;
@@ -88,17 +89,11 @@ public class HttpRealRequest implements RealRequest {
     
     @Override
     public final Map<String, Collection<String>> getParams() {
-        if (params == null) {
-            return null;
-        }
         return Collections.unmodifiableMap(params.asMap());
     }
     
     @Override
     public final Map<String, Object> getHeaders() {
-        if (headers == null) {
-            return null;
-        }
         return Collections.unmodifiableMap(headers);
     }
     
@@ -111,5 +106,23 @@ public class HttpRealRequest implements RealRequest {
     public final String getBodyContentType() {
         return bodyContentType;
     }
-    
+
+    /**
+     * toString.
+     *
+     * @return a String representation of the request
+     */
+    @Override
+    public String toString() {
+
+        String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").join(params.asMap());
+        String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").join(headers);
+
+        return "HttpRealRequest: "
+            + method + " " + path + "; "
+            + "PARAMS: [" + paramsJoined + "]; "
+            + "HEADERS: [" + headersJoined + "]; "
+            + "CONTENT TYPE " + bodyContentType + "; "
+            + "BODY " + new String(bodyContent) + ";";
+    }
 }

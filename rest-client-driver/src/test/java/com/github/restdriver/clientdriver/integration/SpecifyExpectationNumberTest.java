@@ -15,8 +15,9 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.*;
-
+import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.clientdriver.ClientDriverFactory;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -24,9 +25,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.restdriver.clientdriver.ClientDriver;
-import com.github.restdriver.clientdriver.ClientDriverFactory;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
+import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
 
 public class SpecifyExpectationNumberTest {
     
@@ -82,8 +82,9 @@ public class SpecifyExpectationNumberTest {
     public void specifyingNumberOfTimesFailureHasDecentMessage() throws Exception {
         
         thrown.expect(ClientDriverFailedExpectationException.class);
-        thrown.expectMessage("1 unmatched expectation(s), first is: ClientDriverRequest: GET \"/request\"; expected: 2, actual: 1");
-        
+        thrown.expectMessage("1 unmatched expectation(s):");
+        thrown.expectMessage("expected: 2, actual: 1 -> ClientDriverRequest: GET \"/request\";");
+
         ClientDriver driver = new ClientDriverFactory().createClientDriver();
         driver.addExpectation(onRequestTo("/request"), giveEmptyResponse()).times(2);
         

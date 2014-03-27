@@ -21,6 +21,7 @@ import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
 import org.eclipse.jetty.server.AbstractNetworkConnector;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.NetworkConnector;
@@ -169,7 +170,7 @@ public final class ClientDriver {
         try {
             jettyServer.stop();
         } catch (Exception e) {
-            throw new ClientDriverFailedExpectationException("Error shutting down jetty", e);
+            throw new ClientDriverInternalException("Error shutting down jetty", e);
         } finally {
             completed();
         }
