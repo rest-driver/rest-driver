@@ -47,31 +47,32 @@ import com.google.common.collect.Lists;
  * of error, {@link ClientDriverInternalException} is usually thrown.
  */
 public final class DefaultClientDriverJettyHandler extends AbstractHandler implements ClientDriverJettyHandler {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DefaultClientDriverJettyHandler.class);
     private static final long DEFAULT_WAIT_INTERVAL = 500;
-    
+
     private final List<ClientDriverExpectation> expectations;
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
     private final List<HttpRealRequest> unexpectedRequests;
-    
+    private boolean failFastOnUnexpectedRequest = true;
+
     /**
      * Constructor which accepts a {@link RequestMatcher}.
-     * 
+     *
      * @param matcher
      *            The {@link RequestMatcher} to use.
      */
     public DefaultClientDriverJettyHandler(RequestMatcher matcher) {
-        
+
         expectations = new ArrayList<ClientDriverExpectation>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
         unexpectedRequests = new ArrayList<HttpRealRequest>();
-        
+
         this.matcher = matcher;
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      * <p/>
@@ -80,82 +81,88 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
      */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        
+
         LOGGER.info("Handling: {} {}", request.getMethod(), request.getPathInfo());
-        
+
         ClientDriverRequestResponsePair matchingPair = getMatchingRequestPair(request);
-        matchedResponses.add(matchingPair);
-        
-        ClientDriverResponse matchedResponse = matchingPair.getResponse();
-        
-        response.setContentType(matchedResponse.getContentType());
-        response.setStatus(matchedResponse.getStatus());
-        response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
-        
-        for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
-            response.setHeader(thisHeader.getKey(), thisHeader.getValue());
+
+        if (matchingPair != null) {
+            matchedResponses.add(matchingPair);
+
+            ClientDriverResponse matchedResponse = matchingPair.getResponse();
+
+            response.setContentType(matchedResponse.getContentType());
+            response.setStatus(matchedResponse.getStatus());
+            response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
+
+            for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
+                response.setHeader(thisHeader.getKey(), thisHeader.getValue());
+            }
+
+            if (matchedResponse.hasBody()) {
+                OutputStream output = response.getOutputStream();
+                output.write(matchedResponse.getContentAsBytes());
+            }
+
+            delayIfNecessary(matchingPair.getResponse());
+        } else {
+            response.setStatus(404);
         }
-        
-        if (matchedResponse.hasBody()) {
-            OutputStream output = response.getOutputStream();
-            output.write(matchedResponse.getContentAsBytes());
-        }
-        
-        delayIfNecessary(matchingPair.getResponse());
-        
+
         baseRequest.setHandled(true);
     }
-    
+
     private void delayIfNecessary(ClientDriverResponse response) {
-        
+
         if (response.getDelayTime() > 0) {
-            
+
             try {
                 response.getDelayTimeUnit().sleep(response.getDelayTime());
-                
+
             } catch (InterruptedException ie) {
                 throw new ClientDriverInternalException("Requested delay was interrupted", ie);
             }
-            
+
         }
-        
+
     }
-    
+
     private synchronized ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
-        
+
         ClientDriverExpectation matchedExpectation = null;
         HttpRealRequest realRequest = new HttpRealRequest(request);
-        
+
         int index;
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
             ClientDriverRequestResponsePair thisPair = thisExpectation.getPair();
+
             if (matcher.isMatch(realRequest, thisPair.getRequest())) {
-                
                 thisExpectation.match(realRequest);
-                if (matchedExpectation == null) {
-                    matchedExpectation = thisExpectation;
-                    break;
-                }
-                
+                matchedExpectation = thisExpectation;
+                break;
             }
         }
-        
+
         if (matchedExpectation == null) {
             this.unexpectedRequests.add(new HttpRealRequest(request));
-            
-            throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
+
+            if (failFastOnUnexpectedRequest) {
+                throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
+            } else {
+                return null;
+            }
+        } else {
+            if (matchedExpectation.isSatisfied()) {
+                expectations.remove(index);
+            }
+
+            captureBodyIfRequired(realRequest, matchedExpectation);
+
+            return matchedExpectation.getPair();
         }
-        
-        if (matchedExpectation.isSatisfied()) {
-            expectations.remove(index);
-        }
-        
-        captureBodyIfRequired(realRequest, matchedExpectation);
-        
-        return matchedExpectation.getPair();
     }
-    
+
     private void captureBodyIfRequired(HttpRealRequest realRequest,
             ClientDriverExpectation matchedExpectation) {
         ClientDriverRequest request = matchedExpectation.getPair().getRequest();
@@ -163,68 +170,74 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             request.getBodyCapture().setBody(realRequest.getBodyContent());
         }
     }
-    
+
     @Override
     public void checkForUnexpectedRequests() {
-        
+
         if (!unexpectedRequests.isEmpty()) {
             throw new ClientDriverFailedExpectationException(unexpectedRequests, expectations);
         }
-        
+
     }
-    
+
     @Override
     public void checkForUnmatchedExpectations() {
-        
+
         if (expectations.isEmpty()) {
             return;
         }
-        
+
         long period = 0;
         List<ClientDriverExpectation> failedExpectations = Lists.newArrayList();
-        
+
         while (true) {
-            
+
             if (period > 0) {
                 waitFor(period);
                 period = 0;
             }
-            
+
             for (ClientDriverExpectation expectation : expectations) {
-                
+
                 if (expectation.shouldMatchAnyTimes()) {
                     continue;
                 }
-                
+
                 ClientDriverResponse response = expectation.getPair().getResponse();
-                
+
                 if (response.canExpire() && response.hasNotExpired()) {
                     period = DEFAULT_WAIT_INTERVAL;
                     break;
                 }
-                
+
                 failedExpectations.add(expectation);
             }
-            
+
             if (period > 0) {
                 continue;
             }
-            
+
             if (!failedExpectations.isEmpty()) {
                 throw new ClientDriverFailedExpectationException(failedExpectations);
             }
-            
+
             break;
         }
     }
-    
+
+    @Override
+    public void noFailFastOnUnexpectedRequest() {
+        failFastOnUnexpectedRequest = false;
+    }
+
     @Override
     public void reset() {
         expectations.clear();
         matchedResponses.clear();
         unexpectedRequests.clear();
+        failFastOnUnexpectedRequest = true;
     }
-    
+
     private void waitFor(long time) {
         try {
             Thread.sleep(time);
@@ -232,10 +245,10 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
             throw new ClientDriverInternalException("Waiting for requests was interrupted", ie);
         }
     }
-    
+
     /**
      * Add in a {@link ClientDriverRequest}/ {@link com.github.restdriver.clientdriver.ClientDriverResponse} pair.
-     * 
+     *
      * @param request
      *            The expected request
      * @param response
@@ -249,5 +262,4 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         expectations.add(expectation);
         return expectation;
     }
-    
 }
