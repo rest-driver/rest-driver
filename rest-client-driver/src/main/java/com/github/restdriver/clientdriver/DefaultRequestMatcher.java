@@ -172,21 +172,23 @@ public final class DefaultRequestMatcher implements RequestMatcher {
             boolean matched = false;
             
             for (Entry<String, Object> actualHeader : actualHeaders.entrySet()) {
-                Object value = actualHeader.getValue();
-                if (value instanceof Enumeration) {
-                    Enumeration<String> valueEnumeration = (Enumeration<String>) value;
-                    while (valueEnumeration.hasMoreElements()) {
-                        String currentValue = valueEnumeration.nextElement();
-                        if (expectedHeaderValue.matches(currentValue)) {
+                if (actualHeader.getKey().equals(expectedHeaderName)) {
+                    Object value = actualHeader.getValue();
+                    if (value instanceof Enumeration) {
+                        Enumeration<String> valueEnumeration = (Enumeration<String>) value;
+                        while (valueEnumeration.hasMoreElements()) {
+                            String currentValue = valueEnumeration.nextElement();
+                            if (expectedHeaderValue.matches(currentValue)) {
+                                matched = true;
+                                break;
+                            }
+                        }
+                        
+                    } else {
+                        if (expectedHeaderValue.matches(value)) {
                             matched = true;
                             break;
                         }
-                    }
-                    
-                } else {
-                    if (expectedHeaderValue.matches(value)) {
-                        matched = true;
-                        break;
                     }
                 }
             }

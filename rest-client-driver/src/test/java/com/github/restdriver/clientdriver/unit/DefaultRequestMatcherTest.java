@@ -463,6 +463,8 @@ public class DefaultRequestMatcherTest {
     @Test
     public void testMatchWrongWithMissingRequestHeaderString() throws Exception {
         
+        headers.put("Another-Header", "no-cache");
+        
         RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
         ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Cache-Control", "no-cache");
         
