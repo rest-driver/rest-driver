@@ -92,6 +92,20 @@ public final class ClientDriverRule implements TestRule {
     }
     
     /**
+     * Make the mock not fail fast on an unexpected request.
+     */
+    public void noFailFastOnUnexpectedRequest() {
+        clientDriver.noFailFastOnUnexpectedRequest();
+    }
+
+    /**
+     * Resets the expectations and requests in the handler.
+     */
+    public void reset() {
+        clientDriver.reset();
+    }
+
+    /**
      * The given listener will be registered with the Client Driver and executes once execution has
      * completed.
      * 
