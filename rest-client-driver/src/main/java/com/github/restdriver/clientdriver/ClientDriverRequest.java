@@ -371,7 +371,7 @@ public final class ClientDriverRequest {
         if (CONTENT_TYPE.equalsIgnoreCase(withHeaderName)) {
             bodyContentType = headerValueMatcher;
         } else {
-            headers.put(withHeaderName, headerValueMatcher);
+            headers.put(withHeaderName.toLowerCase(), headerValueMatcher);
         }
         return this;
     }

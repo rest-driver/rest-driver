@@ -502,6 +502,27 @@ public class DefaultRequestMatcherTest {
         assertThat(sut.isMatch(real, expected), is(false));
     }
     
+
+    @Test
+    public void testExpectedHeadersAreCheckedCaseInsensitively() throws Exception {
+
+        headers.put("host", "testhost");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withHeader("Host", Pattern.compile("testhost"));
+
+        assertThat(sut.isMatch(real, expected), is(true));
+    }
+
+    @Test
+    public void testExcludedHeadersAreCheckedCaseInsensitively() throws Exception {
+
+        headers.put("host", "testhost");
+        RealRequest real = mockRealRequest("aaaaa", Method.GET, headers, params, content, contentType);
+        ClientDriverRequest expected = new ClientDriverRequest("aaaaa").withMethod(Method.GET).withoutHeader("Host");
+
+        assertThat(sut.isMatch(real, expected), is(false));
+    }
+    
     private static List<String> asStringList(String... strings) {
         return Arrays.asList(strings);
     }
