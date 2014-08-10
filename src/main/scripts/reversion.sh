@@ -10,10 +10,10 @@ VERSION=$2
 
 # Wait for our new version to appear in Maven Central
 for MODULE in "rest-driver" "rest-client-driver" "rest-server-driver"; do
-  STATUS=`curl -sL -w "%{http_code}" -o /dev/null "http://repo1.maven.org/maven2/com/github/rest-driver/$MODULE/$VERSION/"`
+  STATUS=`curl -sL -w "%{http_code}" -o /dev/null "http://search.maven.org/remotecontent?filepath=com/github/rest-driver/$MODULE/$VERSION/"
   while [ "$STATUS" != "200" ]; do
     echo "Checking for $MODULE at `date`"
-    STATUS=`curl -sL -w "%{http_code}" -o /dev/null "http://repo1.maven.org/maven2/com/github/rest-driver/$MODULE/$VERSION/"`
+    STATUS=`curl -sL -w "%{http_code}" -o /dev/null "http://search.maven.org/remotecontent?filepath=com/github/rest-driver/$MODULE/$VERSION/"`
     echo "Not found yet - waiting for 5 minutes"
     sleep 300
   done
