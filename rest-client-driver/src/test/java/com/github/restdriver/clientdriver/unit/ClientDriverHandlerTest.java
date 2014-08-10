@@ -104,7 +104,7 @@ public class ClientDriverHandlerTest {
         when(mockHttpRequest.getPathInfo()).thenReturn("yarr");
         when(mockHttpRequest.getQueryString()).thenReturn("gooo=gredge");
         when(mockHttpRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream("")));
-
+        
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             Assert.fail();
@@ -137,30 +137,30 @@ public class ClientDriverHandlerTest {
         
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         when(mockHttpResponse.getOutputStream()).thenReturn(new DummyServletOutputStream(baos));
-
+        
         sut.addExpectation(realRequest, realResponse);
         sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
         
         assertThat(new String(baos.toByteArray()), equalTo("lovely"));
     }
-
+    
     private static class DummyServletOutputStream extends ServletOutputStream {
         private final OutputStream outputStream;
-
+        
         public DummyServletOutputStream(OutputStream baos) {
             outputStream = baos;
         }
-
+        
         @Override
         public boolean isReady() {
             return false;
         }
-
+        
         @Override
         public void setWriteListener(WriteListener writeListener) {
-
+            
         }
-
+        
         @Override
         public void write(int b) throws IOException {
             outputStream.write(b);

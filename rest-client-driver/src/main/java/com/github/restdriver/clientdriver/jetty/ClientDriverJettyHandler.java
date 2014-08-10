@@ -46,13 +46,12 @@ public interface ClientDriverJettyHandler extends Handler {
      * This method will throw a ClientDriverFailedExpectationException if any expectations have not been met.
      */
     void checkForUnmatchedExpectations();
-
+    
     /**
-     * Should not fail fast on unexpected requests, but will fail later when running
-     * {@link #checkForUnexpectedRequests()}.
+     * Should not fail fast on unexpected requests, but will fail later when running {@link #checkForUnexpectedRequests()}.
      */
     void noFailFastOnUnexpectedRequest();
-
+    
     /**
      * Resets the expectations so the current ClientDriver instance can be reused.
      */

@@ -97,14 +97,14 @@ public final class ClientDriverRule implements TestRule {
     public void noFailFastOnUnexpectedRequest() {
         clientDriver.noFailFastOnUnexpectedRequest();
     }
-
+    
     /**
      * Resets the expectations and requests in the handler.
      */
     public void reset() {
         clientDriver.reset();
     }
-
+    
     /**
      * The given listener will be registered with the Client Driver and executes once execution has
      * completed.

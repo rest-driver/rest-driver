@@ -93,22 +93,22 @@ public class DefaultClientDriverJettyHandlerTest {
     public void unexpected_request_should_not_fail_fast_if_excluded() throws IOException, ServletException {
         RequestMatcher requestMatcher = mock(RequestMatcher.class);
         when(requestMatcher.isMatch((RealRequest) anyObject(), (ClientDriverRequest) anyObject())).thenReturn(false);
-
+        
         DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(requestMatcher);
         sut.addExpectation(new ClientDriverRequest("/not_matched").withMethod(Method.POST), realResponse);
         sut.noFailFastOnUnexpectedRequest();
         sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
-
+        
         try {
             sut.checkForUnexpectedRequests();
             fail("ClientDriverFailedExpectationException should have been thrown");
         } catch (ClientDriverFailedExpectationException e) {
             // Should happen
         }
-
+        
         verify(mockHttpResponse).setStatus(404);
     }
-
+    
     @Test
     public void when_responseContainsBothBodyAndHeaders_headers_shouldBeSetBeforeBody_otherwise_theyWontBeSentAtAll() throws IOException, ServletException {
         
@@ -130,14 +130,14 @@ public class DefaultClientDriverJettyHandlerTest {
         DefaultClientDriverJettyHandler sut = new DefaultClientDriverJettyHandler(mockRequestMatcher);
         sut.addExpectation(realRequest, realResponse);
         sut.reset();
-
+        
         try {
             sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
             fail("Should throw exception as expectations are reset");
         } catch (ClientDriverFailedExpectationException e) {
             // Should happen
         }
-
+        
         sut.addExpectation(realRequest, realResponse);
         sut.handle("", mockRequest, mockHttpRequest, mockHttpResponse);
         verify(mockHttpResponse).setStatus(200);
