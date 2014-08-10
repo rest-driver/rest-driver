@@ -64,7 +64,7 @@ public class HttpRealRequest implements RealRequest {
         if (headerNames != null) {
             while (headerNames.hasMoreElements()) {
                 String headerName = headerNames.nextElement();
-                headers.put(headerName, request.getHeader(headerName));
+                headers.put(headerName.toLowerCase(), request.getHeader(headerName));
             }
         }
         
