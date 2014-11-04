@@ -25,11 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
@@ -395,6 +391,57 @@ public final class RestServerDriver {
      */
     public static Response posting(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
+    }
+
+    /* ****************************************************************************
+     * HTTP PATCH methods *
+     * ****************************************************************************
+     */
+
+    /**
+     * Perform an HTTP PATCH to the given URL.
+     *
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
+     * @param modifiers The modifiers to be applied to the request.
+     * @return Response encapsulating the server's reply
+     */
+    public static Response patch(Object url, AnyRequestModifier... modifiers) {
+        ServerDriverHttpUriRequest request = new ServerDriverHttpUriRequest(new HttpPatch(url.toString()));
+        applyModifiersToRequest(modifiers, request);
+        return doHttpRequest(request);
+    }
+
+    /**
+     * Synonym for {@link #patch(Object, AnyRequestModifier...)}.
+     *
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
+     * @param modifiers The modifiers to be applied to the request.
+     * @return Response encapsulating the server's reply
+     */
+    public static Response patchOf(Object url, AnyRequestModifier... modifiers) {
+        return patch(url, modifiers);
+    }
+
+    /**
+     * Synonym for {@link #patch(Object, AnyRequestModifier...)}.
+     *
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
+     * @param modifiers The modifiers to be applied to the request.
+     * @return Response encapsulating the server's reply
+     */
+    public static Response doPatchOf(Object url, AnyRequestModifier... modifiers) {
+        return patch(url, modifiers);
+    }
+
+    /**
+     * Synonym for {@link #patch(Object, AnyRequestModifier...)}.
+     *
+     * @param url The URL. Any object may be passed, we will call .toString() on it.
+     * @param modifiers The modifiers to be applied to the request.
+     * @return Response encapsulating the server's reply
+     */
+    public static Response patching(Object url, AnyRequestModifier... modifiers) {
+        return patch(url, modifiers);
     }
     
     /* ****************************************************************************
