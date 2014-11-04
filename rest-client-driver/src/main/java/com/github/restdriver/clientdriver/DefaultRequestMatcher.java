@@ -65,8 +65,8 @@ public final class DefaultRequestMatcher implements RequestMatcher {
     }
     
     private boolean isSameMethod(RealRequest realRequest, ClientDriverRequest expectedRequest) {
-        
-        if (realRequest.getMethod() != expectedRequest.getMethod()) {
+
+        if (!realRequest.getMethod().equals(expectedRequest.getMethod())) {
             LOGGER.info("({} {}) REJECTED on method: expected {} != {}", realRequest.getMethod(), realRequest.getPath(), expectedRequest.getMethod(), realRequest.getMethod());
             return false;
         }

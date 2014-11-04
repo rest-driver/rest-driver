@@ -45,7 +45,7 @@ public class HttpRealRequest implements RealRequest {
     
     public HttpRealRequest(HttpServletRequest request) {
         this.path = request.getPathInfo();
-        this.method = Enum.valueOf(Method.class, request.getMethod());
+        this.method = Method.custom(request.getMethod().toUpperCase());
         this.params = HashMultimap.create();
         
         if (request.getQueryString() != null) {

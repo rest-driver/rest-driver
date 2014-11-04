@@ -41,10 +41,58 @@ public final class ClientDriverRequest {
     private static final String CONTENT_TYPE = "Content-Type";
     
     /**
-     * HTTP method enum for specifying which method you expect to be called with.
+     * Class that represents an HTTP method. The standard ones are implemented as
+     * static values and any more unusual ones can be created using the
+     * {@link #custom(String) custom} method.
      */
-    public enum Method {
-        GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE
+    public final static class Method {
+
+        // The 'standard' RFC 2616 methods (apart from connect)
+        public static Method GET = new Method("GET");
+        public static Method POST = new Method("POST");
+        public static Method PUT = new Method("PUT");
+        public static Method DELETE = new Method("DELETE");
+        public static Method OPTIONS = new Method("OPTIONS");
+        public static Method HEAD = new Method("HEAD");
+        public static Method TRACE = new Method("TRACE");
+
+        private String value;
+
+        private Method(String value) {
+            this.value = value.toUpperCase();
+        }
+
+        /**
+         * Create a arbitrary HTTP method, for example PATCH, CONNECT, PROPFIND. Useful if you
+         * want to mock with a more unusual HTTP method.
+         * @param value The HTTP method.
+         * @return An instance of that method.
+         */
+        public static Method custom(String value) {
+            return new Method(value);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Method method = (Method) o;
+
+            if (value != null ? !value.equals(method.value) : method.value != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return value != null ? value.hashCode() : 0;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
     
     private final Matcher<? extends String> path;
