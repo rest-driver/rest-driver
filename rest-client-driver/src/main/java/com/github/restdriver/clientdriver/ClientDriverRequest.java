@@ -44,7 +44,7 @@ public final class ClientDriverRequest {
      * HTTP method enum for specifying which method you expect to be called with.
      */
     public enum Method {
-        GET, POST, PUT, DELETE, OPTIONS, HEAD, TRACE
+        GET, PATCH, POST, PUT, DELETE, OPTIONS, HEAD, TRACE
     }
     
     private final Matcher<? extends String> path;

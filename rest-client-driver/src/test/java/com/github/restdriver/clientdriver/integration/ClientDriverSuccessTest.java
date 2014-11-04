@@ -30,14 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpOptions;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.methods.HttpTrace;
+import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -266,6 +259,40 @@ public class ClientDriverSuccessTest {
         putter.setEntity(new StringEntity("Jack your body!", ContentType.TEXT_PLAIN));
         HttpResponse response = client.execute(putter);
         
+        assertThat(response.getStatusLine().getStatusCode(), is(501));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
+    }
+
+    @Test
+    public void testJettyWorkingWithPatchBody() throws Exception {
+
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/blah2").withMethod(Method.PATCH).withBody("Jack your body!", "text/plain"),
+                giveResponse("___", "text/plain").withStatus(501));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpPatch patcher = new HttpPatch(baseUrl + "/blah2");
+        patcher.setEntity(new StringEntity("Jack your body!", ContentType.TEXT_PLAIN));
+        HttpResponse response = client.execute(patcher);
+
+        assertThat(response.getStatusLine().getStatusCode(), is(501));
+        assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
+    }
+
+    @Test
+    public void testJettyWorkingWithPatchBodyPattern() throws Exception {
+
+        String baseUrl = driver.getBaseUrl();
+        driver.addExpectation(
+                onRequestTo("/blah2").withMethod(Method.PATCH).withBody(Pattern.compile("Jack [\\w\\s]+!"),
+                        "text/plain"), giveResponse("___", "text/plain").withStatus(501));
+
+        HttpClient client = new DefaultHttpClient();
+        HttpPatch patcher = new HttpPatch(baseUrl + "/blah2");
+        patcher.setEntity(new StringEntity("Jack your body!", ContentType.TEXT_PLAIN));
+        HttpResponse response = client.execute(patcher);
+
         assertThat(response.getStatusLine().getStatusCode(), is(501));
         assertThat(IOUtils.toString(response.getEntity().getContent()), equalTo("___"));
     }
