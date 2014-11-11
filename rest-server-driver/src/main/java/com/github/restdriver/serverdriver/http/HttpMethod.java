@@ -15,31 +15,31 @@
  */
 package com.github.restdriver.serverdriver.http;
 
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-
 import java.net.URI;
 
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+
 public class HttpMethod extends HttpEntityEnclosingRequestBase {
-
+    
     private String method;
-
+    
     public HttpMethod(final String method) {
         super();
         this.method = method.toUpperCase();
     }
-
+    
     public HttpMethod(final String method, final URI uri) {
         super();
         setURI(uri);
         this.method = method.toUpperCase();
     }
-
+    
     public HttpMethod(final String method, final String uri) {
         super();
         setURI(URI.create(uri));
         this.method = method.toUpperCase();
     }
-
+    
     @Override
     public String getMethod() {
         return method;

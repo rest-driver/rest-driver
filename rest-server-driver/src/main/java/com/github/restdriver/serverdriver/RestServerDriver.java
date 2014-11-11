@@ -21,12 +21,15 @@ import java.io.Reader;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
-import com.github.restdriver.serverdriver.http.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.HttpHostConnectException;
@@ -36,6 +39,19 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
 import com.github.restdriver.RestDriverProperties;
+import com.github.restdriver.serverdriver.http.AnyRequestModifier;
+import com.github.restdriver.serverdriver.http.BasicAuth;
+import com.github.restdriver.serverdriver.http.ByteArrayRequestBody;
+import com.github.restdriver.serverdriver.http.Header;
+import com.github.restdriver.serverdriver.http.HttpMethod;
+import com.github.restdriver.serverdriver.http.NoOpRequestProxy;
+import com.github.restdriver.serverdriver.http.RequestBody;
+import com.github.restdriver.serverdriver.http.RequestConnectionTimeout;
+import com.github.restdriver.serverdriver.http.RequestProxy;
+import com.github.restdriver.serverdriver.http.RequestSocketTimeout;
+import com.github.restdriver.serverdriver.http.RequestTimeout;
+import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
+import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
@@ -385,15 +401,15 @@ public final class RestServerDriver {
     public static Response posting(Object url, AnyRequestModifier... modifiers) {
         return post(url, modifiers);
     }
-
+    
     /* ****************************************************************************
      * HTTP other methods *
      * ****************************************************************************
      */
-
+    
     /**
      * Perform a request with a specified method to the given URL.
-     *
+     * 
      * @param method The method to be used.
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
@@ -404,10 +420,10 @@ public final class RestServerDriver {
         applyModifiersToRequest(modifiers, request);
         return doHttpRequest(request);
     }
-
+    
     /**
      * Synonym for {@link #method(String, Object, AnyRequestModifier...)}.
-     *
+     * 
      * @param method The method to be used.
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
@@ -416,10 +432,10 @@ public final class RestServerDriver {
     public static Response methodOf(String method, Object url, AnyRequestModifier... modifiers) {
         return method(method, url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #method(String, Object, AnyRequestModifier...)}.
-     *
+     * 
      * @param method The method to be used.
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
@@ -428,10 +444,10 @@ public final class RestServerDriver {
     public static Response doMethodOf(String method, Object url, AnyRequestModifier... modifiers) {
         return method(method, url, modifiers);
     }
-
+    
     /**
      * Synonym for {@link #method(String, Object, AnyRequestModifier...)}.
-     *
+     * 
      * @param method The method to be used.
      * @param url The URL. Any object may be passed, we will call .toString() on it.
      * @param modifiers The modifiers to be applied to the request.
