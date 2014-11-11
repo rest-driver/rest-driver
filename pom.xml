@@ -4,7 +4,7 @@
 
     <groupId>com.github.rest-driver</groupId>
     <artifactId>rest-driver</artifactId>
-    <version>1.1.42</version>
+    <version>1.1.43-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>REST Driver</name>
@@ -21,7 +21,7 @@
         <connection>scm:git:git@github.com:rest-driver/rest-driver.git</connection>
         <developerConnection>scm:git:git@github.com:rest-driver/rest-driver.git</developerConnection>
         <url>git@github.com:rest-driver/rest-driver.git</url>
-      <tag>rest-driver-1.1.42</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <licenses>
