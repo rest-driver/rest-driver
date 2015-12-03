@@ -20,6 +20,7 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -42,7 +43,7 @@ public class ChooseOwnPortTest {
     @Test
     public void userCanChooseOwnPort() throws IOException {
         
-        int portNum = ClientDriver.getFreePort();
+        int portNum = getFreePort();
         
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
         driver.addExpectation(onRequestTo("/url"), giveResponse("hello", "text/plain"));
@@ -59,7 +60,7 @@ public class ChooseOwnPortTest {
     @Test(expected = ClientDriverSetupException.class)
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
         
-        int portNum = ClientDriver.getFreePort();
+        int portNum = getFreePort();
         
         // one of these must throw an exception.
         new ClientDriverFactory().createClientDriver(portNum);
@@ -73,5 +74,25 @@ public class ChooseOwnPortTest {
         new ClientDriverFactory().createClientDriver();
         new ClientDriverFactory().createClientDriver();
         
+    }
+
+    /*
+     * Gets a free port on localhost for binding to.
+     * 
+     * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
+     * 
+     * @return The port number.
+     */
+    public static int getFreePort() {
+        try {
+            ServerSocket server = new ServerSocket(0);
+            int port = server.getLocalPort();
+            server.close();
+            return port;
+
+        } catch (IOException ioe) {
+            throw new ClientDriverSetupException(
+                    "IOException finding free port", ioe);
+        }
     }
 }

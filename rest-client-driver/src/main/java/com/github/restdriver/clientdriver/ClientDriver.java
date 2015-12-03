@@ -15,9 +15,7 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.io.IOException;
 import java.net.BindException;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,27 +127,6 @@ public final class ClientDriver {
      */
     public String getBaseUrl() {
         return "http://localhost:" + port;
-    }
-    
-    /**
-     * Gets a free port on localhost for binding to.
-     * 
-     * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
-     * 
-     * @return The port number.
-     */
-    public static int getFreePort() {
-        
-        try {
-            ServerSocket server = new ServerSocket(0);
-            int port = server.getLocalPort();
-            server.close();
-            return port;
-            
-        } catch (IOException ioe) {
-            throw new ClientDriverSetupException(
-                    "IOException finding free port", ioe);
-        }
     }
     
     /**
