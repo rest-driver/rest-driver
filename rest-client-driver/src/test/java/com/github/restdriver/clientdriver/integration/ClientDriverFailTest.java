@@ -225,7 +225,8 @@ public class ClientDriverFailTest {
             Assert.fail();
         } catch (ClientDriverFailedExpectationException bre) {
             assertThat(bre.getMessage(), containsString("1 unexpected request(s):"));
-            assertThat(bre.getMessage(), containsString("GET /testing; PARAMS: [key=[value3, value2]]; "));
+            assertThat(bre.getMessage(), anyOf(containsString("GET /testing; PARAMS: [key=[value3, value2]]; "),
+                    containsString("GET /testing; PARAMS: [key=[value2, value3]]; ")));
         }
         
     }
