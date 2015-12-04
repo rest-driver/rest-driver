@@ -17,9 +17,11 @@ package com.github.restdriver.serverdriver.acceptance;
 
 import static com.github.restdriver.serverdriver.RestServerDriver.*;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
-import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.SocketUtil;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
@@ -42,8 +44,8 @@ public class HttpProblemsAcceptanceTest {
     }
     
     @Test(expected = RuntimeHttpHostConnectException.class)
-    public void noServerListeningThrowsException() {
-        get("http://localhost:" + ClientDriver.getFreePort());
+    public void noServerListeningThrowsException() throws IOException {
+        get("http://localhost:" + SocketUtil.getFreePort());
     }
     
 }

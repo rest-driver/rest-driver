@@ -33,7 +33,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import com.github.restdriver.clientdriver.ClientDriver;
+import com.github.restdriver.SocketUtil;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
@@ -53,10 +53,10 @@ public class ProxyAcceptanceTest {
     public ExpectedException thrown = ExpectedException.none();
     
     @Test
-    public void testWithSpecifiedProxyFailsIfProxyIsNotAvailable() {
+    public void testWithSpecifiedProxyFailsIfProxyIsNotAvailable() throws IOException {
         thrown.expect(RuntimeHttpHostConnectException.class);
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
-        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()));
+        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", SocketUtil.getFreePort()));
     }
     
     @Test
@@ -76,9 +76,9 @@ public class ProxyAcceptanceTest {
     }
     
     @Test
-    public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() {
+    public void whenMultipleProxiesAreSpecifiedLastOneWinsNoProxy() throws IOException {
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
-        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", ClientDriver.getFreePort()), notUsingProxy());
+        get(driver.getBaseUrl() + "/foo", usingProxy("localhost", SocketUtil.getFreePort()), notUsingProxy());
         assertThat(proxyHits, is(0));
     }
     
@@ -149,7 +149,7 @@ public class ProxyAcceptanceTest {
     private void startLocalProxy() {
         try {
             
-            int port = ClientDriver.getFreePort();
+            int port = SocketUtil.getFreePort();
             
             proxyServer = new Server(port);
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
