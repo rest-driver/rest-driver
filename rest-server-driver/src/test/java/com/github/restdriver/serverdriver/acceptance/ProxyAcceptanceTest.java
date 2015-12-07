@@ -37,7 +37,7 @@ import com.github.restdriver.SocketUtil;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
-import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
+import com.github.restdriver.serverdriver.http.exception.RuntimeConnectException;
 
 public class ProxyAcceptanceTest {
     
@@ -54,7 +54,7 @@ public class ProxyAcceptanceTest {
     
     @Test
     public void testWithSpecifiedProxyFailsIfProxyIsNotAvailable() throws IOException {
-        thrown.expect(RuntimeHttpHostConnectException.class);
+        thrown.expect(RuntimeConnectException.class);
         driver.addExpectation(new ClientDriverRequest("/foo"), new ClientDriverResponse("Content", "text/plain"));
         get(driver.getBaseUrl() + "/foo", usingProxy("localhost", SocketUtil.getFreePort()));
     }
