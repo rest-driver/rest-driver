@@ -26,9 +26,9 @@ import org.slf4j.LoggerFactory;
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
  */
-public final class ClientDriverRule implements TestRule {
+public class ClientDriverRule implements TestRule {
     
-    private final ClientDriver clientDriver;
+    protected ClientDriver clientDriver;
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriverRequest.class);
     
     private static final long IMMEDIATELY = 0;
