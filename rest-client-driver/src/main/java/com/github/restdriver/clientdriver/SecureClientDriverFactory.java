@@ -1,3 +1,18 @@
+/**
+ * Copyright © 2010-2011 Nokia
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.github.restdriver.clientdriver;
 
 import java.security.KeyStore;
@@ -87,10 +102,10 @@ public class SecureClientDriverFactory {
     }
 
     /**
-     * Sets the password. Password may not be null or empty when building. 
-     * 
-     * @param port
-     *            the port
+     * Sets the password. Password may not be null or empty when building.
+     *
+     * @param password
+     *            the certificate's password
      * @return the factory object
      */
     public SecureClientDriverFactory password(String password) {
@@ -98,11 +113,27 @@ public class SecureClientDriverFactory {
         return this;
     }
 
+    /**
+     * Sets the certificate alias. Certificate alias may not be null or empty
+     * when building.
+     *
+     * @param certAlias
+     *            the certificate alias
+     * @return the factory object
+     */
     public SecureClientDriverFactory certAlias(String certAlias) {
         this.certAlias = certAlias;
         return this;
     }
 
+    /**
+     * Sets the key store. Key store may not be null or empty when building. It
+     * has to contain a certificate.
+     *
+     * @param keyStore
+     *            the key store
+     * @return the factory object
+     */
     public SecureClientDriverFactory keyStore(KeyStore keyStore) {
         this.keyStore = keyStore;
         return this;

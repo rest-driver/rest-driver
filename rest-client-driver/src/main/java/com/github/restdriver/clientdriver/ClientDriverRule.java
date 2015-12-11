@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ClientDriverRule implements TestRule {
     
-    protected ClientDriver clientDriver;
+    private ClientDriver clientDriver;
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriverRequest.class);
     
     private static final long IMMEDIATELY = 0;
@@ -50,6 +50,10 @@ public class ClientDriverRule implements TestRule {
         clientDriver = new ClientDriverFactory().createClientDriver(port);
     }
     
+    protected ClientDriverRule(ClientDriver clientDriver) {
+        this.clientDriver = clientDriver;
+    }
+
     @Override
     public Statement apply(Statement base, Description description) {
         return new ClientDriverStatement(base);
