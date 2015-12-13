@@ -31,7 +31,7 @@ import com.github.restdriver.serverdriver.matchers.HasStatusCode;
 import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
 
 /**
- * Class to help easy & fluent use of our matchers.
+ * Class to help easy and fluent use of our matchers.
  */
 public final class Matchers {
     

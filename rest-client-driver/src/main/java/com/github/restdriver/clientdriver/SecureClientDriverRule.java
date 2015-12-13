@@ -40,6 +40,8 @@ public class SecureClientDriverRule extends ClientDriverRule {
 	/**
 	 * Creates a new rule which binds the driver to a free port.
 	 * 
+	 * @param port
+	 *            the port
 	 * @param keyStore
 	 *            the key store with the certificate
 	 * @param password

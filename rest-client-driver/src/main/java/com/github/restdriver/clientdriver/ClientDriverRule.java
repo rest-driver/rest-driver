@@ -132,6 +132,8 @@ public class ClientDriverRule implements TestRule {
      *            The timeout expressed in the specified units.
      * @param units
      *            The {@link TimeUnit} that the timeout is expressed in.
+     * @return
+     *            The newly-created rule
      */
     public ClientDriverRule expectResponsesWithin(final int timeout, final TimeUnit units) {
         expectedResponseTimeout = units.toMillis(timeout);

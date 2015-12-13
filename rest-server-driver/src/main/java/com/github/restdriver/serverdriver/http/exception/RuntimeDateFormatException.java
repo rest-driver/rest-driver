@@ -19,7 +19,7 @@ import java.text.ParseException;
 
 /**
  * Runtime wrapper for {@link java.text.ParseException}. caused by badly-formatted dates.
- * <p/>
+ * 
  * User: mjg Date: 14/05/11 Time: 21:52
  */
 public class RuntimeDateFormatException extends RuntimeException {

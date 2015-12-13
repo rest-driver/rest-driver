@@ -33,7 +33,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.params.HttpClientParams;
 import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
@@ -66,6 +65,7 @@ import com.github.restdriver.serverdriver.http.response.Response;
  * 
  * @author mjg
  */
+@SuppressWarnings("deprecation")
 public final class RestServerDriver {
     
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
@@ -200,7 +200,7 @@ public final class RestServerDriver {
     
     /**
      * Use the system proxy. These can be set with -Dhttp.proxyHost and -Dhttp.proxyPort.
-     * This does not respect environment variables like HTTP_PROXY & friends.
+     * This does not respect environment variables like HTTP_PROXY and friends.
      * 
      * @return The RequestProxy instance.
      */
@@ -618,6 +618,7 @@ public final class RestServerDriver {
      */
     private static Response doHttpRequest(ServerDriverHttpUriRequest request) {
         
+        @SuppressWarnings("resource")
         HttpClient httpClient = new DefaultHttpClient(RestServerDriver.ccm,
                 RestServerDriver.httpParams);
         
@@ -644,16 +645,12 @@ public final class RestServerDriver {
             long endTime = System.currentTimeMillis();
             
             return new DefaultResponse(response, (endTime - startTime));
-            
         } catch (ClientProtocolException cpe) {
             throw new RuntimeClientProtocolException(cpe);
-            
         } catch (UnknownHostException uhe) {
             throw new RuntimeUnknownHostException(uhe);
-            
         } catch (ConnectException ce) {
             throw new RuntimeConnectException(ce);
-            
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);
         } finally {
@@ -666,7 +663,7 @@ public final class RestServerDriver {
      * Set the default ClientConnectionManager for all HTTP requests. <br>
      * Pass null to use default ClientConnectionManager
      * 
-     * @param ccm
+     * @param ccm the connection manager to use
      */
     public static void setClientConnectionManager(ClientConnectionManager ccm) {
         RestServerDriver.ccm = ccm;
@@ -676,9 +673,10 @@ public final class RestServerDriver {
      * Set the default HttpParams for all HTTP requests. <br>
      * Pass null to use default HttpParams
      * 
-     * @param httpParams
+     * @param httpParams the HTTP parameters to use 
      */
     public static void setHttpParams(HttpParams httpParams) {
         RestServerDriver.httpParams = httpParams;
     }
+    
 }

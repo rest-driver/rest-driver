@@ -126,8 +126,8 @@ public class ClientDriver {
     /**
      * Get the base URL which the ClientDriver is running on.
      * 
-     * @return The base URL, which will be like "http://localhost:xxxxx". <br/>
-     *         <b>There is no trailing slash on this</b>
+     * @return <p>The base URL, which will be like "http://localhost:xxxx".</p>
+     *         <p><b>There is no trailing slash on this</b></p>
      */
     public String getBaseUrl() {
         return "http://localhost:" + port;

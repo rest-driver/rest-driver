@@ -22,7 +22,7 @@ import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 
 /**
- * If you are using the Client Driver, you can have your unit tests extend this class which will setup a client driver & shut it down for you.
+ * If you are using the Client Driver, you can have your unit tests extend this class which will setup a client driver and shut it down for you.
  * 
  * @deprecated As of version 1.0.7 replaced by {@link com.github.restdriver.clientdriver.ClientDriverRule}
  */

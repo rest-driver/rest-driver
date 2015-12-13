@@ -75,9 +75,9 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     
     /**
      * {@inheritDoc}
-     * <p/>
-     * This implementation uses the expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pairs to serve its requests. If an unexpected request comes in, a
-     * {@link ClientDriverInternalException} is thrown.
+     * 
+     * <p>This implementation uses the expected {@link ClientDriverRequest}/ {@link ClientDriverResponse} pairs to serve its requests. If an unexpected request comes in, a
+     * {@link ClientDriverInternalException} is thrown.</p>
      */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

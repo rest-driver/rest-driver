@@ -23,10 +23,10 @@ import com.github.restdriver.serverdriver.http.exception.RuntimeInterruptedExcep
 
 /**
  * For making asynchronous assertions.
- * <p/>
+ * 
  * <p>
  * For typical use, create an anonymous subclass inline, and implement the {@link #poll()} method:
- * <p/>
+ * </p>
  * 
  * <pre>
  * {@code
@@ -37,15 +37,16 @@ import com.github.restdriver.serverdriver.http.exception.RuntimeInterruptedExcep
  * };
  * }
  * </pre>
- * <p/>
+ * <p>
  * This assertion will be called a number of times (configurable by using the different constructors). The first poll is tried immediately, so if you specify 3 attempts with 1 second pause, the total
  * execution time will be about 2 seconds.
  * </p>
- * <p/>
+ * 
  * <p>
  * This class catches any {@link AssertionError} thrown in the first <em>n-1</em> attempts. If any other kind of Exception is encountered, or an AssertionError is thrown at the last attempt then it
  * will be thrown immediately and your test will fail. All AssertionErrors except the last are swallowed.
  * </p>
+ * 
  * <p>
  * For debugging purposes you may call {@link #loudly()} in your poll method, and interim AssertionErrors will be logged to System.out rather than being simply ignored.
  * </p>
@@ -128,7 +129,8 @@ public abstract class Poller {
     /**
      * Override this method with some kind of assertion that will be re-run according to the polling schedule.
      * Any {@link AssertionError} thrown will be swallowed unless this is the last attempt. Any other
-     * kind of Exception will be thrown immediately. <br/>
+     * kind of Exception will be thrown immediately.
+     * 
      * For debugging, intermediate AssertionErrors can be logged to sysout by calling {@link #loudly} in this method.
      */
     public abstract void poll();

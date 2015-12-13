@@ -50,6 +50,8 @@ public class ClientDriverExpectation {
      * Indicate that this expectation should be matched a given number of times.
      * 
      * @param times The number of times this expectation should be matched
+     * 
+     * @return the newly-created expectation
      */
     public final ClientDriverExpectation times(int times) {
         if (times < 1) {
@@ -62,6 +64,8 @@ public class ClientDriverExpectation {
     
     /**
      * Indicate that this expectation should be matched any number of times.
+     * 
+     * @return the newly-created expectation
      */
     public final ClientDriverExpectation anyTimes() {
         matchAnyTimes = true;
@@ -72,6 +76,7 @@ public class ClientDriverExpectation {
      * Indicate that this expectation has been matched.
      * 
      * @param realRequest
+     *          the request we're matching against
      */
     public final void match(HttpRealRequest realRequest) {
         numberOfMatches += 1;

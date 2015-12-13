@@ -54,7 +54,7 @@ public class SecureClientDriverFactory {
      * @param keyStore
      *            The {@link KeyStore} that contains the necessary certificate.
      * @param password
-     *            The password for the certificate private key & the container.
+     *            The password for the certificate private key and the container.
      * @param certAlias
      *            the alias of the certificate in the key store
      * @return a ClientDriver object
@@ -75,7 +75,7 @@ public class SecureClientDriverFactory {
      * @param keyStore
      *            The {@link KeyStore} that contains the necessary certificate.
      * @param password
-     *            The password for the certificate private key & the container.
+     *            The password for the certificate private key and the container.
      * @param certAlias
      *            the alias of the certificate in the key store
      * @return a ClientDriver object
@@ -142,7 +142,7 @@ public class SecureClientDriverFactory {
     /**
      * Create SecureClientDriver with the given configuration.
      * 
-     * @return
+     * @return the newly-created driver
      */
     public SecureClientDriver build() {
         Validate.notEmpty(certAlias, "Certificate alias is not set.");

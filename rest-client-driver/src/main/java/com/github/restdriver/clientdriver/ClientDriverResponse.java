@@ -54,10 +54,9 @@ public final class ClientDriverResponse {
     }
     
     /**
-     * Creates a new response with the given body, a suitable default status
-     * code and a Content-Type of 'text/plain'.
-     * <p/>
-     * If the content given is null a 204 status code is given, otherwise 200.
+     * <p>Creates a new response with the given body, a suitable default status
+     * code and a Content-Type of 'text/plain'.</p>
+     * <p>If the content given is null a 204 status code is given, otherwise 200.</p>
      * 
      * @param content
      *            The content of the response
@@ -69,10 +68,9 @@ public final class ClientDriverResponse {
     }
     
     /**
-     * Creates a new response with the given body, a suitable default status
-     * code and a given content-type.
-     * <p/>
-     * If the content given is null a 204 status code is given, otherwise 200.
+     * <p>Creates a new response with the given body, a suitable default status
+     * code and a given content-type.</p>
+     * <p>If the content given is null a 204 status code is given, otherwise 200.</p>
      * 
      * @param content
      *            The content of the response
@@ -84,10 +82,9 @@ public final class ClientDriverResponse {
     }
     
     /**
-     * Creates a new response with the given body, a suitable default status
-     * code and a given content-type.
-     * <p/>
-     * If the content given is null a 204 status code is given, otherwise 200.
+     * <p>Creates a new response with the given body, a suitable default status
+     * code and a given content-type.</p>
+     * <p>If the content given is null a 204 status code is given, otherwise 200.</p>
      * 
      * @param content
      *            The content of the response
