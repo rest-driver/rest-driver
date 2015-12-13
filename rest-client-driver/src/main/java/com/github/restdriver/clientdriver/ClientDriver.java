@@ -15,16 +15,12 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.io.IOException;
-import java.net.BindException;
-import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jetty.server.AbstractNetworkConnector;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.NetworkConnector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,15 +32,14 @@ import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 /**
  * The main class which acts as a facade for the Client Driver.
  */
-public final class ClientDriver {
+public class ClientDriver {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(ClientDriver.class);
-    private static final int MAX_TRIES = 10;
-    
-    private final Server jettyServer;
+    protected Server jettyServer;
+    private ServerConnector jettyServerConnector;
     private int port = -1;
-    private final List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
-    private final ClientDriverJettyHandler handler;
+    private List<ClientDriverListener> listeners = new ArrayList<ClientDriverListener>();
+    protected ClientDriverJettyHandler handler;
     
     /**
      * Constructor. This will find a free port, bind to it and start the server
@@ -71,50 +66,57 @@ public final class ClientDriver {
         this.handler = handler;
         this.jettyServer = createAndStartJetty(port);
     }
-    
-    private Server createAndStartJetty(int port) {
-        int tries = triesForPort(port);
-        
-        for (int retries = 0; retries < tries; retries++) {
-            Server jetty = new Server(port);
-            jetty.setHandler(handler);
-            
-            for (Connector connector : jetty.getConnectors()) {
-                if (connector instanceof AbstractNetworkConnector) {
-                    ((AbstractNetworkConnector) connector).setHost("0.0.0.0");
-                }
-            }
-            
-            try {
-                jetty.start();
-                for (Connector connector : jetty.getConnectors()) {
-                    if (connector instanceof NetworkConnector) {
-                        this.port = ((NetworkConnector) connector).getLocalPort();
-                        break;
-                    }
-                }
-                
-                if (this.port == -1) {
-                    throw new IllegalStateException("Local port was not set");
-                }
-                
-                return jetty;
-            } catch (BindException e) {
-                if (retries < tries - 1) {
-                    LOGGER.warn("Could not bind to port; trying again");
-                }
-            } catch (Exception e) {
-                throw new ClientDriverSetupException(
-                        "Error starting jetty on port " + port, e);
-            }
-        }
-        
-        throw new ClientDriverSetupException(
-                "Error starting jetty on port " + port + " after " + tries + " tries", null);
+
+    /**
+     * Convenience constructor for extending classes. This allows overwriting
+     * and customization of the setup procedure.
+     */
+    protected ClientDriver() {
+
     }
-    
-    private int triesForPort(int port) {
-        return port == 0 ? MAX_TRIES : 1;
+
+    protected Server createAndStartJetty(int port) {
+        Server jetty = new Server();
+        jetty.setHandler(handler);
+        ServerConnector connector = createConnector(jetty, port);
+        jetty.addConnector(connector);
+        try {
+            jetty.start();
+        } catch (Exception e) {
+            throw new ClientDriverSetupException("Error starting jetty on port " + port, e);
+        }
+        this.port = connector.getLocalPort();
+        this.jettyServerConnector = connector;
+        return jetty;
+    }
+
+    protected SslContextFactory getSslContextFactory() {
+        return null;
+    }
+
+    protected ServerConnector createConnector(Server jetty, int port) {
+        ServerConnector connector = new ServerConnector(jetty, getSslContextFactory());
+        connector.setHost(null);
+        connector.setPort(port);
+        return connector;
+    }
+
+    protected void replaceConnector(ServerConnector newConnector, Server jetty) {
+        // get current connector and shut him down
+        jettyServerConnector.shutdown();
+        try {
+            jettyServerConnector.stop();
+        } catch (Exception e) {
+            throw new ClientDriverInternalException("Error shutting down jetty connector during replacement", e);
+        }
+        jetty.removeConnector(jettyServerConnector);
+        // add new and start him up
+        jetty.addConnector(newConnector);
+        try {
+            newConnector.start();
+        } catch (Exception e) {
+            throw new ClientDriverInternalException("Error starting new jetty connector during replacement", e);
+        }
     }
     
     public int getPort() {
@@ -129,27 +131,6 @@ public final class ClientDriver {
      */
     public String getBaseUrl() {
         return "http://localhost:" + port;
-    }
-    
-    /**
-     * Gets a free port on localhost for binding to.
-     * 
-     * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
-     * 
-     * @return The port number.
-     */
-    public static int getFreePort() {
-        
-        try {
-            ServerSocket server = new ServerSocket(0);
-            int port = server.getLocalPort();
-            server.close();
-            return port;
-            
-        } catch (IOException ioe) {
-            throw new ClientDriverSetupException(
-                    "IOException finding free port", ioe);
-        }
     }
     
     /**

@@ -18,6 +18,7 @@ package com.github.restdriver.serverdriver;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
@@ -53,7 +54,7 @@ import com.github.restdriver.serverdriver.http.RequestTimeout;
 import com.github.restdriver.serverdriver.http.ServerDriverHttpUriRequest;
 import com.github.restdriver.serverdriver.http.Url;
 import com.github.restdriver.serverdriver.http.exception.RuntimeClientProtocolException;
-import com.github.restdriver.serverdriver.http.exception.RuntimeHttpHostConnectException;
+import com.github.restdriver.serverdriver.http.exception.RuntimeConnectException;
 import com.github.restdriver.serverdriver.http.exception.RuntimeUnknownHostException;
 import com.github.restdriver.serverdriver.http.request.HttpDeleteWithEntity;
 import com.github.restdriver.serverdriver.http.request.HttpGetWithEntity;
@@ -650,8 +651,8 @@ public final class RestServerDriver {
         } catch (UnknownHostException uhe) {
             throw new RuntimeUnknownHostException(uhe);
             
-        } catch (HttpHostConnectException hhce) {
-            throw new RuntimeHttpHostConnectException(hhce);
+        } catch (ConnectException ce) {
+            throw new RuntimeConnectException(ce);
             
         } catch (IOException e) {
             throw new RuntimeException("Error executing request", e);

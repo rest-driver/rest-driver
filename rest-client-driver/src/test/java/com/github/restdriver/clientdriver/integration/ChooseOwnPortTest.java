@@ -28,6 +28,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.Test;
 
+import com.github.restdriver.SocketUtil;
 import com.github.restdriver.clientdriver.ClientDriver;
 import com.github.restdriver.clientdriver.ClientDriverFactory;
 import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
@@ -42,7 +43,7 @@ public class ChooseOwnPortTest {
     @Test
     public void userCanChooseOwnPort() throws IOException {
         
-        int portNum = ClientDriver.getFreePort();
+        int portNum = SocketUtil.getFreePort();
         
         ClientDriver driver = new ClientDriverFactory().createClientDriver(portNum);
         driver.addExpectation(onRequestTo("/url"), giveResponse("hello", "text/plain"));
@@ -59,7 +60,7 @@ public class ChooseOwnPortTest {
     @Test(expected = ClientDriverSetupException.class)
     public void correctExceptionIsThrownIfPortIsUnavailable() throws IOException {
         
-        int portNum = ClientDriver.getFreePort();
+        int portNum = SocketUtil.getFreePort();
         
         // one of these must throw an exception.
         new ClientDriverFactory().createClientDriver(portNum);
@@ -74,4 +75,5 @@ public class ChooseOwnPortTest {
         new ClientDriverFactory().createClientDriver();
         
     }
+
 }

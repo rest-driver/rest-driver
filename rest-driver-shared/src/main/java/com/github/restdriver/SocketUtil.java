@@ -13,27 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.restdriver.serverdriver.http.exception;
+package com.github.restdriver;
 
-import org.apache.http.conn.HttpHostConnectException;
+import java.io.IOException;
+import java.net.ServerSocket;
+
 
 /**
- * Runtime wrapper for {@link HttpHostConnectException}.
- * 
- * User: mjg
- * Date: 21/04/11
- * Time: 16:33
+ * Utility class to retrieve a free port number.
+ *
+ * @author bichel
+ *
  */
-public class RuntimeHttpHostConnectException extends RuntimeException {
-    
-    private static final long serialVersionUID = -8998669008887196143L;
-    
-    /**
-     * Create a new instance of the exception with a given cause.
-     * 
-     * @param hhce The exception to use as the cause
-     */
-    public RuntimeHttpHostConnectException(HttpHostConnectException hhce) {
-        super(hhce);
+public final class SocketUtil {
+
+    private SocketUtil() {
+
     }
+
+    /**
+     * Gets a free port on localhost for binding to.
+     *
+     * @see "http://chaoticjava.com/posts/retrieving-a-free-port-for-socket-binding/"
+     *
+     * @return The port number.
+     */
+    public static int getFreePort() throws IOException {
+            ServerSocket server = new ServerSocket(0);
+            int port = server.getLocalPort();
+            server.close();
+            return port;
+    }
+
 }
