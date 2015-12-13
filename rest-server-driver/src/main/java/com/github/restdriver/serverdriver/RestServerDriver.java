@@ -678,7 +678,7 @@ public final class RestServerDriver {
      * 
      * @param httpParams
      */
-    public static void getHttpParams(HttpParams httpParams) {
+    public static void setHttpParams(HttpParams httpParams) {
         RestServerDriver.httpParams = httpParams;
     }
 }
