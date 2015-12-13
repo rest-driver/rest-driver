@@ -9,7 +9,7 @@ There are two libraries here:
 * REST server driver - for testing your RESTful service
 * REST client driver - for testing your RESTful client & mocking remote services
 
-**Latest version: 1.1.41**
+**Latest version: 1.1.42**
 
 [Downloads](https://github.com/rest-driver/rest-driver/wiki/Downloads) - [Server Driver](https://github.com/rest-driver/rest-driver/wiki/Server-Driver) - [Client Driver](https://github.com/rest-driver/rest-driver/wiki/Client-driver)
 
