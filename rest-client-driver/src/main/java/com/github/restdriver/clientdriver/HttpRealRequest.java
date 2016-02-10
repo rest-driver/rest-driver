@@ -50,7 +50,7 @@ public class HttpRealRequest implements RealRequest {
         
         if (request.getQueryString() != null) {
             MultiMap<String> parameterMap = new MultiMap<String>();
-            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, "UTF-8", 0);
+            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, "UTF-8");
             for (Entry<String, String[]> paramEntry : parameterMap.toStringArrayMap().entrySet()) {
                 String[] values = paramEntry.getValue();
                 for (String value : values) {
