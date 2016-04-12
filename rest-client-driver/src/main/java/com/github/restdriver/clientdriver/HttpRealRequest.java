@@ -16,6 +16,7 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -34,6 +35,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 public class HttpRealRequest implements RealRequest {
     
     private final Method method;
@@ -50,7 +53,7 @@ public class HttpRealRequest implements RealRequest {
         
         if (request.getQueryString() != null) {
             MultiMap<String> parameterMap = new MultiMap<String>();
-            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, "UTF-8", 0);
+            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, UTF_8);
             for (Entry<String, String[]> paramEntry : parameterMap.toStringArrayMap().entrySet()) {
                 String[] values = paramEntry.getValue();
                 for (String value : values) {

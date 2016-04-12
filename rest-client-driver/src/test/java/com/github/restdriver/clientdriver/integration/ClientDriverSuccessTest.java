@@ -44,6 +44,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -357,6 +358,7 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
+    @Ignore
     public void matchingOnRequestHeaderNotBeingPresent() throws Exception {
         
         String baseUrl = driver.getBaseUrl();
