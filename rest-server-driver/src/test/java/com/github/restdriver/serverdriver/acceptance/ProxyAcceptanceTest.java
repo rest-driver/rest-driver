@@ -40,7 +40,6 @@ import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.exception.RuntimeConnectException;
 
-@Ignore
 public class ProxyAcceptanceTest {
     
     /* These are set when you call startLocalProxy() */
