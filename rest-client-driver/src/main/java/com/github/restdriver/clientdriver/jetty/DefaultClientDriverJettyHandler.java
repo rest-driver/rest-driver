@@ -15,31 +15,24 @@
  */
 package com.github.restdriver.clientdriver.jetty;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.github.restdriver.RestDriverProperties;
+import com.github.restdriver.clientdriver.*;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.google.common.collect.Lists;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.restdriver.RestDriverProperties;
-import com.github.restdriver.clientdriver.ClientDriverExpectation;
-import com.github.restdriver.clientdriver.ClientDriverRequest;
-import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
-import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.HttpRealRequest;
-import com.github.restdriver.clientdriver.RequestMatcher;
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-import com.google.common.collect.Lists;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Class which acts as a Jetty Handler to see if the actual incoming HTTP
@@ -55,6 +48,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
     private final List<ClientDriverRequestResponsePair> matchedResponses;
     private final RequestMatcher matcher;
     private final List<HttpRealRequest> unexpectedRequests;
+    private final List<HttpRealRequest> requests;
     private boolean failFastOnUnexpectedRequest = true;
     
     /**
@@ -68,6 +62,7 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         expectations = new ArrayList<ClientDriverExpectation>();
         matchedResponses = new ArrayList<ClientDriverRequestResponsePair>();
         unexpectedRequests = new ArrayList<HttpRealRequest>();
+        requests = new ArrayList<HttpRealRequest>();
         
         this.matcher = matcher;
         
@@ -131,7 +126,8 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         
         ClientDriverExpectation matchedExpectation = null;
         HttpRealRequest realRequest = new HttpRealRequest(request);
-        
+        requests.add(realRequest);
+
         int index;
         for (index = 0; index < expectations.size(); index++) {
             ClientDriverExpectation thisExpectation = expectations.get(index);
@@ -261,5 +257,19 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         ClientDriverExpectation expectation = new ClientDriverExpectation(pair);
         expectations.add(expectation);
         return expectation;
+    }
+
+    @Override
+    public void verify(ClientDriverRequest request, int times) {
+        int count = 0;
+        for (HttpRealRequest realRequest : requests) {
+            if (matcher.isMatch(realRequest, request)) {
+                count++;
+            }
+        }
+
+        if (count != times) {
+            throw new RuntimeException(String.format("Incorrect request times: %s", request));
+        }
     }
 }

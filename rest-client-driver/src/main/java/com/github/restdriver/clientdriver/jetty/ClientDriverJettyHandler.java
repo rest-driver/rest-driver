@@ -56,4 +56,6 @@ public interface ClientDriverJettyHandler extends Handler {
      * Resets the expectations so the current ClientDriver instance can be reused.
      */
     void reset();
+
+    void verify(ClientDriverRequest clientDriverRequest, int times);
 }
