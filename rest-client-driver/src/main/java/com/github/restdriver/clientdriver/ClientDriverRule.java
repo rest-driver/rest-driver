@@ -15,13 +15,13 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
@@ -115,7 +115,7 @@ public class ClientDriverRule implements TestRule {
      * 
      * @param listener The listener
      */
-    public void whenCompleted(ClientDriverCompletedListener listener) {
+    public void whenCompleted(ClientDriverListener listener) {
         clientDriver.addListener(listener);
     }
     
