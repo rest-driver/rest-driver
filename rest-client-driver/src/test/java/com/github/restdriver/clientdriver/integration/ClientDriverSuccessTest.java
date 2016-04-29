@@ -44,7 +44,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -358,15 +357,14 @@ public class ClientDriverSuccessTest {
     }
     
     @Test
-    @Ignore
     public void matchingOnRequestHeaderNotBeingPresent() throws Exception {
         
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
-                onRequestTo("/without-header-test").withMethod(Method.GET).withoutHeader("Some Header"),
+                onRequestTo("/without-header-test").withMethod(Method.GET).withoutHeader("Some-Header"),
                 giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
         driver.addExpectation(
-                onRequestTo("/without-header-test").withMethod(Method.GET).withHeader("Some Header", "hello"),
+                onRequestTo("/without-header-test").withMethod(Method.GET).withHeader("Some-Header", "hello"),
                 giveEmptyResponse().withStatus(418).withHeader("Cache-Control", "no-cache"));
         
         HttpClient client = new DefaultHttpClient();
@@ -376,7 +374,7 @@ public class ClientDriverSuccessTest {
         assertThat(response.getStatusLine().getStatusCode(), is(204));
         
         get = new HttpGet(baseUrl + "/without-header-test");
-        get.addHeader(new BasicHeader("Some Header", "hello"));
+        get.addHeader(new BasicHeader("Some-Header", "hello"));
         response = client.execute(get);
         
         assertThat(response.getStatusLine().getStatusCode(), is(418));
