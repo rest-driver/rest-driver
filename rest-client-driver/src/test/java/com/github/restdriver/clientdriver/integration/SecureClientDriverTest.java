@@ -15,9 +15,9 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.Matchers.*;
 import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -37,7 +37,6 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
-
 import org.junit.Test;
 
 import com.github.restdriver.clientdriver.DefaultRequestMatcher;

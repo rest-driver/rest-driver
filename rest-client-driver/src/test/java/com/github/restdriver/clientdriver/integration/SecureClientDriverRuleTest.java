@@ -15,8 +15,7 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;

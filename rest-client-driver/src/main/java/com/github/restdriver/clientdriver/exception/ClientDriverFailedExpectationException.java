@@ -16,7 +16,6 @@
 package com.github.restdriver.clientdriver.exception;
 
 import static com.google.common.base.Preconditions.*;
-import static java.lang.String.*;
 
 import java.util.List;
 
@@ -42,14 +41,14 @@ public final class ClientDriverFailedExpectationException extends RuntimeExcepti
     private static String createUnexpectedRequestsMessage(List<HttpRealRequest> unexpectedRequests, List<ClientDriverExpectation> expectations) {
         checkArgument(unexpectedRequests != null && !unexpectedRequests.isEmpty(), "unexpectedRequests cannot be empty");
         
-        String message = format("%d unexpected request(s):", unexpectedRequests.size());
+        String message = String.format("%d unexpected request(s):", unexpectedRequests.size());
         
         for (HttpRealRequest unexpectedRequest : unexpectedRequests) {
-            message = format("%s%n  %s", message, unexpectedRequest);
+            message = String.format("%s%n  %s", message, unexpectedRequest);
         }
         
         if (expectations != null && !expectations.isEmpty()) {
-            message = format("%s%n%n%d expectation(s):", message, expectations.size());
+            message = String.format("%s%n%n%d expectation(s):", message, expectations.size());
             message = addExpectationsMessages(expectations, message);
         }
         
@@ -59,14 +58,14 @@ public final class ClientDriverFailedExpectationException extends RuntimeExcepti
     private static String createFailedExpectationsMessage(List<ClientDriverExpectation> failedExpectations) {
         checkArgument(failedExpectations != null && !failedExpectations.isEmpty(), "failedExpectations cannot be empty");
         
-        String message = format("%d unmatched expectation(s):", failedExpectations.size());
+        String message = String.format("%d unmatched expectation(s):", failedExpectations.size());
         
         return addExpectationsMessages(failedExpectations, message);
     }
     
     private static String addExpectationsMessages(List<ClientDriverExpectation> expectations, String message) {
         for (ClientDriverExpectation expectation : expectations) {
-            message = format(EXPECTATION_MESSAGE_TEMPLATE, message, expectation.getStatusString(), expectation.getPair().getRequest());
+            message = String.format(EXPECTATION_MESSAGE_TEMPLATE, message, expectation.getStatusString(), expectation.getPair().getRequest());
         }
         
         return message;

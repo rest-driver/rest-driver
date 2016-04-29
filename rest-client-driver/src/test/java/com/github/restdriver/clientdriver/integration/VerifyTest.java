@@ -15,7 +15,10 @@
  */
 package com.github.restdriver.clientdriver.integration;
 
-import com.github.restdriver.clientdriver.ClientDriverRule;
+import static com.github.restdriver.clientdriver.RestClientDriver.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -25,10 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
-import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import com.github.restdriver.clientdriver.ClientDriverRule;
 
 public class VerifyTest {
 

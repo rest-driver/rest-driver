@@ -15,18 +15,19 @@
  */
 package com.github.restdriver.clientdriver;
 
-import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
-import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
-import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
-import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.github.restdriver.clientdriver.exception.ClientDriverFailedExpectationException;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.github.restdriver.clientdriver.exception.ClientDriverSetupException;
+import com.github.restdriver.clientdriver.jetty.ClientDriverJettyHandler;
 
 /**
  * The main class which acts as a facade for the Client Driver.

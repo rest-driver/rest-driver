@@ -15,8 +15,8 @@
  */
 package com.github.restdriver.clientdriver.unit;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.security.KeyStore;
