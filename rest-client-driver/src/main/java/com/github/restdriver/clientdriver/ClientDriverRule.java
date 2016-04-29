@@ -15,13 +15,13 @@
  */
 package com.github.restdriver.clientdriver;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * The ClientDriverRule allows a user to specify expectations on the HTTP requests that are made against it.
@@ -73,7 +73,7 @@ public class ClientDriverRule implements TestRule {
         if (!response.canExpire() && (expectedResponseTimeout > 0)) {
             response.within(expectedResponseTimeout, TimeUnit.MILLISECONDS);
         }
-        
+
         return clientDriver.addExpectation(request, response);
     }
     
@@ -115,7 +115,7 @@ public class ClientDriverRule implements TestRule {
      * 
      * @param listener The listener
      */
-    public void whenCompleted(ClientDriverCompletedListener listener) {
+    public void whenCompleted(ClientDriverListener listener) {
         clientDriver.addListener(listener);
     }
     
@@ -139,7 +139,18 @@ public class ClientDriverRule implements TestRule {
         expectedResponseTimeout = units.toMillis(timeout);
         return this;
     }
-    
+
+    /**
+     * When you want to verify, that following request was executed, you can use this method.
+     * Given, you have a proxy controller in your application, which checks some params, and depending on them,
+     * send request to some local service(captured by ClientDriverRule). You are writing integration tests and you
+     * want to verify, that when you pass something - service is not receiving requests.
+     * @param clientDriverRequest
+     */
+    public void verify(ClientDriverRequest clientDriverRequest, int times) {
+        clientDriver.verify(clientDriverRequest, times);
+    }
+
     /**
      * Statement which evaluates the given Statement and shuts down the client after evaluation.
      */
