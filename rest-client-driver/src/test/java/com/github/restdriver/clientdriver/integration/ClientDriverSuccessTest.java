@@ -361,10 +361,10 @@ public class ClientDriverSuccessTest {
         
         String baseUrl = driver.getBaseUrl();
         driver.addExpectation(
-                onRequestTo("/without-header-test").withMethod(Method.GET).withoutHeader("Some Header"),
+                onRequestTo("/without-header-test").withMethod(Method.GET).withoutHeader("Some-Header"),
                 giveEmptyResponse().withStatus(204).withHeader("Cache-Control", "no-cache"));
         driver.addExpectation(
-                onRequestTo("/without-header-test").withMethod(Method.GET).withHeader("Some Header", "hello"),
+                onRequestTo("/without-header-test").withMethod(Method.GET).withHeader("Some-Header", "hello"),
                 giveEmptyResponse().withStatus(418).withHeader("Cache-Control", "no-cache"));
         
         HttpClient client = new DefaultHttpClient();
@@ -374,7 +374,7 @@ public class ClientDriverSuccessTest {
         assertThat(response.getStatusLine().getStatusCode(), is(204));
         
         get = new HttpGet(baseUrl + "/without-header-test");
-        get.addHeader(new BasicHeader("Some Header", "hello"));
+        get.addHeader(new BasicHeader("Some-Header", "hello"));
         response = client.execute(get);
         
         assertThat(response.getStatusLine().getStatusCode(), is(418));
