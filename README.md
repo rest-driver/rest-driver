@@ -9,7 +9,7 @@ There are two libraries here:
 * REST server driver - for testing your RESTful service
 * REST client driver - for testing your RESTful client & mocking remote services
 
-**Latest version: 1.1.44**
+**Latest version: 2.0.0**
 
 Please note: version `2.0.0` onwards will require Java 8.
 
