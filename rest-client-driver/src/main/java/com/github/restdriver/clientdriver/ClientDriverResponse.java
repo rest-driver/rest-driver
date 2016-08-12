@@ -277,7 +277,9 @@ public final class ClientDriverResponse {
     }
 
     public void handle(HttpServletResponse response) throws IOException {
-        this.handler.handle(response, this);
+        synchronized (this.handler) {
+            this.handler.handle(response, this);
+        }
     }
 
     /**
@@ -297,8 +299,8 @@ public final class ClientDriverResponse {
             if (client.hasBody()) {
                 InputStream input = client.getInputStream();
                 if (input.markSupported()) {
-                    input.mark(input.available());
-                    IOUtils.copyLarge(input, servlet.getOutputStream(), new byte[input.available()]);
+                    input.mark(Integer.MAX_VALUE);
+                    IOUtils.copyLarge(input, servlet.getOutputStream());
                     input.reset();
                 } else {
                     IOUtils.copyLarge(input, servlet.getOutputStream());
