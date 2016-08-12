@@ -15,10 +15,16 @@
  */
 package com.github.restdriver.clientdriver.unit;
 
-import static com.github.restdriver.clientdriver.RestClientDriver.*;
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
+import static com.github.restdriver.clientdriver.RestClientDriver.giveEmptyResponse;
+import static com.github.restdriver.clientdriver.RestClientDriver.giveResponse;
+import static com.github.restdriver.clientdriver.RestClientDriver.onRequestTo;
+import static com.github.restdriver.clientdriver.RestClientDriver.waitFor;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -41,13 +47,13 @@ public class RestClientDriverTest {
     }
     
     @Test
-    public void giveResponseWorks() {
+    public void giveResponseWorks() throws IOException {
         String content = "some wonderful content";
         assertThat(giveResponse(content, "text/plain").getContent(), is(content));
     }
     
     @Test
-    public void giveEmptyResponseWorks() {
+    public void giveEmptyResponseWorks() throws IOException {
         assertThat(giveEmptyResponse().getContent(), is(""));
     }
     

@@ -16,10 +16,8 @@
 package com.github.restdriver.clientdriver.jetty;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +28,6 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.clientdriver.ClientDriverExpectation;
 import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverRequestResponsePair;
@@ -91,44 +88,14 @@ public final class DefaultClientDriverJettyHandler extends AbstractHandler imple
         if (matchingPair != null) {
             matchedResponses.add(matchingPair);
             
-            ClientDriverResponse matchedResponse = matchingPair.getResponse();
-            
-            response.setContentType(matchedResponse.getContentType());
-            response.setStatus(matchedResponse.getStatus());
-            response.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
-            
-            for (Entry<String, String> thisHeader : matchedResponse.getHeaders().entrySet()) {
-                response.setHeader(thisHeader.getKey(), thisHeader.getValue());
-            }
-            
-            if (matchedResponse.hasBody()) {
-                OutputStream output = response.getOutputStream();
-                output.write(matchedResponse.getContentAsBytes());
-            }
-            
-            delayIfNecessary(matchingPair.getResponse());
+            matchingPair.getResponse().handle(response);
         } else {
             response.setStatus(404);
         }
         
         baseRequest.setHandled(true);
     }
-    
-    private void delayIfNecessary(ClientDriverResponse response) {
-        
-        if (response.getDelayTime() > 0) {
-            
-            try {
-                response.getDelayTimeUnit().sleep(response.getDelayTime());
-                
-            } catch (InterruptedException ie) {
-                throw new ClientDriverInternalException("Requested delay was interrupted", ie);
-            }
-            
-        }
-        
-    }
-    
+
     private synchronized ClientDriverRequestResponsePair getMatchingRequestPair(HttpServletRequest request) {
         
         ClientDriverExpectation matchedExpectation = null;

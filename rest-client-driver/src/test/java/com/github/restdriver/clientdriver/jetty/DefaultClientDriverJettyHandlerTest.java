@@ -15,10 +15,14 @@
  */
 package com.github.restdriver.clientdriver.jetty;
 
-import static org.hamcrest.core.StringContains.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.hamcrest.core.StringContains.containsString;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -121,7 +125,8 @@ public class DefaultClientDriverJettyHandlerTest {
         InOrder inOrder = inOrder(mockHttpResponse, mockServletOutputStream);
         inOrder.verify(mockHttpResponse).setContentType("text/plain");
         inOrder.verify(mockHttpResponse).setHeader("Test", "header-should-be-set-before-writing-body");
-        inOrder.verify(mockServletOutputStream).write("entity payload".getBytes("UTF-8"));
+        byte[] bytes = "entity payload".getBytes("UTF-8");
+        inOrder.verify(mockServletOutputStream).write(bytes, 0, bytes.length);
     }
     
     @Test
