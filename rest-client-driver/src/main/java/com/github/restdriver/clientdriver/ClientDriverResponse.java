@@ -23,9 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.io.IOUtils;
 
 import com.github.restdriver.RestDriverProperties;
 import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
@@ -287,6 +286,8 @@ public final class ClientDriverResponse {
      */
     private static interface Handler {
     
+        public static final int DEFAULT_BUFFER_SIZE = 8192;
+
         public default void handle(HttpServletResponse servlet, ClientDriverResponse client) throws IOException {
             servlet.setContentType(client.getContentType());
             servlet.setStatus(client.getStatus());
@@ -300,10 +301,10 @@ public final class ClientDriverResponse {
                 InputStream input = client.getInputStream();
                 if (input.markSupported()) {
                     input.mark(Integer.MAX_VALUE);
-                    IOUtils.copyLarge(input, servlet.getOutputStream());
+                    stream(input, servlet.getOutputStream());
                     input.reset();
                 } else {
-                    IOUtils.copyLarge(input, servlet.getOutputStream());
+                    stream(input, servlet.getOutputStream());
                 }
             }
     
@@ -314,6 +315,23 @@ public final class ClientDriverResponse {
                     throw new ClientDriverInternalException("Requested delay was interrupted", ie);
                 }
                 
+            }
+        }
+
+        public default void stream(InputStream input, ServletOutputStream output) throws IOException {
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            while (true) {
+                int read = input.read(buffer, 0, input.available());
+                if (read == -1) {
+                    return;
+                } else if (read == 0) {
+                    output.flush();
+                    read = input.read(buffer);
+                    if (read == -1) {
+                        return;
+                    }
+                }
+                output.write(buffer, 0, read);
             }
         }
     }

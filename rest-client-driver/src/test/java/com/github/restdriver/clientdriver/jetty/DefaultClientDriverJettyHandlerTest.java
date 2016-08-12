@@ -125,7 +125,7 @@ public class DefaultClientDriverJettyHandlerTest {
         InOrder inOrder = inOrder(mockHttpResponse, mockServletOutputStream);
         inOrder.verify(mockHttpResponse).setContentType("text/plain");
         inOrder.verify(mockHttpResponse).setHeader("Test", "header-should-be-set-before-writing-body");
-        byte[] bytes = "entity payload".getBytes("UTF-8"), buffer = new byte[4096];
+        byte[] bytes = "entity payload".getBytes("UTF-8"), buffer = new byte[8192];
         System.arraycopy(bytes, 0, buffer, 0, bytes.length);
         inOrder.verify(mockServletOutputStream).write(buffer, 0, bytes.length);
     }
