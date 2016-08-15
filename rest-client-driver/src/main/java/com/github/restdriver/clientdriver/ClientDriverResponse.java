@@ -313,7 +313,7 @@ public final class ClientDriverResponse {
         public default void stream(InputStream input, ServletOutputStream output) throws IOException {
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             while (true) {
-                int read = input.read(buffer, 0, input.available());
+                int read = input.read(buffer, 0, Math.min(DEFAULT_BUFFER_SIZE, input.available()));
                 if (read == -1) {
                     return;
                 } else if (read == 0) {
