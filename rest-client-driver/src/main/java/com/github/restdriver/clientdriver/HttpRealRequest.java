@@ -16,7 +16,8 @@
 package com.github.restdriver.clientdriver;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -53,7 +54,7 @@ public class HttpRealRequest implements RealRequest {
         
         if (request.getQueryString() != null) {
             MultiMap<String> parameterMap = new MultiMap<String>();
-            UrlEncoded.decodeTo(request.getQueryString(), parameterMap, UTF_8);
+            decodeQueryString(request, parameterMap);
             for (Entry<String, String[]> paramEntry : parameterMap.toStringArrayMap().entrySet()) {
                 String[] values = paramEntry.getValue();
                 for (String value : values) {
@@ -78,6 +79,22 @@ public class HttpRealRequest implements RealRequest {
         }
         
         this.bodyContentType = request.getContentType();
+    }
+
+    private void decodeQueryString(HttpServletRequest request, MultiMap<String> parameterMap) {
+        try {
+            // Jetty >= 9.3
+            java.lang.reflect.Method decodeTo = UrlEncoded.class.getMethod("decodeTo", String.class, MultiMap.class, Charset.class);
+            decodeTo.invoke(null, request.getQueryString(), parameterMap, UTF_8);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
+            try {
+                // Jetty < 9.3
+                java.lang.reflect.Method decodeTo = UrlEncoded.class.getMethod("decodeTo", String.class, MultiMap.class, String.class, int.class);
+                decodeTo.invoke(null, request.getQueryString(), parameterMap, "UTF-8", 0);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e2) {
+                throw new RuntimeException("Failed to decode querystring", e2);
+            }
+        }
     }
     
     @Override
