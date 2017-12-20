@@ -1,4 +1,4 @@
-#REST-driver
+# REST-driver
 
 [![Build Status](https://secure.travis-ci.org/rest-driver/rest-driver.png?branch=master)](http://travis-ci.org/rest-driver/rest-driver)
 
@@ -15,11 +15,11 @@ Please note: version `2.0.0` onwards will require Java 8.
 
 [Downloads](https://github.com/rest-driver/rest-driver/wiki/Downloads) - [Server Driver](https://github.com/rest-driver/rest-driver/wiki/Server-Driver) - [Client Driver](https://github.com/rest-driver/rest-driver/wiki/Client-driver)
 
-##Goals
+## Goals
 
 Everyone knows that testing is good for your health and REST is good for your sanity.  Now it is easy to keep both in check by allowing you to write _quick_, _readable_, _fluid_ tests which are easy to refactor and give excellent error handling/reporting.  So we provide these libraries to test from both ends of the pipe.
 
-##REST server driver
+## REST server driver
 
 In order to do thorough testing of your RESTful service, you'll have to make actual HTTP requests and check the actual HTTP responses from your service.  REST driver makes this as easy as:
 
@@ -32,7 +32,7 @@ assertThat(response.asJson(), hasJsonPath("$.name", equalTo("jeff")));
 
 More info: [Server Driver](https://github.com/rest-driver/rest-driver/wiki/Server-Driver)
 
-##REST client driver
+## REST client driver
 
 If you have a client for a RESTful service, it's not ideal to have an actual service running somewhere to test against.  This is difficult to keep on top of, makes for brittle/flickering tests, and tightly couples your tests to someone else's code.
 
