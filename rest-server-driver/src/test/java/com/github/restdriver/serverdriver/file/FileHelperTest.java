@@ -37,6 +37,12 @@ public class FileHelperTest {
     }
     
     @Test
+    public void readBytesFromClasspath() throws Exception {
+        byte[] fileContent = FileHelper.bytesFromFile("english.txt");
+        assertThat(fileContent, is("HELLO THIS IS ENGLISH".getBytes("UTF-8")));
+    }
+    
+    @Test
     public void readUtf8FileFromClasspath() {
         String fileContent = FileHelper.fromFile("japanese.txt");
         assertThat(fileContent, is("こんにちは"));
