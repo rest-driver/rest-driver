@@ -61,6 +61,29 @@ public final class FileHelper {
     }
     
     /**
+     * Reads in a resource from the class path.
+     * 
+     * @param fileName The file name to load
+     * @return The content of the file
+     */
+    public static byte[] bytesFromFile(String fileName) {
+        
+        InputStream stream = FileHelper.class.getClassLoader().getResourceAsStream(fileName);
+        
+        if (stream == null) {
+            throw new RuntimeFileNotFoundException(new FileNotFoundException(fileName));
+            
+        }
+        
+        try {
+            return IOUtils.toByteArray(stream);
+            
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read from file " + fileName, e);
+        }
+    }
+    
+    /**
      * Reads in a resource from the class path, using UTF-8 encoding.
      * 
      * @param fileName The file name to load
