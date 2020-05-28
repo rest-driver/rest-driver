@@ -118,8 +118,8 @@ public class HttpRealRequest implements RealRequest {
     @Override
     public String toString() {
         
-        String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").useForNull("<null>").join(getParams());
-        String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").useForNull("<null>").join(getHeaders());
+        String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").useForNull("<null>").join(params.asMap());
+        String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").useForNull("<null>").join(headers);
         
         return "HttpRealRequest: "
                 + method + " " + path + "; "
