@@ -15,23 +15,23 @@
  */
 package com.github.restdriver.clientdriver.unit;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
+import com.github.restdriver.clientdriver.HttpRealRequest;
+import com.github.restdriver.clientdriver.RealRequest;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-import com.github.restdriver.clientdriver.ClientDriverRequest.Method;
-import com.github.restdriver.clientdriver.HttpRealRequest;
-import com.github.restdriver.clientdriver.RealRequest;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class HttpRealRequestTest {
     
@@ -41,7 +41,7 @@ public class HttpRealRequestTest {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         String expectedPathInfo = "someUrlPath";
         String expectedMethod = "GET";
-        Enumeration<String> expectedHeaderNames = Collections.enumeration(Arrays.asList("header1"));
+        Enumeration<String> expectedHeaderNames = Collections.enumeration(Arrays.asList("header1", "nullHeader"));
         
         String bodyContent = "bodyContent";
         String expectedContentType = "contentType";
@@ -51,18 +51,25 @@ public class HttpRealRequestTest {
         when(mockRequest.getQueryString()).thenReturn("hello=world");
         when(mockRequest.getHeaderNames()).thenReturn(expectedHeaderNames);
         when(mockRequest.getHeader("header1")).thenReturn("thisIsHeader1");
+        when(mockRequest.getHeader("nullHeader")).thenReturn(null);
         when(mockRequest.getInputStream()).thenReturn(new DummyServletInputStream(IOUtils.toInputStream(bodyContent)));
         when(mockRequest.getContentType()).thenReturn(expectedContentType);
         
         RealRequest realRequest = new HttpRealRequest(mockRequest);
         
-        assertThat((String) realRequest.getPath(), is(expectedPathInfo));
+        assertThat(realRequest.getPath(), is(expectedPathInfo));
         assertThat(realRequest.getMethod(), is(Method.GET));
         assertThat(realRequest.getParams().size(), is(1));
-        assertThat((String) realRequest.getParams().get("hello").iterator().next(), is("world"));
-        assertThat((String) realRequest.getHeaders().get("header1"), is("thisIsHeader1"));
-        assertThat((String) realRequest.getBodyContentType(), is(expectedContentType));
-        
+        assertThat(realRequest.getParams().get("hello").iterator().next(), is("world"));
+        assertThat(realRequest.getHeaders().get("header1"), is("thisIsHeader1"));
+        assertThat(realRequest.getHeaders().get("nullHeader"), nullValue());
+        assertThat(realRequest.getBodyContentType(), is(expectedContentType));
+
+        assertThat(realRequest.toString(), is("HttpRealRequest: GET someUrlPath; " +
+                "PARAMS: [hello=[world]]; " +
+                "HEADERS: [header1: thisIsHeader1,nullheader: <null>]; " +
+                "CONTENT TYPE contentType; " +
+                "BODY bodyContent;"));
     }
     
 }
