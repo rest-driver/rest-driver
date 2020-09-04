@@ -69,11 +69,12 @@ import com.github.restdriver.serverdriver.http.response.Response;
 public final class RestServerDriver {
     
     private static final int DEFAULT_HTTP_PROXY_PORT = 80;
-    public static final long DEFAULT_CONNECTION_TIMEOUT = 10000;
-    public static final long DEFAULT_SOCKET_TIMEOUT = 10000;
     
     private static final String USER_AGENT = "User-Agent";
     private static final String DEFAULT_USER_AGENT = "rest-server-driver/" + RestDriverProperties.getVersion();
+
+    private static long defaultConnectionTimeout = 10000;
+    private static long defaultSocketTimeout = 10000;
     
     private static ClientConnectionManager ccm = null;
     private static HttpParams httpParams = null;
@@ -678,5 +679,43 @@ public final class RestServerDriver {
     public static void setHttpParams(HttpParams httpParams) {
         RestServerDriver.httpParams = httpParams;
     }
+
+    /**
+     * Returns the default connection timeout.
+     * 
+     * @return  timeout in ms.
+     */
+    public static long getDefaultConnectionTimeout() {
+        return defaultConnectionTimeout;
+    }
+
+    /**
+     * Sets the default connection timeout. 
+     * (Test will wait this amount of time for TCP ACK/getting a connection.)
+     * 
+     * @param defaultConnectionTimeout timeout in ms
+     */
+    public static void setDefaultConnectionTimeout(long defaultConnectionTimeout) {
+        RestServerDriver.defaultConnectionTimeout = defaultConnectionTimeout;
+    }
+
+    /**
+     * Returns the default socket timeout.
+     * @return  timeout in ms.
+     */
+    public static long getDefaultSocketTimeout() {
+        return defaultSocketTimeout;
+    }
+    
+    /**
+     * Sets the default socket timeout.
+     * (Time waited for an answer to a request)
+     * 
+     * @param defaultSocketTimeout timeout in ms
+     */
+    public static void setDefaultSocketTimeout(long defaultSocketTimeout) {
+        RestServerDriver.defaultSocketTimeout = defaultSocketTimeout;
+    }
+    
     
 }

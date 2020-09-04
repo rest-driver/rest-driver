@@ -28,8 +28,8 @@ public final class ServerDriverHttpUriRequest {
     private final HttpUriRequest request;
     
     private HttpHost proxyHost;
-    private long connectionTimeout = RestServerDriver.DEFAULT_CONNECTION_TIMEOUT;
-    private long socketTimeout = RestServerDriver.DEFAULT_SOCKET_TIMEOUT;
+    private long connectionTimeout = RestServerDriver.getDefaultConnectionTimeout();
+    private long socketTimeout = RestServerDriver.getDefaultSocketTimeout();
     
     /**
      * Constructor.
