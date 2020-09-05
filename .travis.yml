@@ -1,4 +1,9 @@
 language: java
 jdk:
   - openjdk8
-sudo: false
+  - openjdk11
+  - openjdk14
+os:
+  - linux
+dist:
+  - bionic
