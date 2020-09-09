@@ -62,7 +62,7 @@ public class HttpRealRequest implements RealRequest {
             }
         }
         
-        headers = new HashMap<String, Object>();
+        headers = new HashMap<>();
         Enumeration<String> headerNames = request.getHeaderNames();
         if (headerNames != null) {
             while (headerNames.hasMoreElements()) {
@@ -118,8 +118,8 @@ public class HttpRealRequest implements RealRequest {
     @Override
     public String toString() {
         
-        String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").join(params.asMap());
-        String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").join(headers);
+        String paramsJoined = Joiner.on(",").withKeyValueSeparator("=").useForNull("<null>").join(params.asMap());
+        String headersJoined = Joiner.on(",").withKeyValueSeparator(": ").useForNull("<null>").join(headers);
         
         return "HttpRealRequest: "
                 + method + " " + path + "; "
