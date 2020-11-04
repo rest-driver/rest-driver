@@ -61,7 +61,7 @@
         <hamcrest.version>1.3</hamcrest.version>
         <httpclient.version>4.5.13</httpclient.version>
         <jackson.version>2.11.2</jackson.version>
-        <jetty.version>9.4.31.v20200723</jetty.version>
+        <jetty.version>9.4.32.v20200930</jetty.version>
         <joda.time.version>2.10.6</joda.time.version>
         <junit.version>4.13.1</junit.version>
         <jsonpath.version>0.9.1</jsonpath.version>
