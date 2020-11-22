@@ -62,7 +62,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <jackson.version>2.11.3</jackson.version>
         <jetty.version>9.4.32.v20200930</jetty.version>
-        <joda.time.version>2.10.7</joda.time.version>
+        <joda.time.version>2.10.8</joda.time.version>
         <junit.version>4.13.1</junit.version>
         <jsonpath.version>0.9.1</jsonpath.version>
         <logback.version>1.1.7</logback.version>
