@@ -21,8 +21,8 @@
         <connection>scm:git:git@github.com:rest-driver/rest-driver.git</connection>
         <developerConnection>scm:git:git@github.com:rest-driver/rest-driver.git</developerConnection>
         <url>git@github.com:rest-driver/rest-driver.git</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
@@ -219,10 +219,10 @@
             </dependency>
 
             <dependency>
-	            <groupId>com.google.guava</groupId>
-	            <artifactId>guava</artifactId>
-	            <version>${guava.version}</version>
-	        </dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.jayway.jsonpath</groupId>
@@ -293,6 +293,18 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
+                <version>${httpclient.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>commons-logging</artifactId>
+                        <groupId>commons-logging</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
                 <version>${httpclient.version}</version>
                 <exclusions>
                     <exclusion>

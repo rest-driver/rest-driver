@@ -1,17 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>rest-server-driver</artifactId>
-	<name>REST Server Driver</name>
-	<description>Test Driver to test your RESTful clients</description>
+    <artifactId>rest-server-driver</artifactId>
+    <name>REST Server Driver</name>
+    <description>Test Driver to test your RESTful clients</description>
 
-	<parent>
-		<groupId>com.github.rest-driver</groupId>
-		<artifactId>rest-driver</artifactId>
-		<version>2.0.1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>com.github.rest-driver</groupId>
+        <artifactId>rest-driver</artifactId>
+        <version>2.0.1-SNAPSHOT</version>
+    </parent>
 
-	<dependencies>
+    <dependencies>
 
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -65,10 +65,10 @@
             <artifactId>commons-lang</artifactId>
         </dependency>
 
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -79,6 +79,11 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+        </dependency>
+    
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
         </dependency>
 
         <dependency>
@@ -99,22 +104,22 @@
             <scope>test</scope>
         </dependency>
 
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>jcl-over-slf4j</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 	
 </project>
