@@ -15,17 +15,15 @@
  */
 package com.github.restdriver.serverdriver.matchers;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import com.github.restdriver.serverdriver.http.Header;
 import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatException;
+import java.time.ZonedDateTime;
+import static java.time.format.DateTimeFormatter.RFC_1123_DATE_TIME;
+import java.time.format.DateTimeParseException;
 
 /**
  * Matcher to check that headers contain dates which are spec-valid. All dates in HTTP headers (Date-header, caching, etc) should
@@ -33,25 +31,18 @@ import com.github.restdriver.serverdriver.http.exception.RuntimeDateFormatExcept
  */
 public final class Rfc1123DateMatcher extends TypeSafeMatcher<Header> {
     
-    public static final String DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";
-    
     /**
      * Parse a string as if it is an RFC1123-compliant date.
      * 
      * @param rawString The original String.
      * @return The DateTime object set to UTC.
      */
-    public DateTime getDateTime(String rawString) {
-        SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT, Locale.US);
-        formatter.setLenient(false); // This stops well-formatted but invalid dates like Feb 31
-        
+    public ZonedDateTime getDateTime(String rawString) {
         try {
-            return new DateTime(formatter.parse(rawString)).toDateTime(DateTimeZone.UTC);
-            
-        } catch (ParseException pe) {
+            return ZonedDateTime.parse(rawString, RFC_1123_DATE_TIME);
+        } catch (DateTimeParseException pe) {
             throw new RuntimeDateFormatException(pe);
         }
-        
     }
     
     @Override

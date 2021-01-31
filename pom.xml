@@ -62,7 +62,6 @@
         <httpclient.version>4.5.13</httpclient.version>
         <jackson.version>2.12.1</jackson.version>
         <jetty.version>9.4.35.v20201120</jetty.version>
-        <joda.time.version>2.10.9</joda.time.version>
         <junit.version>4.13.1</junit.version>
         <jsonpath.version>0.9.1</jsonpath.version>
         <logback.version>1.1.7</logback.version>
@@ -246,12 +245,6 @@
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>${joda.time.version}</version>
             </dependency>
 
             <dependency>
