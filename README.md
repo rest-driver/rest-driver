@@ -1,6 +1,7 @@
 # REST-driver
 
-[![Build Status](https://secure.travis-ci.org/rest-driver/rest-driver.png?branch=master)](http://travis-ci.org/rest-driver/rest-driver)
+[![Build Status](https://secure.travis-ci.org/rest-driver/rest-driver.png?branch=master&style=plastic)](http://travis-ci.org/rest-driver/rest-driver)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.rest-driver/rest-driver/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.rest-driver/rest-driver/badge.svg)
 
 Test Driver to test your RESTful services and clients.
 
@@ -8,8 +9,6 @@ There are two libraries here:
 
 * REST server driver - for testing your RESTful service
 * REST client driver - for testing your RESTful client & mocking remote services
-
-**Latest version: 2.0.0**
 
 Please note: version `2.0.0` onwards will require Java 8.
 
