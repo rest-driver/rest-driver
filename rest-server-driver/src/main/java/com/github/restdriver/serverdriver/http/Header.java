@@ -18,9 +18,9 @@ package com.github.restdriver.serverdriver.http;
 import javax.annotation.Generated;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 
 import com.github.restdriver.serverdriver.matchers.Rfc1123DateMatcher;
+import java.time.ZonedDateTime;
 
 /**
  * Represents an HTTP header.
@@ -93,7 +93,7 @@ public final class Header implements AnyRequestModifier {
      * 
      * @return The DateTime object..
      */
-    public DateTime asDateTime() {
+    public ZonedDateTime asDateTime() {
         return new Rfc1123DateMatcher().getDateTime(this.getValue());
     }
     

@@ -15,24 +15,25 @@
  */
 package com.github.restdriver.serverdriver.http.exception;
 
-import java.text.ParseException;
+import java.time.format.DateTimeParseException;
 
 /**
- * Runtime wrapper for {@link java.text.ParseException}. caused by badly-formatted dates.
- * 
+ * Runtime wrapper for {@link java.text.ParseException}. caused by
+ * badly-formatted dates.
+ *
  * User: mjg Date: 14/05/11 Time: 21:52
  */
 public class RuntimeDateFormatException extends RuntimeException {
-    
+
     private static final long serialVersionUID = 2177515119789644219L;
-    
+
     /**
      * Constructor which takes the original ParseException.
-     * 
+     *
      * @param pe The original ParseException.
      */
-    public RuntimeDateFormatException(ParseException pe) {
+    public RuntimeDateFormatException(DateTimeParseException pe) {
         super(pe);
     }
-    
+
 }

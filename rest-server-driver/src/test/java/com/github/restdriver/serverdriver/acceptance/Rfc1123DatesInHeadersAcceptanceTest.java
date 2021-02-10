@@ -20,8 +20,6 @@ import static com.github.restdriver.serverdriver.RestServerDriver.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -29,69 +27,72 @@ import com.github.restdriver.clientdriver.ClientDriverRequest;
 import com.github.restdriver.clientdriver.ClientDriverResponse;
 import com.github.restdriver.clientdriver.ClientDriverRule;
 import com.github.restdriver.serverdriver.http.response.Response;
+import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.ZonedDateTime;
 
 public class Rfc1123DatesInHeadersAcceptanceTest {
-    
+
     private final String compliantDate = "Mon, 09 May 2011 18:49:18 GMT";
     private final String unCompliantDate = "Junk, 09 May 2011 18:49:18 GMT";
     private final String compliantButInvalidDate = "Mon, 12 May 2011 18:49:18 GMT"; // was not a Monday
-    
+
     @Rule
     public ClientDriverRule driver = new ClientDriverRule();
-    
+
     @Test
     public void assertOnValidDateHeader() {
-        
+
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantDate));
         Response response = get(driver.getBaseUrl());
-        
+
         assertThat(response.getHeader("Date"), isValidDateHeader());
         assertThat(response.getHeader("Date"), isRfc1123Compliant());
-        
+
     }
-    
+
     @Test
     public void assertOnInvalidFormatDateHeader() {
-        
+
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", unCompliantDate));
         Response response = get(driver.getBaseUrl());
-        
+
         assertThat(response.getHeader("Date"), not(isValidDateHeader()));
         assertThat(response.getHeader("Date"), not(isRfc1123Compliant()));
-        
+
     }
-    
+
     @Test
     public void assertOnInvalidDateHeader() {
-        
+
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", compliantButInvalidDate));
         Response response = get(driver.getBaseUrl());
-        
+
         assertThat(response.getHeader("Date"), not(isValidDateHeader()));
         assertThat(response.getHeader("Date"), not(isRfc1123Compliant()));
-        
+
     }
-    
+
     @Test
     public void getHeaderAsDateTimeProvidesCorrectDate() {
-        
+
         String testDate = "Mon, 09 May 2011 18:49:18 GMT";
-        
+
         driver.addExpectation(new ClientDriverRequest("/"), new ClientDriverResponse().withHeader("Date", testDate));
         Response response = get(driver.getBaseUrl());
-        
-        DateTime headerDate = response.getHeader("Date").asDateTime();
-        
-        assertThat(headerDate.getDayOfWeek(), is(DateTimeConstants.MONDAY));
-        
+
+        ZonedDateTime headerDate = response.getHeader("Date").asDateTime();
+
+        assertThat(headerDate.getDayOfWeek(), is(DayOfWeek.MONDAY));
+
         assertThat(headerDate.getDayOfMonth(), is(9));
-        assertThat(headerDate.getMonthOfYear(), is(DateTimeConstants.MAY));
+        assertThat(headerDate.getMonth(), is(Month.MAY));
         assertThat(headerDate.getYear(), is(2011));
-        
-        assertThat(headerDate.getHourOfDay(), is(18));
-        assertThat(headerDate.getMinuteOfHour(), is(49));
-        assertThat(headerDate.getSecondOfMinute(), is(18));
-        
+
+        assertThat(headerDate.getHour(), is(18));
+        assertThat(headerDate.getMinute(), is(49));
+        assertThat(headerDate.getSecond(), is(18));
+
     }
-    
+
 }
