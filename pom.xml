@@ -63,7 +63,7 @@
         <jackson.version>2.12.1</jackson.version>
         <jetty.version>9.4.37.v20210219</jetty.version>
         <joda.time.version>2.10.9</joda.time.version>
-        <junit.version>4.13.1</junit.version>
+        <junit.version>4.13.2</junit.version>
         <jsonpath.version>0.9.1</jsonpath.version>
         <logback.version>1.1.7</logback.version>
         <mockito.version>1.9.5</mockito.version>
