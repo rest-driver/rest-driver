@@ -6,7 +6,7 @@ jdk:
 os:
   - linux
 dist:
-  - bionic
+  - focal
 
 cache:
   directories:
