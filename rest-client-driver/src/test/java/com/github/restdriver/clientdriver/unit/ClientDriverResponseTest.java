@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import com.github.restdriver.clientdriver.ClientDriverResponse;
-import com.github.restdriver.clientdriver.exception.ClientDriverResponseCreationException;
 
 public class ClientDriverResponseTest {
     
@@ -131,21 +130,21 @@ public class ClientDriverResponseTest {
     }
     
     @Test
-    public void creatingResponseWithStringReturnsCorrectValueWhenFetchingContentAsString() {
+    public void creatingResponseWithStringReturnsCorrectValueWhenFetchingContentAsString() throws IOException {
         ClientDriverResponse response = new ClientDriverResponse("some text", "text/plain");
         
         assertThat(response.getContent(), is("some text"));
     }
     
     @Test
-    public void creatingResponseWithInputStreamReturnsCorrectValueWhenFetchingContentAsString() {
+    public void creatingResponseWithInputStreamReturnsCorrectValueWhenFetchingContentAsString() throws IOException {
         ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"), "application/octet-stream");
         
         assertThat(response.getContent(), is("some text"));
     }
     
     @Test
-    public void creatingEmptyResponseHasEmptyStringContentWhenFetchingContentAsString() {
+    public void creatingEmptyResponseHasEmptyStringContentWhenFetchingContentAsString() throws IOException {
         
         assertThat(new ClientDriverResponse().getContent(), is(""));
         assertThat(new ClientDriverResponse((String) null, null).getContent(), is(""));
@@ -156,21 +155,21 @@ public class ClientDriverResponseTest {
     }
     
     @Test
-    public void creatingRepsonseWithStringReturnsCorrectByteArrayWhenFetchingContent() {
+    public void creatingRepsonseWithStringReturnsCorrectByteArrayWhenFetchingContent() throws IOException {
         ClientDriverResponse response = new ClientDriverResponse("some text", "text/plain");
         
         assertThat(response.getContentAsBytes(), is(("some text").getBytes()));
     }
     
     @Test
-    public void creatingResponseWithInputStreamReturnsCorrectByteArrayWhenFetchingContent() {
+    public void creatingResponseWithInputStreamReturnsCorrectByteArrayWhenFetchingContent() throws IOException {
         ClientDriverResponse response = new ClientDriverResponse(IOUtils.toInputStream("some text"), "application/octet-stream");
         
         assertThat(response.getContentAsBytes(), is(("some text").getBytes()));
     }
     
     @Test
-    public void creatingEmptyResponseHasNullByteArrayWhenFetchingContent() {
+    public void creatingEmptyResponseHasNullByteArrayWhenFetchingContent() throws IOException {
         
         assertThat(new ClientDriverResponse().getContentAsBytes(), is(nullValue()));
         assertThat(new ClientDriverResponse((String) null, null).getContentAsBytes(), is(nullValue()));
@@ -181,15 +180,12 @@ public class ClientDriverResponseTest {
     }
     
     @Test
-    public void creatingResponseWithTroublesomeInputStreamThrowsClientResponseCreationException() throws IOException {
-        
-        thrown.expect(ClientDriverResponseCreationException.class);
-        thrown.expectMessage("unable to create client driver response");
+    public void creatingResponseWithTroublesomeInputStreamBehavesLikeEmptyBody() throws IOException {
         
         InputStream mockInputStream = mock(InputStream.class);
         when(mockInputStream.read((byte[]) anyObject())).thenThrow(new IOException("exception reading stream"));
         
-        new ClientDriverResponse(mockInputStream, "application/octet-stream");
+        assertThat(new ClientDriverResponse(mockInputStream, "application/octet-stream").hasBody(), is(false));
     }
     
     @SuppressWarnings("deprecation")

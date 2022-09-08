@@ -15,15 +15,20 @@
  */
 package com.github.restdriver.clientdriver;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.IOUtils;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
-import com.github.restdriver.clientdriver.exception.ClientDriverResponseCreationException;
+import com.github.restdriver.RestDriverProperties;
+import com.github.restdriver.clientdriver.exception.ClientDriverInternalException;
+import com.google.common.io.ByteStreams;
 
 /**
  * Class for encapsulating an HTTP response.
@@ -34,11 +39,15 @@ public final class ClientDriverResponse {
     private static final int EMPTY_RESPONSE_CODE = 204;
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String DEFAULT_TEXT_CONTENT_TYPE = "text/plain";
+    private static final Handler DEFAULT_HANDLER = new Handler() {
+        /* has default */
+    };
     
     private int status;
-    private final byte[] content;
+    private final InputStream stream;
     private String contentType;
     private final Map<String, String> headers;
+    private final Handler handler;
     
     private long delayTime;
     private TimeUnit delayTimeUnit = TimeUnit.SECONDS;
@@ -64,9 +73,9 @@ public final class ClientDriverResponse {
      */
     @Deprecated
     public ClientDriverResponse(String content) {
-        this(convertStringToByteArray(content), DEFAULT_TEXT_CONTENT_TYPE);
+        this(content, DEFAULT_TEXT_CONTENT_TYPE);
     }
-    
+
     /**
      * <p>Creates a new response with the given body, a suitable default status
      * code and a given content-type.</p>
@@ -78,71 +87,56 @@ public final class ClientDriverResponse {
      *            The content type
      */
     public ClientDriverResponse(String content, String contentType) {
-        this(convertStringToByteArray(content), contentType);
+        this(content != null ? new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)) : null, contentType);
     }
-    
+
     /**
      * <p>Creates a new response with the given body, a suitable default status
      * code and a given content-type.</p>
      * <p>If the content given is null a 204 status code is given, otherwise 200.</p>
      * 
-     * @param content
-     *            The content of the response
+     * @param stream
+     *            The input stream containing the content of the response
      * @param contentType
      *            The content type
      */
-    public ClientDriverResponse(InputStream content, String contentType) {
-        this(convertInputStreamToByteArray(content), contentType);
+    public ClientDriverResponse(InputStream stream, String contentType) {
+        this(DEFAULT_HANDLER, stream, contentType);
+    }
+
+    private ClientDriverResponse(Handler handler, InputStream stream, String contentType) {
+        this.status = statusCodeForContent(stream);
+        this.stream = stream;
+        this.contentType = hasBody() ? contentType : null;
+        this.headers = new HashMap<>();
+        this.handler = handler;
     }
     
-    private ClientDriverResponse(byte[] content, String contentType) {
-        this.status = statusCodeForContent(content);
-        this.content = content;
-        
-        if (content != null && content.length != 0) {
-            this.contentType = contentType;
-        } else {
-            this.contentType = null;
-        }
-        
-        this.headers = new HashMap<String, String>();
-    }
-    
-    private static byte[] convertStringToByteArray(String content) {
-        return content != null ? content.getBytes() : null;
-    }
-    
-    private static byte[] convertInputStreamToByteArray(InputStream content) {
-        try {
-            return content != null ? IOUtils.toByteArray(content) : null;
-        } catch (IOException e) {
-            throw new ClientDriverResponseCreationException("unable to create client driver response", e);
-        }
-    }
-    
-    private static int statusCodeForContent(byte[] content) {
+    private static int statusCodeForContent(InputStream content) {
         return content != null ? DEFAULT_STATUS_CODE : EMPTY_RESPONSE_CODE;
     }
     
     /**
      * @return The content as a byte array
+     * @throws IOException if consumption of stream failed
      */
-    public byte[] getContentAsBytes() {
-        if (content == null || content.length == 0) {
+    public byte[] getContentAsBytes() throws IOException {
+        if (stream == null || stream.available() == 0) {
             return null;
         } else {
-            return content;
+            return ByteStreams.toByteArray(stream);
         }
     }
     
     /**
      * @return The content as a string, or an empty string if the content byte array is null or empty.
+     * @throws IOException if consumption of stream failed
      */
-    public String getContent() {
-        if (getContentAsBytes() == null) {
+    public String getContent() throws IOException {
+        if (stream == null) {
             return "";
         } else {
-            return new String(content);
+            return new String(ByteStreams.toByteArray(stream));
         }
     }
     
@@ -269,7 +263,79 @@ public final class ClientDriverResponse {
      * @return whether the response has a body
      */
     public boolean hasBody() {
-        return content != null && content.length != 0;
+        try {
+            return stream != null && stream.available() != 0;
+        } catch (@SuppressWarnings("unused") IOException ex) {
+            return false;
+        }
+    }
+    
+    /**
+     * @return The input stream containing the content
+     */
+    public InputStream getInputStream() {
+        return stream;
+    }
+    
+    public void handle(HttpServletResponse response) throws IOException {
+        this.handler.handle(response, this);
+    }
+    
+    /**
+     * Client driver response handler to customize response behavior.
+     */
+    private static interface Handler {
+
+        public static final int DEFAULT_BUFFER_SIZE = 8192;
+
+        public default void handle(HttpServletResponse servlet, ClientDriverResponse client) throws IOException {
+            servlet.setContentType(client.getContentType());
+            servlet.setStatus(client.getStatus());
+            servlet.setHeader("Server", "rest-client-driver(" + RestDriverProperties.getVersion() + ")");
+            
+            for (Map.Entry<String, String> header : client.getHeaders().entrySet()) {
+                servlet.setHeader(header.getKey(), header.getValue());
+            }
+            
+            if (client.hasBody()) {
+                InputStream input = client.getInputStream();
+                synchronized (input) {
+                    if (input.markSupported()) {
+                        input.mark(Integer.MAX_VALUE);
+                        stream(input, servlet.getOutputStream());
+                        input.reset();
+                    } else {
+                        stream(input, servlet.getOutputStream());
+                    }
+                }
+            }
+            
+            if (client.getDelayTime() > 0) {
+                try {
+                    client.getDelayTimeUnit().sleep(client.getDelayTime());
+                } catch (InterruptedException ie) {
+                    throw new ClientDriverInternalException("Requested delay was interrupted", ie);
+                }
+                
+            }
+        }
+        
+        public default void stream(InputStream input, ServletOutputStream output) throws IOException {
+            byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+            while (true) {
+                int read = input.read(buffer, 0, Math.min(DEFAULT_BUFFER_SIZE, input.available()));
+                if (read == -1) {
+                    return;
+                } else if (read == 0) {
+                    output.flush();
+                    read = input.read(buffer);
+                    if (read == -1) {
+                        return;
+                    }
+                }
+                output.write(buffer, 0, read);
+            }
+        }
     }
     
 }
