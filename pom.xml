@@ -64,7 +64,7 @@
         <jetty.version>10.0.10</jetty.version>
         <joda.time.version>2.10.9</joda.time.version>
         <junit.version>4.13.2</junit.version>
-        <jsonpath.version>2.6.0</jsonpath.version>
+        <jsonpath.version>2.9.0</jsonpath.version>
         <logback.version>1.1.7</logback.version>
         <mockito.version>1.9.5</mockito.version>
         <slf4j.version>1.7.32</slf4j.version>
